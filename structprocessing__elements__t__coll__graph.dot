@@ -1,0 +1,31 @@
+digraph "processing_elements_t"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="processing_elements_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ru_elems" ,fontname="Helvetica"];
+  Node2 [label="ru_elements_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structru__elements__t",tooltip=" "];
+  Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" t_flow" ,fontname="Helvetica"];
+  Node3 [label="transport_flow_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structtransport__flow__t",tooltip=" "];
+  Node4 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" u_flow" ,fontname="Helvetica"];
+  Node4 [label="udpip_flow_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structudpip__flow__t",tooltip=" "];
+  Node5 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" amac_flow" ,fontname="Helvetica"];
+  Node5 [label="aliasmac_flow_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structaliasmac__flow__t",tooltip=" "];
+  Node6 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" e_flow" ,fontname="Helvetica"];
+  Node6 [label="eth_flow_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structeth__flow__t",tooltip=" "];
+  Node7 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" e_uplane_map" ,fontname="Helvetica"];
+  Node7 [label="enhanced_uplane_mapping_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structenhanced__uplane__mapping__t",tooltip=" "];
+  Node8 -> Node7 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" mapping" ,fontname="Helvetica"];
+  Node8 [label="uplane_mapping_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structuplane__mapping__t",tooltip=" "];
+  Node9 -> Node8 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" up_markings" ,fontname="Helvetica"];
+  Node9 [label="up_markings_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#unionup__markings__t",tooltip=" "];
+  Node10 -> Node9 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ipv4" ,fontname="Helvetica"];
+  Node10 [label="up_markings_ipv4_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structup__markings__ipv4__t",tooltip=" "];
+  Node11 -> Node9 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ipv6" ,fontname="Helvetica"];
+  Node11 [label="up_markings_ipv6_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structup__markings__ipv6__t",tooltip=" "];
+  Node12 -> Node9 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ethernet" ,fontname="Helvetica"];
+  Node12 [label="up_markings_ethernet_t",height=0.2,width=0.4,color="black",URL="$EvenstarProcessingElements_8h.html#structup__markings__ethernet__t",tooltip=" "];
+  Node9 -> Node7 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" markings" ,fontname="Helvetica"];
+}

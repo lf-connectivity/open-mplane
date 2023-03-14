@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['g_5f8275_5f1_293',['G_8275_1',['../EvenstarSync_8h.html#a624f7d554abf1a60c8a8b93c3c8471f7ac1c5de0ef753afc0e81c9d39f8474137',1,'EvenstarSync.h']]],
+  ['g_5f8275_5f1_5fconfig_294',['g_8275_1_config',['../EvenstarSync_8h.html#ae40c17240cbb33a227f41827ceacc3f5',1,'ptp_config_t']]],
+  ['g_5f8275_5f2_295',['G_8275_2',['../EvenstarSync_8h.html#a624f7d554abf1a60c8a8b93c3c8471f7ab5826917d0011e10caa8ed541ac11b40',1,'EvenstarSync.h']]],
+  ['g_5f8275_5f2_5fconfig_296',['g_8275_2_config',['../EvenstarSync_8h.html#a98c883ab84209c68e9141dfbc551d797',1,'ptp_config_t']]],
+  ['gain_297',['gain',['../EvenstarUplaneConf_8h.html#a2bdb92616c1effe08018a5c0c01a71c0',1,'tx_array_carriers_t']]],
+  ['gain_5fcorrection_298',['gain_correction',['../EvenstarUplaneConf_8h.html#a0d72ad9ceb3555727f8a8350895a918a',1,'rx_array_carriers_t']]],
+  ['gain_5fcorrection_5ffactor_299',['gain_correction_factor',['../EvenstarUplaneConf_8h.html#structrx__array__t_1_1gain__correction__factor',1,'rx_array_t']]],
+  ['gain_5fcorrection_5frange_5ft_300',['gain_correction_range_t',['../EvenstarUplaneConf_8h.html#structgain__correction__range__t',1,'']]],
+  ['gain_5fcorrn_5frange_301',['gain_corrn_range',['../EvenstarUplaneConf_8h.html#acc264454059d4fac02ed5e4bae68b8c7',1,'rx_arrays_t']]],
+  ['galileo_302',['GALILEO',['../structgnss__config__t.html#a742aa31ba23bd12a86b2e525c90d0aa9a8ee2f6d7e4037daf425af44e30465901',1,'gnss_config_t']]],
+  ['gateways_303',['gateways',['../EvenstarDhcp_8h.html#a949eee7b834c94eec60e5354cdbd3b8c',1,'segw_t']]],
+  ['get_5fperf_5fmeas_5fcb_5fptr_304',['get_perf_meas_cb_ptr',['../EvenstarPerformanceMgmt_8h.html#a3676ac807984e4679ccbe3d1aad32b37',1,'EvenstarPerformanceMgmt.h']]],
+  ['glonass_305',['GLONASS',['../structgnss__config__t.html#a742aa31ba23bd12a86b2e525c90d0aa9a99614bd8bfe043b17ab803fcf9b4a8a6',1,'gnss_config_t']]],
+  ['gnass_5fconfig_5fs_306',['gnass_config_s',['../namespace_3globalScope_4.html#structgnass__config__s',1,'']]],
+  ['gnss_5fconfig_5ft_307',['gnss_config_t',['../structgnss__config__t.html',1,'']]],
+  ['gnss_5fdata_308',['gnss_data',['../structgnss__status__t.html#a6e088662bb5c3d110176cdd1f8bc30c1',1,'gnss_status_t']]],
+  ['gnss_5fstatus_5ft_309',['gnss_status_t',['../structgnss__status__t.html',1,'']]],
+  ['gnss_5fstatus_5ft_2egnss_5fdata_310',['gnss_status_t.gnss_data',['../EvenstarSync_8h.html#structgnss__status__t_8gnss__data',1,'']]],
+  ['gnss_5fstatus_5ft_2egnss_5fdata_2elocation_311',['gnss_status_t.gnss_data.location',['../EvenstarSync_8h.html#structgnss__status__t_8gnss__data_8location',1,'']]],
+  ['gnss_5fsync_5fstatus_312',['gnss_sync_status',['../structgnss__status__t.html#a6587bf055743c6f22e7e2c2827d2d0a8',1,'gnss_status_t']]],
+  ['gps_313',['GPS',['../structgnss__config__t.html#a742aa31ba23bd12a86b2e525c90d0aa9a0d92db2c67eb1d82c9b7fb514d8d3ae8',1,'gnss_config_t']]]
+];

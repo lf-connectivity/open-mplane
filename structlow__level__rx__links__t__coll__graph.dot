@@ -1,0 +1,12 @@
+digraph "low_level_rx_links_t"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="low_level_rx_links_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" low_level_rx_endpoint" ,fontname="Helvetica"];
+  Node2 [label="low_level_rx_endpoint_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structlow__level__rx__endpoint__t",tooltip=" "];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" rx_array_carrier" ,fontname="Helvetica"];
+  Node3 [label="rx_array_carriers_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structrx__array__carriers__t",tooltip=" "];
+}

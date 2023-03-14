@@ -1,0 +1,47 @@
+digraph "beamforming_static_properties_t"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="beamforming_static\l_properties_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Beamforming configuration data specific to spectrum usage technique."];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" beamforming_type_config" ,fontname="Helvetica"];
+  Node2 [label="beamforming_type_config_t",height=0.2,width=0.4,color="black",URL="$EvenstarBeamforming_8h.html#unionbeamforming__type__config__t",tooltip=" "];
+  Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" time" ,fontname="Helvetica"];
+  Node3 [label="beamforming_type_time_t",height=0.2,width=0.4,color="black",URL="$EvenstarBeamforming_8h.html#structbeamforming__type__time__t",tooltip="Struct containing beamforming configuration data for time spectrum usage."];
+  Node4 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" compression_format" ,fontname="Helvetica"];
+  Node4 [label="compression_format_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#unioncompression__format__t",tooltip=" "];
+  Node5 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" beam_space_compression" ,fontname="Helvetica"];
+  Node5 [label="beam_space_compression_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structbeam__space__compression__t",tooltip=" "];
+  Node6 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" block_scaling" ,fontname="Helvetica"];
+  Node6 [label="block_scaling_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structblock__scaling__t",tooltip=" "];
+  Node7 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" u_law" ,fontname="Helvetica"];
+  Node7 [label="u_law_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structu__law__t",tooltip=" "];
+  Node8 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" block_floating_point" ,fontname="Helvetica"];
+  Node8 [label="block_floating_point_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structblock__floating__point__t",tooltip=" "];
+  Node9 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" modulation_compression" ,fontname="Helvetica"];
+  Node9 [label="modulation_compression_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structmodulation__compression__t",tooltip=" "];
+  Node10 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" additioal_compression\l_method_supported" ,fontname="Helvetica"];
+  Node10 [label="additional_compression\l_method_supported_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structadditional__compression__method__supported__t",tooltip=" "];
+  Node4 -> Node10 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" compression_format" ,fontname="Helvetica"];
+  Node11 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" compression_format\l_config" ,fontname="Helvetica"];
+  Node11 [label="compression_format\l_config_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#unioncompression__format__config__t",tooltip=" "];
+  Node5 -> Node11 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" beam_space_compression" ,fontname="Helvetica"];
+  Node6 -> Node11 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" block_scaling" ,fontname="Helvetica"];
+  Node12 -> Node11 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" no_compression" ,fontname="Helvetica"];
+  Node12 [label="no_compression_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structno__compression__t",tooltip=" "];
+  Node7 -> Node11 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" u_law" ,fontname="Helvetica"];
+  Node8 -> Node11 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" block_floating_point" ,fontname="Helvetica"];
+  Node9 -> Node11 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" modulation_compression" ,fontname="Helvetica"];
+  Node13 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" hybrid" ,fontname="Helvetica"];
+  Node13 [label="beamforming_type_hybrid_t",height=0.2,width=0.4,color="black",URL="$EvenstarBeamforming_8h.html#structbeamforming__type__hybrid__t",tooltip="Contains beamforming configuration data for hybrid spectrum usage."];
+  Node4 -> Node13 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" compression_format" ,fontname="Helvetica"];
+  Node10 -> Node13 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" additioal_compression\l_method_supported" ,fontname="Helvetica"];
+  Node11 -> Node13 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" compression_format\l_config" ,fontname="Helvetica"];
+  Node14 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" frequency" ,fontname="Helvetica"];
+  Node14 [label="beamforming_type_frequency_t",height=0.2,width=0.4,color="black",URL="$EvenstarBeamforming_8h.html#structbeamforming__type__frequency__t",tooltip="Struct containing beamforming configuration data for frequency spectrum usage."];
+  Node4 -> Node14 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" compression_format" ,fontname="Helvetica"];
+  Node10 -> Node14 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" additional_compression\l_method_supported" ,fontname="Helvetica"];
+  Node11 -> Node14 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" compression_format\l_config" ,fontname="Helvetica"];
+}
