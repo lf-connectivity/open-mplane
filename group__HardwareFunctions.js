@@ -1,11 +1,11 @@
 var group__HardwareFunctions =
 [
-    [ "halevenstar_get_availability_type", "group__HardwareFunctions.html#ga7d37b6566743b1b7a440cdca7bc22e3e", null ],
-    [ "halevenstar_get_dying_gasp_support", "group__HardwareFunctions.html#gab2693949536506882f39e86d4823046c", null ],
-    [ "halevenstar_get_energysaving_state", "group__HardwareFunctions.html#ga1d853720af4963f7082285b4eccf8ce2", null ],
-    [ "halevenstar_get_label_content", "group__HardwareFunctions.html#ga90245b724e8643fd37dbf24e71871987", null ],
-    [ "halevenstar_get_last_service_date", "group__HardwareFunctions.html#gacfdbeacdbd7ef8496a47a880c4dff1d6", null ],
-    [ "halevenstar_get_o_ran_name", "group__HardwareFunctions.html#ga4c8e2756502f61b3dd3b80b5cd6bdc97", null ],
-    [ "halevenstar_get_product_code", "group__HardwareFunctions.html#gaa0da63614df1448492c403c6531ff697", null ],
-    [ "halevenstar_is_energy_saving_enabled", "group__HardwareFunctions.html#ga7361ba2ada53768b9ad1188ebacc4396", null ]
+    [ "halmplane_get_availability_type", "group__HardwareFunctions.html#gac0539a0dc4f98e4ac728ecf88ca27b10", null ],
+    [ "halmplane_get_dying_gasp_support", "group__HardwareFunctions.html#gaf40f78d4f73a6aea8a8b5ddba4ee3a8b", null ],
+    [ "halmplane_get_energysaving_state", "group__HardwareFunctions.html#ga9e8dff29e85632e2b158e3c83687fc17", null ],
+    [ "halmplane_get_label_content", "group__HardwareFunctions.html#ga6b14308f71a64f0ccde940ee29a51107", null ],
+    [ "halmplane_get_last_service_date", "group__HardwareFunctions.html#ga553dddf8cfbf8d75a908f11badb4a660", null ],
+    [ "halmplane_get_o_ran_name", "group__HardwareFunctions.html#ga65f5505c966764c8047f77bf16c7aef3", null ],
+    [ "halmplane_get_product_code", "group__HardwareFunctions.html#ga885756a28945fd16d778be722807de10", null ],
+    [ "halmplane_is_energy_saving_enabled", "group__HardwareFunctions.html#gac4052b8ae7ff35683f1f878875fb1612", null ]
 ];

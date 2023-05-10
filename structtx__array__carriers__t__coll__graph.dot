@@ -6,9 +6,9 @@ digraph "tx_array_carriers_t"
   node [fontname="Helvetica",fontsize="10",shape=record];
   Node1 [label="tx_array_carriers_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" tx_tdd_frame" ,fontname="Helvetica"];
-  Node2 [label="lte_tdd_frame_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structlte__tdd__frame__t",tooltip=" "];
+  Node2 [label="lte_tdd_frame_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structlte__tdd__frame__t",tooltip=" "];
   Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" laa_carrier_cfg" ,fontname="Helvetica"];
-  Node3 [label="laa_carrier_configuration_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structlaa__carrier__configuration__t",tooltip=" "];
+  Node3 [label="laa_carrier_configuration_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structlaa__carrier__configuration__t",tooltip=" "];
   Node4 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" usage_counter" ,fontname="Helvetica"];
-  Node4 [label="max_cw_usage_counter_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structmax__cw__usage__counter__t",tooltip=" "];
+  Node4 [label="max_cw_usage_counter_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structmax__cw__usage__counter__t",tooltip=" "];
 }

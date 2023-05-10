@@ -6,15 +6,15 @@ digraph "dhcp_client_identifier_t"
   node [fontname="Helvetica",fontsize="10",shape=record];
   Node1 [label="dhcp_client_identifier_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" duid_type" ,fontname="Helvetica"];
-  Node2 [label="duid_type_t",height=0.2,width=0.4,color="black",URL="$EvenstarDhcp_8h.html#unionduid__type__t",tooltip=" "];
+  Node2 [label="duid_type_t",height=0.2,width=0.4,color="black",URL="$MplaneDhcp_8h.html#unionduid__type__t",tooltip=" "];
   Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" uuid" ,fontname="Helvetica"];
-  Node3 [label="duid_uuid_t",height=0.2,width=0.4,color="black",URL="$EvenstarDhcp_8h.html#structduid__uuid__t",tooltip=" "];
+  Node3 [label="duid_uuid_t",height=0.2,width=0.4,color="black",URL="$MplaneDhcp_8h.html#structduid__uuid__t",tooltip=" "];
   Node4 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" ll" ,fontname="Helvetica"];
-  Node4 [label="duid_ll_t",height=0.2,width=0.4,color="black",URL="$EvenstarDhcp_8h.html#structduid__ll__t",tooltip=" "];
+  Node4 [label="duid_ll_t",height=0.2,width=0.4,color="black",URL="$MplaneDhcp_8h.html#structduid__ll__t",tooltip=" "];
   Node5 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" unknown" ,fontname="Helvetica"];
-  Node5 [label="duid_unknown_t",height=0.2,width=0.4,color="black",URL="$EvenstarDhcp_8h.html#structduid__unknown__t",tooltip=" "];
+  Node5 [label="duid_unknown_t",height=0.2,width=0.4,color="black",URL="$MplaneDhcp_8h.html#structduid__unknown__t",tooltip=" "];
   Node6 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" en" ,fontname="Helvetica"];
-  Node6 [label="duid_en_t",height=0.2,width=0.4,color="black",URL="$EvenstarDhcp_8h.html#structduid__en__t",tooltip=" "];
+  Node6 [label="duid_en_t",height=0.2,width=0.4,color="black",URL="$MplaneDhcp_8h.html#structduid__en__t",tooltip=" "];
   Node7 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" llt" ,fontname="Helvetica"];
-  Node7 [label="duid_llt_t",height=0.2,width=0.4,color="black",URL="$EvenstarDhcp_8h.html#structduid__llt__t",tooltip=" "];
+  Node7 [label="duid_llt_t",height=0.2,width=0.4,color="black",URL="$MplaneDhcp_8h.html#structduid__llt__t",tooltip=" "];
 }

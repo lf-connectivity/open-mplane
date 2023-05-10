@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Evenstar HAL: O-RAN Antenna Calibration Functions</title>
+<title>Open M-Plane HAL: O-RAN Antenna Calibration Functions</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Evenstar HAL
+   <div id="projectname">Open M-Plane HAL
    </div>
   </td>
  </tr>
@@ -94,22 +94,22 @@ $(document).ready(function(){initNavTree('group__AntennaCalibrationFunctions.htm
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gafe3b2f34096bcf357559a63e76baadb7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="EvenstarTypes_8h.html#a889480e1627216b68d120a5b8a5b43f2">halevenstar_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__AntennaCalibrationFunctions.html#gafe3b2f34096bcf357559a63e76baadb7">halevenstar_start_antenna_calibration</a> (const *<a class="el" href="EvenstarAntennaCalibration_8h.html#structantenna__calibration__data__t">antenna_calibration_data_t</a>)</td></tr>
-<tr class="memdesc:gafe3b2f34096bcf357559a63e76baadb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start antenna calibration procedure.  <a href="group__AntennaCalibrationFunctions.html#gafe3b2f34096bcf357559a63e76baadb7">More...</a><br /></td></tr>
-<tr class="separator:gafe3b2f34096bcf357559a63e76baadb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4f2a967944cd28610493a8ec0e2d6903"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MplaneTypes_8h.html#a097493802966d4a0ae815a450c12af5b">halmplane_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__AntennaCalibrationFunctions.html#ga4f2a967944cd28610493a8ec0e2d6903">halmplane_start_antenna_calibration</a> (const *<a class="el" href="MplaneAntennaCalibration_8h.html#structantenna__calibration__data__t">antenna_calibration_data_t</a>)</td></tr>
+<tr class="memdesc:ga4f2a967944cd28610493a8ec0e2d6903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start antenna calibration procedure.  <a href="group__AntennaCalibrationFunctions.html#ga4f2a967944cd28610493a8ec0e2d6903">More...</a><br /></td></tr>
+<tr class="separator:ga4f2a967944cd28610493a8ec0e2d6903"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Antenna calibration functions - O-RAN WG4 M-Plane Spec Chapter 15.5. </p>
 <p>Antenna calibration is highly hardware-dependent. The M-Plane antenna calibration module only contains methods for monitoring and scheduling antenna calibration, and for allocating resources such as slots and frames to the antenna calibration procedure. </p>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="gafe3b2f34096bcf357559a63e76baadb7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gafe3b2f34096bcf357559a63e76baadb7">&#9670;&nbsp;</a></span>halevenstar_start_antenna_calibration()</h2>
+<a id="ga4f2a967944cd28610493a8ec0e2d6903"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4f2a967944cd28610493a8ec0e2d6903">&#9670;&nbsp;</a></span>halmplane_start_antenna_calibration()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="EvenstarTypes_8h.html#a889480e1627216b68d120a5b8a5b43f2">halevenstar_error_t</a> halevenstar_start_antenna_calibration </td>
+          <td class="memname"><a class="el" href="MplaneTypes_8h.html#a097493802966d4a0ae815a450c12af5b">halmplane_error_t</a> halmplane_start_antenna_calibration </td>
           <td>(</td>
           <td class="paramtype">const *&#160;</td>
           <td class="paramname"><em>antenna_calibration_data_t</em></td><td>)</td>
@@ -121,10 +121,10 @@ Functions</h2></td></tr>
 <p>Start antenna calibration procedure. </p>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">halevenstar_error_e::NONE</td><td>if successfully started antenna calibration </td></tr>
-    <tr><td class="paramname">halevenstar_error_e::UNAVAILABLE</td><td>if antenna calibration cannot be started </td></tr>
-    <tr><td class="paramname">halevenstar_error_e::INVALID_ARG</td><td>if there is an antenna configuration error </td></tr>
-    <tr><td class="paramname">halevenstar_error_e::DEVICE_ERROR</td><td>if antenna calibration fails </td></tr>
+    <tr><td class="paramname">halmplane_error_e::NONE</td><td>if successfully started antenna calibration </td></tr>
+    <tr><td class="paramname">halmplane_error_e::UNAVAILABLE</td><td>if antenna calibration cannot be started </td></tr>
+    <tr><td class="paramname">halmplane_error_e::INVALID_ARG</td><td>if there is an antenna configuration error </td></tr>
+    <tr><td class="paramname">halmplane_error_e::DEVICE_ERROR</td><td>if antenna calibration fails </td></tr>
   </table>
   </dd>
 </dl>

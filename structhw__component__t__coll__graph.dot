@@ -6,9 +6,9 @@ digraph "hw_component_t"
   node [fontname="Helvetica",fontsize="10",shape=record];
   Node1 [label="hw_component_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" sensor_data" ,fontname="Helvetica"];
-  Node2 [label="ietf_hw_sensor_data_t",height=0.2,width=0.4,color="black",URL="$EvenstarHardware_8h.html#structietf__hw__sensor__data__t",tooltip=" "];
+  Node2 [label="ietf_hw_sensor_data_t",height=0.2,width=0.4,color="black",URL="$MplaneHardware_8h.html#structietf__hw__sensor__data__t",tooltip=" "];
   Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" state" ,fontname="Helvetica"];
-  Node3 [label="ietf_hw_state_t",height=0.2,width=0.4,color="black",URL="$EvenstarHardware_8h.html#structietf__hw__state__t",tooltip=" "];
+  Node3 [label="ietf_hw_state_t",height=0.2,width=0.4,color="black",URL="$MplaneHardware_8h.html#structietf__hw__state__t",tooltip=" "];
   Node4 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" label_content" ,fontname="Helvetica"];
-  Node4 [label="label_content_t",height=0.2,width=0.4,color="black",URL="$EvenstarHardware_8h.html#structlabel__content__t",tooltip=" "];
+  Node4 [label="label_content_t",height=0.2,width=0.4,color="black",URL="$MplaneHardware_8h.html#structlabel__content__t",tooltip=" "];
 }

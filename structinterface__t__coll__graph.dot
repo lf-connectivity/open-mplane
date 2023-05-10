@@ -6,5 +6,5 @@ digraph "interface_t"
   node [fontname="Helvetica",fontsize="10",shape=record];
   Node1 [label="interface_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" classOfService" ,fontname="Helvetica"];
-  Node2 [label="cos_marking_t",height=0.2,width=0.4,color="black",URL="$EvenstarInterfaces_8h.html#structcos__marking__t",tooltip=" "];
+  Node2 [label="cos_marking_t",height=0.2,width=0.4,color="black",URL="$MplaneInterfaces_8h.html#structcos__marking__t",tooltip=" "];
 }

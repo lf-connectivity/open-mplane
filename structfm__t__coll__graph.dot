@@ -6,7 +6,7 @@ digraph "fm_t"
   node [fontname="Helvetica",fontsize="10",shape=record];
   Node1 [label="fm_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" alarm_list" ,fontname="Helvetica"];
-  Node2 [label="active_alarms_t",height=0.2,width=0.4,color="black",URL="$EvenstarFaultMgmt_8h.html#structactive__alarms__t",tooltip=" "];
+  Node2 [label="active_alarms_t",height=0.2,width=0.4,color="black",URL="$MplaneFaultMgmt_8h.html#structactive__alarms__t",tooltip=" "];
   Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" affected_objects" ,fontname="Helvetica"];
-  Node3 [label="fm_affected_objects_t",height=0.2,width=0.4,color="black",URL="$EvenstarFaultMgmt_8h.html#structfm__affected__objects__t",tooltip=" "];
+  Node3 [label="fm_affected_objects_t",height=0.2,width=0.4,color="black",URL="$MplaneFaultMgmt_8h.html#structfm__affected__objects__t",tooltip=" "];
 }

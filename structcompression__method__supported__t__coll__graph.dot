@@ -7,15 +7,15 @@ digraph "compression_method_supported_t"
   rankdir="LR";
   Node1 [label="compression_method\l_supported_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" compression_format" ,fontname="Helvetica"];
-  Node2 [label="compression_format_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#unioncompression__format__t",tooltip=" "];
+  Node2 [label="compression_format_t",height=0.2,width=0.4,color="black",URL="$MplaneCompression_8h.html#unioncompression__format__t",tooltip=" "];
   Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" beam_space_compression" ,fontname="Helvetica"];
-  Node3 [label="beam_space_compression_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structbeam__space__compression__t",tooltip=" "];
+  Node3 [label="beam_space_compression_t",height=0.2,width=0.4,color="black",URL="$MplaneCompression_8h.html#structbeam__space__compression__t",tooltip=" "];
   Node4 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" block_scaling" ,fontname="Helvetica"];
-  Node4 [label="block_scaling_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structblock__scaling__t",tooltip=" "];
+  Node4 [label="block_scaling_t",height=0.2,width=0.4,color="black",URL="$MplaneCompression_8h.html#structblock__scaling__t",tooltip=" "];
   Node5 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" u_law" ,fontname="Helvetica"];
-  Node5 [label="u_law_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structu__law__t",tooltip=" "];
+  Node5 [label="u_law_t",height=0.2,width=0.4,color="black",URL="$MplaneCompression_8h.html#structu__law__t",tooltip=" "];
   Node6 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" block_floating_point" ,fontname="Helvetica"];
-  Node6 [label="block_floating_point_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structblock__floating__point__t",tooltip=" "];
+  Node6 [label="block_floating_point_t",height=0.2,width=0.4,color="black",URL="$MplaneCompression_8h.html#structblock__floating__point__t",tooltip=" "];
   Node7 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" modulation_compression" ,fontname="Helvetica"];
-  Node7 [label="modulation_compression_t",height=0.2,width=0.4,color="black",URL="$EvenstarCompression_8h.html#structmodulation__compression__t",tooltip=" "];
+  Node7 [label="modulation_compression_t",height=0.2,width=0.4,color="black",URL="$MplaneCompression_8h.html#structmodulation__compression__t",tooltip=" "];
 }

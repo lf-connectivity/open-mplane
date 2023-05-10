@@ -1,9 +1,9 @@
 var group__SyncFunctions =
 [
-    [ "halevenstar_get_gnss_status", "group__SyncFunctions.html#ga21833865cbdf33068367f923a5c8e2cc", null ],
-    [ "halevenstar_get_ptp_status", "group__SyncFunctions.html#gae80cac27581e28cb1c371737f8345e61", null ],
-    [ "halevenstar_get_synce_status", "group__SyncFunctions.html#ga8f69e105d61d0e7783e5b903be1ae035", null ],
-    [ "halevenstar_set_gnss_config", "group__SyncFunctions.html#gacfdaa4764896670dbd91ad7811162c93", null ],
-    [ "halevenstar_set_ptp_config", "group__SyncFunctions.html#ga91e013c52344a2564824fc09ae4dcd24", null ],
-    [ "halevenstar_set_synce_config", "group__SyncFunctions.html#ga4f84b4db58c773745412866b2059061a", null ]
+    [ "halmplane_get_gnss_status", "group__SyncFunctions.html#ga639d6dbb005cfd21b9d910592cb599af", null ],
+    [ "halmplane_get_ptp_status", "group__SyncFunctions.html#gaf1a53506bcbfc3636a6a85335dde73c1", null ],
+    [ "halmplane_get_synce_status", "group__SyncFunctions.html#ga0cfe32ae181dc2cbcfddee3a159ca107", null ],
+    [ "halmplane_set_gnss_config", "group__SyncFunctions.html#gac1fef8486311d5136d790b5b1e0047db", null ],
+    [ "halmplane_set_ptp_config", "group__SyncFunctions.html#ga6453945d463f30700c307699c48af04a", null ],
+    [ "halmplane_set_synce_config", "group__SyncFunctions.html#ga2b2d12d59335741d9abaccea6fd7e3ba", null ]
 ];

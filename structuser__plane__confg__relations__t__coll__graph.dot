@@ -6,7 +6,7 @@ digraph "user_plane_confg_relations_t"
   node [fontname="Helvetica",fontsize="10",shape=record];
   Node1 [label="user_plane_confg_relations_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" types" ,fontname="Helvetica"];
-  Node2 [label="user_plane_config_antenna\l_types_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structuser__plane__config__antenna__types__t",tooltip=" "];
+  Node2 [label="user_plane_config_antenna\l_types_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structuser__plane__config__antenna__types__t",tooltip=" "];
   Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" array1\narray2" ,fontname="Helvetica"];
-  Node3 [label="user_plane_config_antenna\l_array_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structuser__plane__config__antenna__array__t",tooltip=" "];
+  Node3 [label="user_plane_config_antenna\l_array_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structuser__plane__config__antenna__array__t",tooltip=" "];
 }

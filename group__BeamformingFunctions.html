@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Evenstar HAL: O-RAN Beamforming Functions</title>
+<title>Open M-Plane HAL: O-RAN Beamforming Functions</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Evenstar HAL
+   <div id="projectname">Open M-Plane HAL
    </div>
   </td>
  </tr>
@@ -94,22 +94,22 @@ $(document).ready(function(){initNavTree('group__BeamformingFunctions.html','');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga907b0ce2538218f4b4fe6352e66ee6d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="EvenstarTypes_8h.html#a889480e1627216b68d120a5b8a5b43f2">halevenstar_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__BeamformingFunctions.html#ga907b0ce2538218f4b4fe6352e66ee6d2">halevenstar_apply_beamforming_file</a> (char *filepath)</td></tr>
-<tr class="memdesc:ga907b0ce2538218f4b4fe6352e66ee6d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply beamforming configuration from file on the O-RU.  <a href="group__BeamformingFunctions.html#ga907b0ce2538218f4b4fe6352e66ee6d2">More...</a><br /></td></tr>
-<tr class="separator:ga907b0ce2538218f4b4fe6352e66ee6d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab6908474f2db494228a52e8b44bc3b0d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MplaneTypes_8h.html#a097493802966d4a0ae815a450c12af5b">halmplane_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__BeamformingFunctions.html#gab6908474f2db494228a52e8b44bc3b0d">halmplane_apply_beamforming_file</a> (char *filepath)</td></tr>
+<tr class="memdesc:gab6908474f2db494228a52e8b44bc3b0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply beamforming configuration from file on the O-RU.  <a href="group__BeamformingFunctions.html#gab6908474f2db494228a52e8b44bc3b0d">More...</a><br /></td></tr>
+<tr class="separator:gab6908474f2db494228a52e8b44bc3b0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Beamforming functions - O-RAN WG4 M-Plane Spec Chapter 15.4. </p>
 <p>The M-Plane allows clients to select from predefined beamforming configuration files on the O-RU. This HAL module contains a large number of struct types reflecting the O-RAN beamforming yang module, however the sole HAL function contained in this module need not make use of these structs. </p>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga907b0ce2538218f4b4fe6352e66ee6d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga907b0ce2538218f4b4fe6352e66ee6d2">&#9670;&nbsp;</a></span>halevenstar_apply_beamforming_file()</h2>
+<a id="gab6908474f2db494228a52e8b44bc3b0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab6908474f2db494228a52e8b44bc3b0d">&#9670;&nbsp;</a></span>halmplane_apply_beamforming_file()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="EvenstarTypes_8h.html#a889480e1627216b68d120a5b8a5b43f2">halevenstar_error_t</a> halevenstar_apply_beamforming_file </td>
+          <td class="memname"><a class="el" href="MplaneTypes_8h.html#a097493802966d4a0ae815a450c12af5b">halmplane_error_t</a> halmplane_apply_beamforming_file </td>
           <td>(</td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>filepath</em></td><td>)</td>
@@ -127,10 +127,10 @@ Functions</h2></td></tr>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">halevenstar_error_e::NONE</td><td>if successfully applied beamforming configuration </td></tr>
-    <tr><td class="paramname">halevenstar_error_e::UNAVAILABLE</td><td>if beamforming is not available </td></tr>
-    <tr><td class="paramname">halevenstar_error_e::INVALID_ARG</td><td>if there is an beamforming configuration error </td></tr>
-    <tr><td class="paramname">halevenstar_error_e::DEVICE_ERROR</td><td>if beamforming configuration fails </td></tr>
+    <tr><td class="paramname">halmplane_error_e::NONE</td><td>if successfully applied beamforming configuration </td></tr>
+    <tr><td class="paramname">halmplane_error_e::UNAVAILABLE</td><td>if beamforming is not available </td></tr>
+    <tr><td class="paramname">halmplane_error_e::INVALID_ARG</td><td>if there is an beamforming configuration error </td></tr>
+    <tr><td class="paramname">halmplane_error_e::DEVICE_ERROR</td><td>if beamforming configuration fails </td></tr>
   </table>
   </dd>
 </dl>

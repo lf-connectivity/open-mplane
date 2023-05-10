@@ -1,4 +1,4 @@
 var group__BeamformingFunctions =
 [
-    [ "halevenstar_apply_beamforming_file", "group__BeamformingFunctions.html#ga907b0ce2538218f4b4fe6352e66ee6d2", null ]
+    [ "halmplane_apply_beamforming_file", "group__BeamformingFunctions.html#gab6908474f2db494228a52e8b44bc3b0d", null ]
 ];

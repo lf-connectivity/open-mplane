@@ -6,5 +6,5 @@ digraph "port_transceivers_t"
   node [fontname="Helvetica",fontsize="10",shape=record];
   Node1 [label="port_transceivers_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" multi_lane" ,fontname="Helvetica"];
-  Node2 [label="additional_multi_lane\l_reporting_t",height=0.2,width=0.4,color="black",URL="$EvenstarTransceiver_8h.html#structadditional__multi__lane__reporting__t",tooltip=" "];
+  Node2 [label="additional_multi_lane\l_reporting_t",height=0.2,width=0.4,color="black",URL="$MplaneTransceiver_8h.html#structadditional__multi__lane__reporting__t",tooltip=" "];
 }

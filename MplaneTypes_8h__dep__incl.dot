@@ -1,0 +1,35 @@
+digraph "inc/MplaneTypes.h"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="inc/MplaneTypes.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="inc/MplaneAld.h",height=0.2,width=0.4,color="black",URL="$MplaneAld_8h.html",tooltip=" "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="inc/MplaneAntennaCalibration.h",height=0.2,width=0.4,color="black",URL="$MplaneAntennaCalibration_8h.html",tooltip=" "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="inc/MplaneBeamforming.h",height=0.2,width=0.4,color="black",URL="$MplaneBeamforming_8h.html",tooltip=" "];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="inc/MplaneExternalio.h",height=0.2,width=0.4,color="black",URL="$MplaneExternalio_8h.html",tooltip=" "];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="inc/MplaneFan.h",height=0.2,width=0.4,color="black",URL="$MplaneFan_8h.html",tooltip=" "];
+  Node1 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="inc/MplaneFaultMgmt.h",height=0.2,width=0.4,color="black",URL="$MplaneFaultMgmt_8h.html",tooltip=" "];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="inc/MplaneHardware.h",height=0.2,width=0.4,color="black",URL="$MplaneHardware_8h.html",tooltip=" "];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="inc/MplaneInterfaces.h",height=0.2,width=0.4,color="black",URL="$MplaneInterfaces_8h.html",tooltip=" "];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="inc/MplaneModuleCapability.h",height=0.2,width=0.4,color="black",URL="$MplaneModuleCapability_8h.html",tooltip=" "];
+  Node10 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="inc/MplaneUplaneConf.h",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html",tooltip=" "];
+  Node1 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="inc/MplanePerformanceMgmt.h",height=0.2,width=0.4,color="black",URL="$MplanePerformanceMgmt_8h.html",tooltip=" "];
+  Node1 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="inc/MplaneProcessingElements.h",height=0.2,width=0.4,color="black",URL="$MplaneProcessingElements_8h.html",tooltip=" "];
+  Node13 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="inc/MplaneSync.h",height=0.2,width=0.4,color="black",URL="$MplaneSync_8h.html",tooltip=" "];
+}

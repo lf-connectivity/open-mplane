@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Evenstar HAL: O-RAN ExternalIO Functions</title>
+<title>Open M-Plane HAL: O-RAN ExternalIO Functions</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -26,7 +26,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Evenstar HAL
+   <div id="projectname">Open M-Plane HAL
    </div>
   </td>
  </tr>
@@ -94,27 +94,27 @@ $(document).ready(function(){initNavTree('group__ExternalIOFunctions.html',''); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga14b7df54d5bb6bef7187e5cabb620d10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="EvenstarTypes_8h.html#a889480e1627216b68d120a5b8a5b43f2">halevenstar_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__ExternalIOFunctions.html#ga14b7df54d5bb6bef7187e5cabb620d10">halevenstar_get_io_value</a> (<a class="el" href="EvenstarExternalio_8h.html#structexternal__io__t">external_io_t</a> *io)</td></tr>
-<tr class="memdesc:ga14b7df54d5bb6bef7187e5cabb620d10"><td class="mdescLeft">&#160;</td><td class="mdescRight">For inputs, sets the parameter <code>line_in</code> with the value of the port specified by <code>name</code>.  <a href="group__ExternalIOFunctions.html#ga14b7df54d5bb6bef7187e5cabb620d10">More...</a><br /></td></tr>
-<tr class="separator:ga14b7df54d5bb6bef7187e5cabb620d10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacde19f840f4afa4824b6c4b96a2f69e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="EvenstarTypes_8h.html#a889480e1627216b68d120a5b8a5b43f2">halevenstar_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__ExternalIOFunctions.html#gacde19f840f4afa4824b6c4b96a2f69e9">halevenstar_set_io_value</a> (<a class="el" href="EvenstarExternalio_8h.html#structoutput__setting__t">output_setting_t</a> *out_setting)</td></tr>
-<tr class="memdesc:gacde19f840f4afa4824b6c4b96a2f69e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the output of the port to the specified value.  <a href="group__ExternalIOFunctions.html#gacde19f840f4afa4824b6c4b96a2f69e9">More...</a><br /></td></tr>
-<tr class="separator:gacde19f840f4afa4824b6c4b96a2f69e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabceb1186fd4a2e83437508f7d191b271"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MplaneTypes_8h.html#a097493802966d4a0ae815a450c12af5b">halmplane_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__ExternalIOFunctions.html#gabceb1186fd4a2e83437508f7d191b271">halmplane_get_io_value</a> (<a class="el" href="MplaneExternalio_8h.html#structexternal__io__t">external_io_t</a> *io)</td></tr>
+<tr class="memdesc:gabceb1186fd4a2e83437508f7d191b271"><td class="mdescLeft">&#160;</td><td class="mdescRight">For inputs, sets the parameter <code>line_in</code> with the value of the port specified by <code>name</code>.  <a href="group__ExternalIOFunctions.html#gabceb1186fd4a2e83437508f7d191b271">More...</a><br /></td></tr>
+<tr class="separator:gabceb1186fd4a2e83437508f7d191b271"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga234af2da3958575057718f133713bd13"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MplaneTypes_8h.html#a097493802966d4a0ae815a450c12af5b">halmplane_error_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__ExternalIOFunctions.html#ga234af2da3958575057718f133713bd13">halmplane_set_io_value</a> (<a class="el" href="MplaneExternalio_8h.html#structoutput__setting__t">output_setting_t</a> *out_setting)</td></tr>
+<tr class="memdesc:ga234af2da3958575057718f133713bd13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the output of the port to the specified value.  <a href="group__ExternalIOFunctions.html#ga234af2da3958575057718f133713bd13">More...</a><br /></td></tr>
+<tr class="separator:ga234af2da3958575057718f133713bd13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>External IO functions - O-RAN WG4 M-Plane Spec Chapter 14.5. </p>
 <p>An O-RU may have any number of External IO ports, e.g. GPIO pins. The ExternalIO M-Plane module monitors and controls the ports. </p>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga14b7df54d5bb6bef7187e5cabb620d10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga14b7df54d5bb6bef7187e5cabb620d10">&#9670;&nbsp;</a></span>halevenstar_get_io_value()</h2>
+<a id="gabceb1186fd4a2e83437508f7d191b271"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabceb1186fd4a2e83437508f7d191b271">&#9670;&nbsp;</a></span>halmplane_get_io_value()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="EvenstarTypes_8h.html#a889480e1627216b68d120a5b8a5b43f2">halevenstar_error_t</a> halevenstar_get_io_value </td>
+          <td class="memname"><a class="el" href="MplaneTypes_8h.html#a097493802966d4a0ae815a450c12af5b">halmplane_error_t</a> halmplane_get_io_value </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="EvenstarExternalio_8h.html#structexternal__io__t">external_io_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="MplaneExternalio_8h.html#structexternal__io__t">external_io_t</a> *&#160;</td>
           <td class="paramname"><em>io</em></td><td>)</td>
           <td></td>
         </tr>
@@ -131,24 +131,24 @@ Functions</h2></td></tr>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">halevenstar_error_e::NONE</td><td>if the external IO value is found </td></tr>
-    <tr><td class="paramname">halevenstar_error_e::UNAVAILABLE</td><td>if the external IO is not found </td></tr>
+    <tr><td class="paramname">halmplane_error_e::NONE</td><td>if the external IO value is found </td></tr>
+    <tr><td class="paramname">halmplane_error_e::UNAVAILABLE</td><td>if the external IO is not found </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="gacde19f840f4afa4824b6c4b96a2f69e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gacde19f840f4afa4824b6c4b96a2f69e9">&#9670;&nbsp;</a></span>halevenstar_set_io_value()</h2>
+<a id="ga234af2da3958575057718f133713bd13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga234af2da3958575057718f133713bd13">&#9670;&nbsp;</a></span>halmplane_set_io_value()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="EvenstarTypes_8h.html#a889480e1627216b68d120a5b8a5b43f2">halevenstar_error_t</a> halevenstar_set_io_value </td>
+          <td class="memname"><a class="el" href="MplaneTypes_8h.html#a097493802966d4a0ae815a450c12af5b">halmplane_error_t</a> halmplane_set_io_value </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="EvenstarExternalio_8h.html#structoutput__setting__t">output_setting_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="MplaneExternalio_8h.html#structoutput__setting__t">output_setting_t</a> *&#160;</td>
           <td class="paramname"><em>out_setting</em></td><td>)</td>
           <td></td>
         </tr>
@@ -164,8 +164,8 @@ Functions</h2></td></tr>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">halevenstar_error_e::NONE</td><td>if the external IO value is set </td></tr>
-    <tr><td class="paramname">halevenstar_error_e::UNAVAILABLE</td><td>if the external IO is not set </td></tr>
+    <tr><td class="paramname">halmplane_error_e::NONE</td><td>if the external IO value is set </td></tr>
+    <tr><td class="paramname">halmplane_error_e::UNAVAILABLE</td><td>if the external IO is not set </td></tr>
   </table>
   </dd>
 </dl>

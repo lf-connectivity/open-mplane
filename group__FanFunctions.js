@@ -1,9 +1,9 @@
 var group__FanFunctions =
 [
-    [ "halevenstar_get_fan_location", "group__FanFunctions.html#ga974bcb0ff0f93dc03b416f274b6549ac", null ],
-    [ "halevenstar_get_fan_name", "group__FanFunctions.html#ga9e0caa15a5687bbdb4a639df8e88d2d4", null ],
-    [ "halevenstar_get_fan_present_and_operating", "group__FanFunctions.html#ga85717bd926ed5c37b84b286d926381ae", null ],
-    [ "halevenstar_get_fan_speed", "group__FanFunctions.html#ga5203d3465d19432b2312c5e9e4316dae", null ],
-    [ "halevenstar_get_fan_target_speed", "group__FanFunctions.html#ga083655bf94cbf886e17eb5febe99c077", null ],
-    [ "halevenstar_get_fan_vendor_code", "group__FanFunctions.html#gab0b75ec8f574c8f91a075cd623a5ba29", null ]
+    [ "halmplane_get_fan_location", "group__FanFunctions.html#gaa26708f3962dcdcaeec9b6199405abb8", null ],
+    [ "halmplane_get_fan_name", "group__FanFunctions.html#ga78fad4d56004a7a64ea43acc1a9450a3", null ],
+    [ "halmplane_get_fan_present_and_operating", "group__FanFunctions.html#ga35bb1334eba1474af61c386eaa0e91c8", null ],
+    [ "halmplane_get_fan_speed", "group__FanFunctions.html#gadb78fd378a9478e396c5d29f2607bf51", null ],
+    [ "halmplane_get_fan_target_speed", "group__FanFunctions.html#ga528fbc2171681b68c903445e6a56381a", null ],
+    [ "halmplane_get_fan_vendor_code", "group__FanFunctions.html#ga2a8c19528a53c9ae00d970562eeac802", null ]
 ];

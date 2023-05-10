@@ -7,11 +7,11 @@ digraph "tx_arrays_t"
   rankdir="LR";
   Node1 [label="tx_arrays_t",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" vector_direction" ,fontname="Helvetica"];
-  Node2 [label="normal_vector_direction_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structnormal__vector__direction__t",tooltip=" "];
+  Node2 [label="normal_vector_direction_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structnormal__vector__direction__t",tooltip=" "];
   Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" elem_position" ,fontname="Helvetica"];
-  Node3 [label="leftmost_bottom_array\l_element_position_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structleftmost__bottom__array__element__position__t",tooltip=" "];
+  Node3 [label="leftmost_bottom_array\l_element_position_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structleftmost__bottom__array__element__position__t",tooltip=" "];
   Node4 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" capabilities" ,fontname="Helvetica"];
-  Node4 [label="user_plane_capabilities_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structuser__plane__capabilities__t",tooltip=" "];
+  Node4 [label="user_plane_capabilities_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structuser__plane__capabilities__t",tooltip=" "];
   Node5 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" pol" ,fontname="Helvetica"];
-  Node5 [label="polarisations_t",height=0.2,width=0.4,color="black",URL="$EvenstarUplaneConf_8h.html#structpolarisations__t",tooltip=" "];
+  Node5 [label="polarisations_t",height=0.2,width=0.4,color="black",URL="$MplaneUplaneConf_8h.html#structpolarisations__t",tooltip=" "];
 }

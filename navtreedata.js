@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "Evenstar HAL", "index.html", [
+  [ "Open M-Plane HAL", "index.html", [
     [ "Modules", "modules.html", "modules" ],
     [ "Class List", "annotated.html", "annotated" ],
     [ "Class Index", "classes.html", null ],
@@ -47,12 +47,12 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"EvenstarAlarms_8h.html",
-"EvenstarExternalio_8h.html#structoutput__t",
-"EvenstarModuleCapability_8h.html#a7cfaba4e94e43cfaddc8698c32b11df9",
-"EvenstarSupervision_8h.html#a301a0fcba59b0eccee70a4f5bdad7300",
-"EvenstarUplaneConf_8h.html#aac4f89803588daa37b98a31f1ce076e3",
-"group__SyncFunctions.html#ga8f69e105d61d0e7783e5b903be1ae035"
+"HalMplane_8h.html",
+"MplaneExternalio_8h.html#ae89e2d6242902c360b488074b3765cdb",
+"MplaneModuleCapability_8h.html#a69b60ee883a3274d15c584e654682661",
+"MplaneProcessingElements_8h.html#structuplane__mapping__t",
+"MplaneUplaneConf_8h.html#aa7b1e849c49dd091a77c45f86f979de8",
+"group__SyncFunctions.html#ga639d6dbb005cfd21b9d910592cb599af"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
