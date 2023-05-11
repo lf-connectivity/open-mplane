@@ -1,0 +1,139 @@
+module o-ran-wg4-features {
+  yang-version 1.1;
+  namespace "urn:o-ran:wg4feat:1.0";
+  prefix "o-ran-feat";
+
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the a set of re-usable type definitions for WG4 specific
+    features.
+
+    Copyright 2021 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2021-07-26" {
+    description
+      "version 7.0.0
+
+      new features:
+      1) EXT-ANT-DELAY-CONTRO
+      2) CPLANE-MESSAGE-PROCESSING-LIMITS";
+
+    reference "ORAN-WG4.M.0-v07.00";
+  }
+
+  revision "2021-03-22" {
+    description
+      "version 6.0.0
+
+      1) Features added to handle updated transmission window control:
+      STATIC-TRANSMISSION-WINDOW-CONTROL
+      DYNAMIC-TRANSMISSION-WINDOW-CONTROL
+      UNIFORMLY-DISTRIBUTED-TRANSMISSION
+      ORDERED-TRANSMISSION
+      INDEPENDENT-TRANSMISSION-WINDOW-CONTROL
+      ";
+
+    reference "ORAN-WG4.M.0-v06.00";
+  }
+
+  revision "2020-12-10" {
+    description
+      "version 5.0.0
+
+      1) initial version.";
+
+    reference "ORAN-WG4.M.0-v05.00";
+  }
+
+  feature NON-PERSISTENT-MPLANE {
+    description
+      "Indicates that the Radio Unit supports the optional
+      capability to improve the operation with a SMO using a non-
+      persistent NETCONF session.";
+  }
+
+  feature STATIC-TRANSMISSION-WINDOW-CONTROL {
+    description
+      "O-RU supports U-plane transmission window control (scheduled transmission
+       and optionaly uniformly distributed transmission) configuration over M-plane";
+  }
+
+  feature DYNAMIC-TRANSMISSION-WINDOW-CONTROL {
+    description
+      "O-RU supports U-plane transmission window control (scheduled transmission
+       and optionaly uniformly distributed transmission) configuration over C-plane";
+  }
+
+  feature UNIFORMLY-DISTRIBUTED-TRANSMISSION {
+    if-feature "STATIC-TRANSMISSION-WINDOW-CONTROL or DYNAMIC-TRANSMISSION-WINDOW-CONTROL";
+    description
+      "O-RU supports transmission of UL U-plane messages distributed uniformly over transmission window.";
+  }
+
+  feature ORDERED-TRANSMISSION {
+    description
+      "O-RU supports ordered transmission";
+  }
+
+  feature INDEPENDENT-TRANSMISSION-WINDOW-CONTROL {
+    if-feature "STATIC-TRANSMISSION-WINDOW-CONTROL or DYNAMIC-TRANSMISSION-WINDOW-CONTROL";
+    description
+      "O-RU supports independent U-plane transmission window per endpoint.
+
+       If this feature is not supported then for all endpoints with transmission control enabled
+       (see u-plane-transmission-control/transmission-window-control) must be configured for transmission
+       window offsets and window sizes that coincide for each symbol.
+
+       If INDEPENDENT-TRANSMISSION-WINDOW-CONTROL feature is not supported then all endpoints with
+       transmission control enabled that handle the same carrier type and SCS must be configured
+       (via M-plane or C-plane) with parameter values resulting in transmission windows that coincide
+       between the endpoints. That is, for every symbol N, the effective transmission window for symbol N
+       must be shared (start at the same time and end at the same time) by all the endpoints handling
+       same carrier type and SCS. This restriction applies only to endpoints that have transmission
+       control enabled.
+
+       If INDEPENDENT-TRANSMISSION-WINDOW-CONTROL feature is supported then restriction described
+       above does not apply and a different transmission window (window offset and window size)
+       can be used for every endpoint capable of transmission window control.";
+  }
+
+  feature EXT-ANT-DELAY-CONTROL {
+    description
+      "This feature indicates that the O-RU supports external antenna delay control";
+  }
+
+  feature CPLANE-MESSAGE-PROCESSING-LIMITS {
+    description
+      "Feature to indicate O-RU limitation of C-Plane message processing. Refer CUS-Plane specification
+      section 'O-RU C-Plane message limits' for more details on this feature.";
+  }
+}

@@ -1,0 +1,44 @@
+<!ELEMENT FTICalibrationRx (RxOpenLoop+)>
+<!ATTLIST FTICalibrationRx version CDATA #REQUIRED>
+<!ATTLIST FTICalibrationRx country CDATA #IMPLIED>
+<!ATTLIST FTICalibrationRx facility CDATA #IMPLIED>
+<!ATTLIST FTICalibrationRx operator CDATA #IMPLIED>
+<!ATTLIST FTICalibrationRx xmlns:html CDATA "http://www.w3.org/TR/REC-html40">
+<!ATTLIST FTICalibrationRx xmlns:xinclude CDATA "http://www.w3.org/2001/XInclude">
+
+<!ELEMENT RxOpenLoop (Path,Date,LinearTemperatureCompensation,FrequencyBand+)>
+<!ATTLIST RxOpenLoop comment CDATA #IMPLIED>
+
+<!ELEMENT Path (#PCDATA)*>
+<!ELEMENT Version (#PCDATA)*>
+<!ELEMENT Date (#PCDATA)*>
+
+<!ELEMENT LinearTemperatureCompensation (Coefficient)>
+
+<!ELEMENT Coefficient (#PCDATA)*>
+<!ATTLIST Coefficient units CDATA #IMPLIED>
+
+<!ELEMENT FrequencyBand (Upper,Lower,IFDSA,FrequencyTable+)>
+<!ATTLIST FrequencyBand comment CDATA #IMPLIED>
+
+<!ELEMENT FrequencyTable (Frequency,Temperature,Point+)>
+<!ATTLIST FrequencyTable comment CDATA #IMPLIED>
+
+<!ELEMENT Frequency (#PCDATA)>
+
+<!ELEMENT Upper (#PCDATA)>
+
+<!ELEMENT Lower (#PCDATA)>
+
+<!ELEMENT IFDSA (#PCDATA)>
+
+<!ELEMENT Temperature (#PCDATA)>
+
+<!ELEMENT Point (RFDSA,dBFS2dBm)>
+
+<!ELEMENT RFDSA (#PCDATA)>
+
+<!ELEMENT dBFS2dBm (#PCDATA)>
+
+<!ELEMENT xinclude:include EMPTY>
+<!ATTLIST xinclude:include href CDATA #REQUIRED>

@@ -1,0 +1,595 @@
+module o-ran-software-management {
+  yang-version 1.1;
+  namespace "urn:o-ran:software-management:1.0";
+  prefix o-ran-swm;
+
+  import ietf-inet-types {
+    prefix "inet";
+    revision-date 2013-07-15;
+  }
+
+  import ietf-hardware {
+    prefix "hw";
+  }
+
+  import o-ran-hardware {
+    prefix "o-ran-hw";
+  }
+
+  import o-ran-file-management {
+    prefix "o-ran-fm";
+  }
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines operations and configuration for the management of software packages.
+    This module is derived out of opencpe-firmware-mgmt@2014-02-06.yang
+
+    Copyright 2019 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2019-07-03" {
+    description
+      "version 1.0.2
+
+      1) backward compatible changes to correct sFTP Server Authentication .
+      2) simplifying file management and authentication to reuse from o-ran-file-management module
+      3) minor fixes according to lack of descriptions
+      4) removal of not used grouping
+      5) backward compatible changes to introduce groupings.";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+  revision "2019-02-04" {
+    description
+      "version 1.0.0
+
+      1) imported model from xRAN
+      2) changed namespace and reference from xran to o-ran";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+  // groupings
+
+  grouping slot-group {
+    description
+      "Contains information about each software slot and its content.";
+    list software-slot {
+      key name;
+      min-elements 2;
+
+      description
+        "Information about available software-slots and their software.";
+
+      leaf name {
+        type string;
+
+        description
+          "Name of the software package. This shall be unique to identify the software-slot.";
+      }
+
+      leaf status {
+        type enumeration {
+          enum VALID {
+            description
+              "Slot Contains software build considered as proven valid";
+          }
+          enum INVALID {
+            description
+              "software build is not currently used by O-RU. The software is considered by O-RU as damaged (e.g. wrong CRC)";
+          }
+          enum EMPTY {
+            description
+              "W slot does not contain software package.";
+          }
+        }
+        config false;
+        mandatory true;
+
+        description "Indicates the status of the software slot";
+      }
+
+      leaf active {
+          type boolean;
+      must "../status = 'VALID'";
+        config false;
+          description
+            "informs if software stored in particular slot is activated at the moment";
+      }
+
+      leaf running {
+          type boolean;
+      must "../status = 'VALID'";
+        config false;
+          description
+            "informs if software stored in particular slot is used at the moment";
+      }
+
+      leaf access {
+        type enumeration {
+          enum READ_ONLY {
+            description
+              "slot intended only for factory software,
+              activation of such software slot means getting back to factory defaults";
+          }
+          enum READ_WRITE {
+            description
+              "slot used for updating software";
+          }
+        }
+        default READ_WRITE;
+        config false;
+
+        description
+          "Indicates the writability of the slot.
+          A Read-Only software slot is one which has a factory installed software-slot";
+      }
+
+      leaf product-code {
+        type leafref {
+        path "/hw:hardware/hw:component/o-ran-hw:product-code";
+        }
+        config false;
+
+        description "product code provided by the vendor, specific to the product. This is derived from manifest file.";
+      }
+
+      leaf vendor-code {
+        type string {
+          length 1..2;
+        }
+        config false;
+
+        description
+          "Unique code of the vendor. This is derived from manifest file.";
+      }
+
+      leaf build-id {
+        type string;
+        config false;
+
+        description
+          "Identity associated with the software build. This is derived from manifest file.";
+      }
+
+      leaf build-name {
+        type string;
+        config false;
+
+        description
+          "Name of the build. This is derived from manifest file.";
+      }
+
+      leaf build-version {
+        type string;
+        description "The vendor-specific version string of the software build.";
+      }
+
+      list files {
+        key "name";
+        config false;
+
+        description "List of all the files present in the software package.";
+
+        leaf name {
+          type string;
+
+          description
+            "Name of the file installed in the slot.";
+        }
+
+        leaf version {
+          type string;
+
+          description
+            "Version of the file installed in the slot";
+        }
+        leaf local-path {
+          type string;
+          mandatory true;
+
+          description
+            "Complete path of the file stored locally";
+        }
+
+        leaf integrity {
+          type enumeration {
+            enum OK {
+              description "OK - indicates that file integrity is correct";
+            }
+            enum NOK {
+              description "NOK - indicates corrupted file";
+            }
+          }
+          config false;
+
+          description
+            "Result of the file integrity check (checksum calculation) during installation.";
+        }
+      }
+    }
+  }
+
+  grouping download-input {
+    description
+      "Grouping for sw download rpc input";
+    leaf remote-file-path {
+      type inet:uri;
+      mandatory true;
+      description
+        "URI of the software image including username.
+        The following format is possible:
+        sftp://<username>@<host>[:<port>]/path";
+    }
+
+    uses o-ran-fm:credential-information;
+  }
+
+  grouping download-output {
+    description
+      "Grouping for sw download rpc output";
+    leaf status {
+      type enumeration {
+        enum STARTED {
+          description
+            "Operation has been started without error.";
+        }
+        enum FAILED {
+          description
+            "Operation cannot be started because of error, more detailed information can be found in error-message.";
+        }
+      }
+      mandatory true;
+
+      description
+        "Status of the software files download";
+    }
+    leaf error-message {
+      when "../status = 'FAILED'";
+      type string;
+
+      description
+        "Detailed error Message when the status is failed.";
+    }
+
+    leaf notification-timeout {
+      type int32;
+      units seconds;
+      default 30;
+
+      description
+        "Notification timeout is the time NETCONF client shall
+        wait for a 'download-event' notification from O-RU. If there is no
+        'download-event' notification received within notification-timeout,
+        NETCONF client shall assume the download timeout/failure, and follow necessary steps.";
+    }
+  }
+
+  grouping install-input {
+    description
+      "Grouping for sw installation rpc input";
+    leaf slot-name {
+      type leafref {
+        path "/software-inventory/software-slot/name";
+        }
+      must "/software-inventory/software-slot[name = current()][active = 'false' and running = 'false']" {
+        error-message "software-install may be requested only against active::false and running::false slot!";
+      }
+      mandatory true;
+
+      description
+        "software-slot to which the software shall be installed to.";
+    }
+
+    leaf-list file-names {
+      type string;
+
+      description
+        "Names of the files within software package to be installed";
+    }
+  }
+
+  grouping install-output {
+    description
+      "Grouping for sw installation rpc output";
+    leaf status {
+      type enumeration {
+        enum STARTED {
+          description
+            "Operation has been started without error.";
+        }
+        enum FAILED {
+          description
+            "Operation cannot be started because of error, more detailed information can be found in error-message.";
+        }
+      }
+      mandatory true;
+
+      description
+        "Status of the software package install.";
+    }
+    leaf error-message {
+      when "../status = 'FAILED'";
+      type string;
+
+      description
+        "Detailed error Message when the status is failed.";
+    }
+  }
+
+  grouping activate-input {
+    description
+      "Grouping for sw activation rpc input";
+    leaf slot-name {
+      type leafref {
+        path "/software-inventory/software-slot/name";
+      }
+      must "/software-inventory/software-slot[name = current()][status = 'VALID']" {
+        error-message "software activation may be requested only on VALID slot!";
+      }
+      mandatory true;
+
+      description
+        "Slot name on which software has to be activated.";
+    }
+  }
+
+  grouping activate-output {
+    description
+      "Grouping for sw activation rpc output";
+    leaf status {
+      type enumeration {
+        enum STARTED {
+          description
+            "Operation has been started without error.";
+        }
+        enum FAILED {
+          description
+            "Operation cannot be started because of error, more detailed information can be found in error-message.";
+        }
+      }
+      mandatory true;
+
+      description
+        "Status of the software files activation";
+    }
+    leaf error-message {
+      when "../status = 'FAILED'";
+      type string;
+
+      description
+        "Detailed error Message when the status is failed.";
+    }
+
+    leaf notification-timeout {
+      type int32;
+      units seconds;
+      default 30;
+
+      description
+        "Timeout on client waiting for the activate event";
+    }
+  }
+
+  grouping download-notification {
+    description
+      "Grouping for notification event structure for download completion";
+    leaf file-name {
+      type string;
+      mandatory true;
+
+      description
+        "File name of downloaded software package";
+    }
+
+    leaf status {
+      type enumeration {
+        enum COMPLETED {
+          description
+            "Operation completed succesfully";
+        }
+        enum AUTHENTICATION_ERROR {
+          description "source available, wrong credentials";
+        }
+        enum PROTOCOL_ERROR {
+          description "SFTP errors";
+        }
+        enum FILE_NOT_FOUND {
+          description "source not available.";
+        }
+        enum APPLICATION_ERROR {
+          description "Application related errors";
+        }
+        enum TIMEOUT {
+          description "Timeout waiting for download";
+        }
+      }
+
+      description
+        "Status of finished operation execution";
+    }
+    leaf error-message {
+      when "../status != 'COMPLETED'";
+      type string;
+
+      description
+        "Detailed description of faulty situation";
+    }
+  }
+
+  grouping install-notification {
+    description
+      "Grouping for notification event structure for installation completion";
+    leaf slot-name {
+      type leafref {
+        path "/software-inventory/software-slot/name";
+      }
+
+      description
+        "Name of the slot to which software was installed.";
+    }
+    leaf status {
+      type enumeration {
+        enum COMPLETED {
+          description
+            "Operation completed succesfully";
+        }
+        enum FILE_ERROR {
+          description "operation on the file resulted in in error, disk failure, not enough disk space,
+                      incompatible file format";
+        }
+        enum INTEGRITY_ERROR {
+          description "file is corrupted";
+        }
+        enum APPLICATION_ERROR {
+          description "operation failed due to internal reason";
+        }
+      }
+
+      description
+        "Status of finished operation execution";
+    }
+    leaf error-message {
+      when "../status != 'COMPLETED'";
+      type string;
+
+      description
+        "Detailed description of faulty situation";
+    }
+  }
+
+  grouping activation-notification {
+    description
+      "Grouping for notification event structure for activation completion";
+    leaf slot-name {
+      type leafref {
+        path "/software-inventory/software-slot/name";
+      }
+
+      description
+        "Name of the slot which was activated";
+    }
+
+    leaf status {
+      type enumeration {
+        enum COMPLETED {
+          description
+            "Operation completed succesfully";
+        }
+        enum APPLICATION_ERROR {
+          description
+            "Operation finished with error, more details can by found in error-message";
+        }
+      }
+
+      description
+        "Status of finished operation execution";
+    }
+    leaf return-code {
+      type uint8;
+
+      description
+        "status code return when the software is tried to activate";
+    }
+    leaf error-message {
+      when "../status != 'COMPLETED'";
+      type string;
+
+      description
+        "Detailed description of faulty situation";
+    }
+  }
+
+  // top level container
+
+  container software-inventory {
+    config false;
+    description
+      "Contains information about each software slot and its content.";
+
+    uses slot-group;
+
+  }
+    // rpc statements
+
+  rpc software-download {
+    description
+      "Rpc needed to perform software download operation.";
+
+    input {
+      uses download-input;
+    }
+    output {
+      uses download-output;
+    }
+  }
+
+  rpc software-install {
+    description
+      "Install a previously downloaded software package.";
+
+    input {
+      uses install-input;
+    }
+    output {
+      uses install-output;
+    }
+  }
+
+  rpc software-activate {
+    description
+      "Activate a previously installed software.";
+    input {
+      uses activate-input;
+    }
+    output {
+      uses activate-output;
+    }
+  }
+
+    // notification definitions
+  notification download-event {
+    description "Notification event structure for download completion";
+    uses download-notification;
+
+  }
+
+  notification install-event {
+    description "Notification event structure for installation completion";
+    uses install-notification;
+  }
+
+  notification activation-event {
+    description "Notification event structure for activation completion";
+    uses activation-notification;
+  }
+}

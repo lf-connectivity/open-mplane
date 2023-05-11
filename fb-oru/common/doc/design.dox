@@ -1,0 +1,3214 @@
+/**
+\mainpage Common OS and Data Services Component Design Document
+\anchor _home
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+This document is a design overview document for the collection of classes that
+makeup the common data and operating system type services available to the
+radio application developer.
+
+Details of the design and the use of its classes can be found in the
+documentation pages under the <b>Related Pages</b> tab.
+
+Table of Contents
+
+\ref common_datatype_sec_2
+\n
+\ref common_page_socketdesign_sec_4_5
+\n
+\ref common_page_taskdesign_sec_5
+\n
+\ref common_page_servicedesign_sec_9
+\n
+\ref common_page_initialisedesign
+\n
+\ref common_page_logdesign_11
+\n
+\ref common_page_faultdesign_sec
+\n
+\ref observer_subject_template_sec
+\n
+\ref common_page_imagemanagement
+\n
+\ref common_page_dvdesign_sec_14_1
+\n
+\ref common_page_tifioctl_sec_15_1
+\n
+\ref common_delay_overview
+\n
+\ref common_page_calmanagement
+\n
+\ref common_page_queuebuffer
+\n
+\ref common_page_appoptions
+\n
+\ref common_page_ssdp
+\n
+\ref common_page_bootenv
+\n
+\ref common_page_test
+\n
+
+
+<hr>
+<hr>
+\section common_datatype_sec_2 datatype Software Module Class Design
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The datatype software module has implementation of a number of useful
+data types for use in the C++ environment.
+
+<hr>
+\subsection common_datatype_sec_2 Overview of Frequency Class Design
+<hr>
+The Mplane::Frequency class provides data encapsulation for an unsigned long integer
+type that is used to store the frequency data in Hz. The class then provides
+a number of functions and operators that allow the frquency to be used
+as a standard variable type.
+
+The major benefit of this class are that it forces the use of an unsigned int
+constant data type to initialise its value and conversion to other frequency units
+is provided through its functional interface.
+
+<hr>
+\subsection sec_2_1 Overview of Power Class Design
+<hr>
+The Mplane::Power class provides data encapsulation for a floating point
+type that is used to store the power data in dBm. The class then provides
+a number of functions and operators that allow the power to be used
+as a standard variable type.
+
+The major benefit of this class are that it forces the use of a floating point
+constant data type to initialise its value and conversion to other power units
+is provided through its functional interface.
+
+Power can be set and got in Watts as well as the default dBm.
+
+<hr>
+\subsection common_datatype_sec_4 Overview of Standard Data Types Design
+<hr>
+
+A number of type definition are provided that represent particular but sizes,
+these can where necessary be changed for a particular hardware platform.
+
+It also defines a standard Mplane::ReturnType class, with well defined popular
+return values.
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_socketdesign_sec_4_5 Socket Handling Module
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+
+The socket handling module contains a number of wrapper classes and base implementations
+that encapsulate the IP socket communications facilities as described in POSIX 2001.1.
+They can be used to create a multi-threaded socket connection environment using
+the functionality of the Mplane::Task class.
+
+<hr>
+\subsection common_page_socketdesign_sec_4_5 Overview of the Socket Design
+<hr>
+The Mplane::Socket class is a simple wrapper for the widely used socket interface. Its
+implemetation provides methods that allow it to be used as the foundation for
+both server and client based connections.
+
+The concrete implementation of Mplane::SockerServer is used to listen for connections on a given
+socket port, as new connections are accepted the server finds an available Mplane::SocketHandler
+to take care of the new connection. The socket handler is a base class that must be extended and
+the sub class must implement the Mplane::SocketHandler::handler() method. Here is
+an example handler derived from the unit test environment:
+
+@code
+
+class EchoSocketHandler: public SocketHandler
+{
+public:
+    EchoSocketHandler():
+       mConnected(false), mThereWasAnException( false )
+    {
+    }
+
+    ~EchoSocketHandler()
+    {
+    }
+
+protected:
+
+    virtual int handler()
+    {
+        mConnected = true;
+        mThereWasAnException = false;
+
+        while (mConnected)
+        {
+            try
+            {
+                std::string data;
+                *this >> data;      // simply echo back what we recieved
+                *this << data;
+            } catch (SocketException& e)
+            {
+                std::cout << " TestServerHandler Exception caught:" << e.description() << std::endl;
+                mThereWasAnException = true;
+                mConnected = false;
+             }
+        }
+        if( mThereWasAnException )
+            return ERROR;
+        return 0;
+    }
+
+    bool mConnected;
+    bool mThereWasAnException;
+
+};
+
+
+@endcode
+
+After the Mplane::SocketServer is created the handler is added to the server before the
+server is started, the following example handles three echo handlers:
+
+@code
+
+    //
+    // Create a new socket server on port 6001 and allow up to 3 connections, priority 0=middle for diddle
+    //
+    SocketServer* server = new SocketServer(6001, 3, 0);
+
+    server->addSocketHandlers( new EchoSocketHandler() );
+    server->addSocketHandlers( new EchoSocketHandler() );
+    server->addSocketHandlers( new EchoSocketHandler() );
+
+    server->start();
+
+@endcode
+
+The Mplane::SocketClient is a simple socket client connection base class, again it must be sub-classed
+and the Mplane::SocketClient::handler() method must be implemented by the final concrete implementation.
+Here is a simple example dervice from the unit test code base:
+
+@code
+
+class SimpleSocketClient: public SocketClient
+{
+public:
+    SimpleSocketClient( int port ) :
+        SocketClient("localhost", port, 0),
+        mConnected(false),
+        mThereWasAnException(false)
+    {
+    }
+    ~SimpleSocketClient()
+    {
+    }
+
+    void doClose()
+    {
+        mConnected = false;
+    }
+
+protected:
+
+    virtual int handler()
+    {
+        mConnected = true;
+        while (mConnected)
+        {
+            std::string reply;
+            std::string input = "";
+
+            cout << "Please enter text to send to server:\n>";
+            getline(cin, input);
+            try
+            {
+                *this << input;
+                *this >> reply;
+                mReplyRecvd = true;
+            } catch (SocketException& e)
+            {
+                std::cout << mName << " exception caught:" << e.description() << std::endl;
+                mThereWasAnException = true;
+                mConnected = false;
+            }
+
+            std::cout << mName << "Server echoed: " << reply << std::endl;
+
+            if (reply != mName) // check they are the same, exit if incorrect.
+            {
+                mConnected = false;
+            }
+        }
+        if( mThereWasAnException )
+            return ERROR;
+        return 0;
+    }
+
+private:
+    bool mConnected;
+    bool mThereWasAnException;
+    const char *mName;
+};
+
+@endcode
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_taskdesign_sec_5 The Task Module
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The task module contains a number of wrapper classes that encapsulate the
+functionality of popular POSIX standards such as threads, mutex and conditionals.
+
+<hr>
+\subsection common_page_taskdesign_sec_5 Task Design
+<hr>
+The Mplane::Task class wraps the basic functionality of a POSIX thread, allowing that
+thread to be associated with an instance of the task object. The main thread
+loop must be implemented by the inheriting class. The thread will run until it
+returns from the Mplane::Task::run method, at which point the thread will be destroyed
+and the object associated with it deleted.
+
+The Mplane::Task class is ideal for creating temporary objects that must perform some
+work in their own context and then stop and clean up once they have finished.
+
+@code
+using namespace Mplane
+class MyCount100: public Task
+{
+private:
+    int count;
+
+protected:
+    virtual int run()
+    {
+        while( count < 100 )
+        {
+            yield();    // let someone else run
+        }
+        return 0;
+    }
+public:
+    MyCount100(): count(0)
+    {
+    }
+}
+@endcode
+
+
+<hr>
+\subsection common_page_taskdesign_sec_6 Mutex Design
+<hr>
+The Mplane::Mutex class simply wraps the POSIX thread mutex. It provides a simple
+lock mechanism that can prevent more than one task trying to access the
+data of another task until it is safe to do so. The Mplane::Mutex class includes
+a RAII Mplane::Mutex::Lock class that can be used to automatically unlock the Mplane::Mutex on return
+from a mutex locked function. Here is a simple example:
+
+@code
+using namespace Mplane
+class SomeClass: public Task
+{
+private:
+    Mutex mutex;
+protected:
+    SomeData someData;
+public:
+    void getSomeData(SomeData &yourData)
+    {
+        Mutex::Lock lock( &mutex );   // obtain lock
+        yourData = someData;
+    }                                 // as stack is pooped lock is deleted, which unlocks mutex
+};
+@endcode
+
+
+<hr>
+\subsection common_page_taskdesignsec_7 RecursiveMutex Design
+<hr>
+The Mplane::RecursiveMutex class simply wraps the POSIX thread recursive mutex. It provides
+a reentrent lock mechanism, so threads that end up recursively calling themselves
+for data continue to be granted the lock and the lock count is incremented. On
+return the unlock decrements the lock count until zero when the thread finishes
+with the lock. The Mplane::RecursiveMutex class includes a RAII Mplane::RecursiveMutex::Lock
+class that can automatically unlock the mutex when it goes out of context on return.
+
+<hr>
+\subsection common_page_taskdesign_sec_8 Conditional Design
+<hr>
+The Mplane::Conditional class simply wraps the POSIX thread conditional variable type
+and an associated lock mutex. This simple wrapper allows the owning thread
+to wait for the delivery of a signal that indicates some data is available. The
+waiting thread wakes up lock the conditional mutex, processes the data, unlocks
+the mutex and return to the wait state. The Mplane::Conditional class includes
+a RAII Mplane::Conditional::Lock class that can automatically unlock its
+mutex when it goes out of context on return.
+
+The Condtional is put to good use in the main loop of the Mplane::Service::run method.
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_servicedesign_sec_9 The Service Module
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The service module contains a base class that should to be used
+by all radio services, that is, any logical collection of functionality within
+the radio that must execute in a context thread in order to perform timed
+and stateful actions.
+
+The fundamental component of the service module is the Mplane::Service base class. This
+class inherits from the Mplane::Task class that provides its basic thread operation. The
+Service class adds some common control and state rules that will allow the service
+to be controlled by the Radio Control Process using the IService interface.
+
+<hr>
+\subsection common_page_servicedesign_sec_9 Service Class Design
+<hr>
+
+The Mplane::Service class is to be used as the base class for all radio services
+created and controlled by the radio control process. It has an interface that allows
+its operation to be easily controlled. The controls comply with the
+standard control interface expected by the radio control process.
+The Mplane::Service class extends the Mplane::Task class that provides a context thread
+in which the service will execute.
+
+@see \ref common_page_taskdesign_sec_5
+
+The Mplane::Service base class contains a pure virtual method Mplane::Service::service, that
+must be implemented by the inheriting task in order to do the work provided
+by the service.
+
+Below is a simple example CounterService. After creation it stays in the
+Mplane::Service::ServiceCreated state until its Mplane::Service::start method is called.
+The start method calls the protected Mplane::Service::registerObservers method, which can be overriden
+by the actual implementation should the service have any observer notifications
+that it requires to be registered here.
+
+After this the service enters the Mplane::Service::ServiceRunning state and the
+Mplane::Service::run() method is executed in the context of the Task thread.
+The run method is an infinite loop that calls the Mplane::Service::service method at
+the selected service update rate, which by default is every second.
+
+The service can be temporarily frozen using the Mplane::Service::suspend method, after
+which the Mplane::Service::service method is no longer called. Calling the Mplane::Service::resume
+method will restart the service calls.
+
+Some services, such as our example can support the Mplane::Service::reset method by
+implementing and overriding the Mplane::Service::doReset method.
+
+@code
+using namespace Mplane
+class CounterService : public Service
+{
+public:
+    CounterService()
+    {
+        count = 0;
+        doneRegObs = false;
+    }
+
+    virtual ~CounterService()
+    {
+    };
+
+    int getCount()
+    {
+        return count;
+    }
+
+    int count;
+
+    bool doneRegObs;
+
+protected:
+    virtual bool service()
+    {
+        count++;
+    }
+    virtual void doReset()
+    {
+        count = 0;
+    }
+    virtual bool registerObservers()
+    {
+        // not interested in observing others.
+    }
+
+};
+@endcode
+
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_servicesmonitor_sec_9 The Service Module
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+
+The services monitor task supplements the functionality of both the Mplane::Service
+and the Mplane::Task classes by providing a means to monitor their health through
+a software watchdog. There is also a low priority watchdog task that starts the
+Linux kernel watchdog, if the low priority task fails to run the watchdog will
+time out and the system will reboot. This is to protect against the system being starved of resources.
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_initialisedesign Initialise Base Class
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+Initialise is a base class that provides common initialisation tasks such as
+storing start and end times of the initialisation procedure.
+
+This class forms a base class for all radio software modules to use,
+so that a radio controlling software module that controls the tasks
+instantiation and initialisation sequence can be assured of consistent
+interface behaviour from all software subsystems.
+
+Post initialisation, the getter methods can be used to get some history that
+is retained for the duration of the radio existence.
+
+<hr>
+\subsection common_page_initialisedesignsec_10 Design
+<hr>
+
+The Mplane::Initialise class is to be used as the base class for all
+radio software modules that require initialising, created and controlled by the
+radio control process.
+After instantiation the Mplane::Initialise::_initialise() method must be called in order to
+perform the initialisation sequence. The actual application specific
+initialisation is done by implementing the pure virtual Mplane::Initialise::doInit() method.
+
+The implementation of Initialise will ensure that it is a once-only
+operation, multiple attempts to initialise will fail with return type
+ReturnType::RT_ALREADY_INITIALISED.
+
+
+An example of how a user would use this interface is:
+\code
+#include "GlobalTypeDefs.h"
+class TestInitialise : public Initialise
+{
+public:
+    virtual ReturnType::State _initialise();
+};
+
+ReturnType::State TestInitialise::_initialise()
+{
+    if (isInitComplete())
+    {
+        return ReturnType::RT_ALREADY_INITIALISED;
+    }
+
+    setInitStartTime();
+    ReturnType::State result;
+    std::string* resultString = new std::string();
+
+    result = ReturnType::RT_OK;
+    *resultString = "INITIALISED OK";
+
+    setInitResult(result);
+    setInitResultString(resultString);
+    setInitComplete();
+    setInitEndTime();
+    setInitDurationTime();
+
+    delete resultString;
+
+     return result;
+}
+\endcode
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_logdesign_11 Logging Base Class
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The logging framework provides for both debug (trace log) logging used during investigation of problems, as well as a means of recording
+events (event log) and periodic data (data log).
+
+The framework provides an interface to generate these logs without regards to the details of how the logs are created and maintained. This
+allows different products to provide their own logging mechanism (for example persistent storage etc) as necessary without affecting
+the application code.
+
+The most basic logger will use the standard Linux syslog mechanism.
+
+____
+\subsection common_page_logdesign_ssec_11_1 Requirements
+____
+
+A summary list of requirements for the logging system are:
+
+- ability to set the debug level on a per instance basis, a per group basis, or a global basis
+- provide at least 3 levels of debug (none, normal, verbose)
+- Have any loggable object automatically register itself with a single list of all loggable objects to enable manipulation of the debug settings
+- When loggable object is created, specify an instance name and a group name which are then used dur log level setting
+- Duplicate instance names will automatically be made unique (by appending an appropriate count)
+- provide interface to support ALU ARD0546 logging:
+	- trace (debug) logging routed to separate storage area
+	- interface to create event logging
+	- event logging routed to another separate storage area
+	- interface to create periodic data logging
+	- periodic data logging routed to another separate storage area
+- Provide the logging objects through a factory to make it easy to implement new logging schemes
+- Initial logging scheme to log everything to syslog
+
+Required test interface commands to support these requirements are:
+- .system.log.XXX - Provides commands that modify the logging
+- .system.log.show - Show the list of loggable objects registered along with their instance and group names
+- .system.log.set level=[off|normal|verbose] name=<name> group=<group name>  - Set the debug level of objects. If no group or name specified sets global level
+- .system.log.forward host=<ip>  - Forward logging to specified ip
+
+____
+\subsection common_page_logdesign_sec_11_2 TIF commands for setting logging parameters
+____
+The TIF is used as the access path for users and testers to modify the logging parameters.
+
+The available commands are in the <i>system/log</i> directory on the TIF port, see extract below.
+
+
+~~~~~~~~~~~~
+/->ls /system/log
+
+console=no                                                  # Output to console as well as log
+forward="10.15.161.10"                                      # Copy logging to specified machine (name or ip)
+set(ENUM(Off:Normal:Verbose) level,                         # Set the debug log level for all entries, a group of entries, or a specific entry
+  [STRING name],
+  [STRING group])
+show()                                                      # Show current logging levels
+
+Status=OK
+~~~~~~~~~~~~
+
+### console ###
+
+Enables or disable logging to the console. This repeats logging to the initial console when the application was started. Default operation
+is to output to the serial console, but if you restart the application in a telnet session then all output will go to that telnet session.
+
+### forward ###
+
+Enable or disable log forwarding to another machine. Setting the forward host name to "-" (or "off" or "no") will disable forwarding. To
+enable forwarding set this to the hostname or ip of the target machine. When enabled all log lines will be forwarded to that machine.
+
+It then depends on the application's implementation of the logger as to what this forwarding actually entails. For the basic syslog logger
+this means forwarding the syslog information as UDP packets to port 514 of the target machine.
+
+NOTE: On the target machine you need to set up your syslog to allow it to accept these packets and add them to the machine's syslog.
+
+On Ubuntu and Centos6 they use rsyslog. The easiest means of enabling remote logging is to create a file <b>/etc/rsyslog.d/local-receive-udp.conf</b> :
+~~~~~~~~~~~
+# provides UDP syslog reception
+$ModLoad imudp
+$UDPServerRun 514
+~~~~~~~~~~~
+
+Then restart the rsyslogd service
+
+### set ###
+
+Used to set the debug logging level. Log levels are controlled either globally, per group, or per instance. Use the <b>show</b> command (below) to get a
+view of the current settings and the names used.
+
+There are 3 levels of debug logging: <b>off</b>, <b>normal</b>, or <b>verbose</b>.
+
+Setting debug level to <b>normal</b> causes all normal debug logs to be generated. Setting the level to <b>verbose</b> also shows normal debug logs
+but adds additional logs deemed by the developer as verbose.
+
+If you set a level without any instance or group name then that level will be applied to <b>all</b> objects:
+~~~~~~~~~~
+/system/log->set off
+Status=OK
+~~~~~~~~~~
+
+Setting a level with a name applies the level to just that instance:
+~~~~~~~~~~
+/system/log->set verbose System_Task
+Status=OK
+~~~~~~~~~~
+
+If you specify a group name then all objects in that group will have their level set as specified:
+~~~~~~~~~~
+/system/log->set normal group=ST
+Status=OK
+~~~~~~~~~~
+
+### show ###
+
+This command shows the current logging levels of all the loggable instances, along with the group each instance is in:
+
+~~~~~~~~~~
+/system/log->show
+Status=OK Info="
+-- Loggable Objects List --
+Name                          Group     Level
+----                          -----     -----
+AdcAD9434                     DV        Off
+AdcAD9613                     DV        Off
+Alarm                         AL        Off
+...
+System_Task-1                 ST        Normal
+System_Task-2                 ST        Normal
+System_Task-3                 ST        Normal
+System_Task-4                 ST        Normal
+TaskList                      SY        Off
+TxDac                         DV        Off
+TxDac-1                       DV        Off
+Unnamed_Task                  TK        Off
+"
+~~~~~~~~~~
+
+____
+\subsubsection common_page_logdesign_sec_11_3 Developer Guidelines
+____
+
+The main thing the developer needs to do if they want to make their object loggable is to derive their class from Mplane::Loggable:
+~~~~~~~~~~
+class ImageBase : public IImage, public Loggable
+{
+public:
+    // Constructor
+	ImageBase(ImageTask& task, const std::string& name) ;
+
+	// Destructor
+	virtual ~ImageBase() ;
+
+	...
+};
+~~~~~~~~~~
+
+The object constructor then needs to provide the Mplane::Loggable constructor with the object's instance name and it's group name:
+~~~~~~~~~~
+ImageBase::ImageBase(ImageTask& task, const std::string& name) :
+	Loggable(name, "IMG"),
+	...
+~~~~~~~~~~
+
+The name and group are then used by the logging framework to allow setting log levels by instance or group.
+
+As stated in the TIF section, there are 3 debug log levels: *off*, *normal*, or *verbose*.
+
+In the code, these levels are provided for by calling the Mplane::ILoggable methods:
+~~~~~~~~~~
+	// Log the string if debug log level is greater than or equal to "normal" setting
+	// @param debugStr String to log
+	//
+	virtual void logDebugNormal(const std::string& debugStr) =0 ;
+
+	// Log the string if debug log level is greater than or equal to "verbose" setting
+	// @param debugStr String to log
+	//
+	virtual void logDebugVerbose(const std::string& debugStr) =0 ;
+
+	// Log the string if debug log level is greater than or equal to "normal" setting, with string formatting
+	// @param fmt Format string
+	//
+	virtual void logDebugNormal( char const* fmt, ... )
+
+	// Log the string if debug log level is greater than or equal to "verbose" setting, with string formatting
+	// @param fmt Format string
+	//
+	virtual void logDebugVerbose( char const* fmt, ... )
+
+~~~~~~~~~~
+
+So both a simple string argument or a C-printf formatted interface are provided for creating debug logs. Depending on what the
+log level is for this instance, the log strings will then be passed down to the logging driver.
+
+To provide for the event log requirements (mainly derived from ALU ARD0546), the Mplane::ILoggable interface defines:
+~~~~~~~~~~
+	// log a data event (e.g. an ARD command)
+	//
+	virtual void eventData(const std::string& eventStr)
+
+	// log informational event
+	//
+	virtual void eventInfo(const std::string& eventStr)
+
+	// log a warning
+	//
+	virtual void eventWarning(const std::string& eventStr)
+
+	// log a non-fatal error
+	//
+	virtual void eventError(const std::string& eventStr)
+
+	// log a fatal error (and terminate)
+	//
+	virtual void eventFatal(const std::string& eventStr)
+
+	// log a data event (e.g. an ARD command)
+	//
+	virtual void eventData( char const* fmt, ... )
+
+	// log informational event
+	//
+	virtual void eventInfo( char const* fmt, ... )
+
+	// log a warning
+	//
+	virtual void eventWarning( char const* fmt, ... )
+
+	// log a non-fatal error
+	//
+	virtual void eventError( char const* fmt, ... )
+
+	// log a fatal error (and terminate)
+	//
+	virtual void eventFatal( char const* fmt, ... )
+
+	// log a fatal error with extra debug information (and terminate)
+	//
+	virtual void eventFatal( char const* filename, int line, unsigned long errNumber, char const* fmt, ... )
+
+~~~~~~~~~~
+
+And to provide for the periodic data logging (which are still TBD in ARD0546), the Mplane::ILoggable interface defines:
+~~~~~~~~~~
+	// log an hourly data event
+	// @param dataSource	Name of data source
+	// @param dataStr		String to log
+	//
+	virtual void dataHourly(const std::string dataSource, const std::string& dataStr)
+
+	// log a daily data event
+	// @param dataSource	Name of data source
+	// @param dataStr		String to log
+	//
+	virtual void dataDaily(const std::string dataSource, const std::string& dataStr)
+
+
+~~~~~~~~~~
+
+____
+\subsubsection common_page_logdesign_sec_11_4 Design Details
+____
+
+@image html logging-design.png "Logging Class Hierarchy"
+
+The diagram above shows the class hierarchy of the logging framework. Every object that wishes to log information must derive from
+Mplane::Loggable to make it loggable. Internally, all loggable objects will access the log "files" via a log driver Mplane::ILogger.
+
+A factory mechanism is provided to create instances of the appropriate logger object. Each product has it's own requirements for how
+the underlying log "files" will be habdled, so each product must provide a logger class (derived from Mplane::ILogger) which implements
+the interactions that store the log information into the logging "files" (or whatever is required).
+
+Note that every ILogger instance actually derives from Mplane::LoggerBase. This provides the basic functionality required of all ILogger
+classes (i.e. get the instance name and group name etc).
+
+As each loggable object is created, it is automatically registered in a list (via Mplane::LogList) which then provides Mplane::Loggable
+with the means of changing and checking the log level for each instance.
+
+Note that if multiple objects are created with the same loggable instance name, then the name is made unique by appending "-N" where N is
+the next available integer number. If no name is specified then it defaults to "unnamed". Similarly, if no group name is specified then
+it defaults to "GLOBAL".
+
+Also, any spaces used in the instance name or group are converted into underscores ('_'). This ensures that, at the test interface, the
+user can specify the names.
+
+Talking of the test interface, all test commands that affect the logging framework <b>must</b> be routed through the Mplane::ILoggable
+interface. The actual Loggable instance may well then forward these requests to the appropriate object to perform the action.
+
+
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_faultdesign_sec Fault Module
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The 'fault' module provides a set of base classes which together form the
+basis of the radio fault handling logic.
+
+All radio software modules that detect and raise faults must use these base
+classes.
+
+
+<B>General Guidelines for Developers</B>\n
+These guidelines show how radio software should use the fault base classes.
+See the details below in \ref common_page_faultdesign_sec_12.
+
+The fault handling design has no feature specific content as it constitutes a set
+of base software functionality that is used by all software modules that
+perform actual feature implementation.
+
+Its main purpose is to provide a generic way of handling hardware faults within
+and propogating them to the radio application software for handling,
+recording and/or reporting to higher controlling entities.
+
+
+See the design details in the following sections.
+
+Refer to the radio application services for details on how the application would use the underlying generic Fault design.
+
+
+<hr>
+\subsection common_page_faultdesign_sec_12 Details of Fault Design
+<hr>
+
+This section details the classes that make up the radio fault handling system.
+- Mplane::Fault A general purpose radio fault class.\n
+- Mplane::FaultsList: A class that keeps a list of all the faults that are created. It will be implemented as
+ globally accessible data in namespace AAGlobal\n
+- Mplane::IFaultOwner A general purpose class interface for a fault owner\n
+
+<hr>
+\subsubsection common_page_faultdesign_sec_12_1 Fault Objects
+<hr>
+A Fault is defined in Mplane::Fault.
+
+A fault is typically something that indicates the status of a hardware
+condition. eg. Temperature, Synthesiser lock.\n
+Software modules will implement logic to detect the occurrences of the
+hardware conditions and use the Fault objects as a way to indicate the
+hardware condition to whoever might be interested.\n
+The interested parties will react to the hardware fault condition in many ways
+depending on the severity of the fault and according to system and customer
+requirements. The reaction to a fault is not the concern of the Fault object.
+
+<hr>
+\subsubsection common_page_faultdesign_sec_12_2 Fault Owners
+<hr>
+A Fault Owner is defined as an interface in Mplane::IFaultOwner.
+
+A fault owner is a software module that implements logic to monitor and/or
+detect the occurrences of hardware conditions and it interfaces to Fault objects
+as a way to indicate the hardware condition to whoever might be interested.\n
+
+A fault owner is a class that must inherit from IFaultOwner. It takes ownership
+of one or more faults by calling the Mplane::Fault::addOwner() method.
+
+A fault owner is responsible for detecting and raising faults but is not
+interested in the system response to the faults being raised or cleared.
+
+
+<hr>
+\subsection common_page_faultdesign_sec_12_3 Fault Handlers and Alarm Handling
+<hr>
+Fault handling and Alarm handling are synonymous, and the terms can be used interchangibly.
+
+The alarm handling design and implementation is in the 'application software' domain.\n
+
+Refer to the radio application design for more details.\n
+
+
+<hr>
+\subsection common_page_faultdesign_sec_12_4 Fault Creation and Initialisation
+<hr>
+At initialisation (power-on bringup) and before the application entry point
+is executed there are no fault objects or fault lists created.
+The global data (in namespace AAGlobal) allocates space in memory in
+preparation for the data when the objects do get created.
+
+The fault objects constructors are executed at the point where the faults are globally declared, which means that
+the global faults are instantiated before the application is started.\n
+
+During the execution of each Fault object's constructor it must add itself to the faults list:\n
+eg.
+\code
+    // ... other Fault() constructor code...
+
+    // Add the fault object to the global fault list and save its index into the list
+    mFaultListIndex = AAGlobal::gFaultsList.add(this);
+\endcode
+
+During the application initialisation the fault owners will take ownership of
+their faults and the fault handler(s) will register their interest with the faults, to be notified when the fault
+condition changes state.
+
+<hr>
+\subsection common_page_faultdesign_sec_12_5 Fault Reset and Restart Procedure
+<hr>
+The fault handling system provides a 'reset' mechanism, so that the higher
+controlling software can reset the faults.
+The reasons for triggering the reset procedure depend on the system requirements
+and is not part of this design.
+
+The Fault object provides a method Mplane::Fault::reset() to reset the fault to its initial state.\n
+
+The FaultsList reset implementation must ensure that all faults in the list
+are instructed to perform a reset.
+At the end of the reset procedure all faults will be in their initial state.
+<hr>
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section observer_subject_template_sec Observer/Subject Module
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The common include file Observer.hpp provides template class implementations that
+provide a base implementation of an Observer and Subject class as defined by
+standard design patterns.
+
+Being an Mplane::Subject enables an object to service multiple Mplane::Observer
+objects with complete type safety. The Mplane::Subject uses a Mutex to ensure
+thread safe access to the observer list.
+
+An Observer attaches to a Subject via the Mplane::Subject::attach() method, and when
+the Subject's Mplane::Subject::notify() method is called each of the attached
+Observers is called through its Mplane::Observer::update() method.
+
+The user is free to use the Observer/Pattern in any way they find useful but
+the following example indicates how the templates can be used with multiple
+pure virtual interface that can be used to derive a final concrete class that implements
+them. This is the recommneded implementation for both vrh and vrs interfaces.
+
+<hr>
+\subsection observer_subject_template_sec_1 Observer/Subject Example
+<hr>
+
+By way of example we will create a hypothetical temperature fault class that provides
+an interface for high temperature conditions and another for low.
+
+There will be two Observers of the temperature fault class, one will use both
+high and low, the other just the low temperature interface.
+
+First the interfaces that define our <b>Subject</b>s
+
+\code
+#include "Observer.hpp"
+
+class IHiTempFault: public Mplane::Subject< IHiTempFault >
+{
+public:
+    virtual bool high() = 0;
+    virtual bool critical() = 0;
+protected:
+    virtual ~IHiTempFault();
+};
+
+class ILoTempFault: public Mplane::Subject< ILoTempFault >
+{
+public:
+    virtual bool low() = 0;
+    virtual bool warmup() = 0;
+protected:
+    virtual ~ILoTempFault();
+};
+\endcode
+
+As we can see these are pure virtual interface classes that implement the Subject
+template using their own type, they contain no data or implementation.
+
+So now lets create an object that will implement both these interfaces/subjects:
+
+\code
+class TempFault: public IHiTempFault,  public ILoTempFault
+{
+public:
+    static TempFault& getInstance()  // implement a singleton method to create the object
+    {
+        static TempFault* tempFault = new TempFault();
+        return *tempFault;
+    }
+
+    virtual bool high(){ return mHigh; }
+    virtual bool critical() { return mCritical; }
+    virtual bool low(){ return mLow; }
+    virtual bool warmup(){ return mWarmup; }
+
+    /* Tell the high temperature fault observers of the change */
+    void changeHigh()
+    {
+        dynamic_cast<IHiTempFault *>(this)->notify();  // make sure we call the right subject class
+    }
+
+    /* Tell the high temperature fault observers of the change */
+    void changeLow()
+    {
+        dynamic_cast<ILoTempFault *>(this)->notify();  // make sure we call the right subject class
+    }
+
+    void setHigh( bool high)
+    {
+        if( mHigh != high)
+        {
+            mHigh = high;
+            changeHigh();  //tell observers of the change
+        }
+    }
+
+    void setCritical( bool critical)
+    {
+        if( mCritical != critical)
+        {
+            mCritical = critical;
+            changeHigh();  //tell observers of the change
+        }
+    }
+
+    void setLow( bool low)
+    {
+        if( mLow != low)
+        {
+            mLow = low;
+            changeLow();  //tell observers of the change
+        }
+    }
+
+    void setWarmup( bool warmup)
+    {
+        if( mWarmup != warmup)
+        {
+            mWarmup = warmup;
+            changeLow();  //tell observers of the change
+        }
+    }
+
+protected:
+    TempFault(): mHigh(false), mCritical(false), mLow(false), mWarmup(false){}
+    virtual ~TempFault(){}
+
+private:
+    bool mHigh, mCritical, mLow, mWarmup;
+};
+\endcode
+
+Now create static methods to return a reference to each subject that uses the TempFault singleton.
+
+\code
+static IHiTempFault& getHiTempFaultItf()
+{
+    return TempFault::getInstance();
+}
+static ILoTempFault& getLoTempFaultItf()
+{
+    return TempFault::getInstance();
+}
+\endcode
+
+Now the <b>Observer</b>s.
+
+We will create two temperature fault observers, one that is interested in
+any temperature fault and another that is just interested in the low temperature
+fault.
+
+\code
+class TempFaultObs: public Mplane::Observer<IHiTempFault>, public Mplane::Observer<ILoTempFault>
+{
+public:
+    TempFaultObs(): mHigh(false), mCritical(false), mLow(false), mWarmup(false)
+    {
+        getHiTempFault().attach( *this ); // register this as observer of high temperature faults
+        getLoTempFault().attach( *this ); // register this as observer of low temperature faults
+    }
+    virtual ~TempFaultObs()
+    {
+        getHiTempFault().detach(*this);
+        getLoTempFault().detach(*this);
+    };
+    virtual void update(HiTempFaultIf& subject)
+    {
+        mHigh = subject.high();
+        mCritical = subject.critical();
+    }
+    virtual void update(LoTempFaultIf& subject)
+    {
+        mLow = subject.low();
+        mWarmup = subject.warmup();
+    }
+private:
+   bool mHigh, mCritical, mLow, mWarmup;
+};
+
+class LoTempObs: public Mplane::Observer<ILoTempFault>
+{
+public:
+    LoTempObs(): mLow(false), mWarmup(false)
+    {
+        getLoTempFault().attach( *this ); // register this as observer of low temperature faulrs
+    }
+    virtual ~LoTempObs()
+    {
+        getLoTempFault().detach(*this);
+    };
+    virtual void update(LoTempFaultIf& subject)
+    {
+        mLow = subject.low();
+        mWarmup = subject.warmup();
+    }
+private:
+   bool mLow, mWarmup;
+};
+
+\endcode
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_imagemanagement Image Management Design
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+Image management is the functional area within the radio that ensures that access to the software images
+is done in a controlled and atomic manner.
+
+Details of the image management is in the following subsections.
+
+<hr>
+\section common_page_imagemanagement_sec_13 Details of Image Management
+<hr>
+
+\subsection common_page_imagemanagement_ssec_13_1 Requirements
+<hr>
+
+A summary list of requirements for the image manage system are:
+
+- ability to set the fixed server url once, or as part of download command
+- install tarball by full name (uses server url to download and unpack package)
+- install tarball by version/build (derive package name)
+- check tarball against MD5 checksum before installing
+- manage current/previous links when installing
+- install test fpga tarball (use TEST link)
+- manage clean out of old tarballs (keeping latest files)
+- manage clean out of fpga test tarballs
+- install OS tarball into bank1 or bank2
+- optionally install u-boot
+- automatically clean out old tarballs if not enough space to download new image
+- Don't download file if tarball already exists and passes checksum
+- Don't download file if tarball contents already exists in any tarball and passes checksum, and contents match checksums
+- Install by setting 'current' link to point to current tarball, 'previous' link to previous value of 'current' link
+
+Required test interface commands to support these requirements are:
+- .image.XXX - Provides commands that affect all image types
+- .image.set server={url}	- Set the server url
+- .image.clean	- Clean out all but latest tarballs from all images.
+- .image.show - Displays information on all image types
+- .image.get file={filename} - Download and install package by filename
+- .image.get version={ver} build={number} - Download and install package by version and build number
+
+- .image.app.XXX - Provides commands that affect app images
+- .image.app.clean	- Clean out all but latest app tarballs from app type images.
+- .image.app.get file={filename} - Download and install app type test image by filename
+- .image.app.get version={ver} build={number} - Download and install app type test image by version and build number (sets TEST link)
+- .image.app.show - Display information about current files for app type
+
+- .image.lib.XXX - Provides commands that affect lib images
+- .image.lib.clean	- Clean out all but latest tarballs from lib type images.
+- .image.lib.get file={filename} - Download and install lib type test image by filename
+- .image.lib.get version={ver} build={number} - Download and install lib type test image by version and build number (sets TEST link)
+- .image.lib.show - Display information about current files for lib type
+
+- .image.os.XXX - Provides commands that affect os images
+- .image.os.get file={filename} bank={1|2} u-boot={yes|no} - Install os into bank1 or bank2. Also update u-boot (yes or no).
+- .image.os.get version={ver} build={number} bank={1|2} u-boot={yes|no} - Install os into bank1 or bank2. Also update u-boot (yes or no).
+- .image.os.show - Display information about current files for os type
+
+- .image.fpga.XXX - Provides commands that affect fpga images
+- .image.fpga.clean	- Clean out all fpga tarballs
+- .image.fpga.get file={filename} - Download and install fpga type test image by filename (sets TEST link)
+- .image.fpga.get version={ver} build={number} - Download and install fpga type test image by version and build number (sets TEST link)
+- .image.fpga.show - Display information about current files for fpga type
+
+\subsection common_page_imagemanagement_ssec_13_2 Test Interface Operations
+<hr>
+
+This section describes the test interface commands implemented for image management, both for official customer
+release as well as general lab use.
+
+<b>.image</b>
+
+The commands/variables under .image are intended for package releases (i.e. for customer use) and for general
+display of current settings.
+
+The first variable to set up is the 'url' which defines the site from which all images will be fetched.
+
+@code
+/->.image.url http://swin-11/~guest/test_files/images/
+@endcode
+
+Optionally you can also change the OS-specific settings 'bank' and 'uboot' - set bank to the memory bank you want to install
+a new OS to (aas BANK1 or BANK2), and set the uboot flag to yes or no to confirm whether u-boot should be overwritten or not.
+
+@code
+/->.image.bank bank2
+/->.image.uboot yes
+@endcode
+
+There are two variants on the use of the 'install' command: specify full filename, or specify the version and build number.
+
+With the first you need to specify the complete filename (including extension). This is primarily provided for loading special
+test builds. The second option uses the current build information along with the values specified in order to determine the
+correct filename to use.
+
+@code
+/-> .image.installFile FTU-0.0-35.pkg
+/-> .image.install version=0.0 build=35
+
+# or
+
+/-> .image.install 0.0 35
+
+@endcode
+
+The package management is intelligent in that it only downloads and installs those files that are not already present.
+
+NOTE: If the OS needs to be updated, this can take a few minutes.
+
+You can display the current installation by using the 'show' command:
+
+@code
+->.image.show
+Status=OK Info="
+PKG        : FTU-sprice-244.pkg
+APP        : ETNA-AXIS-FTU-TDD-CPRI-sprice-244-APP.tgz
+LIB        : ETNA-AXIS-FTU-TDD-CPRI-sprice-244-LIB.tgz (ETNA-AXIS-FTU-TDD-CPRI-sprice-243-LIB.tgz)
+OS         : [PIMAGE1] os.149-sprice.tgz.md5, [DTB1] os.149-sprice.tgz.md5
+"
+@endcode
+
+For a more detailed view of the state of all of the different image types use 'showDetail':
+
+@code
+/->.image.showDetail
+Status=OK Info="
+STATUS: Idle
+
+== PKG Image ==
+
+Current Settings:
+  Install Dir.........: /nandflash/pkg-images
+  Server URL..........: http://10.15.20.11/~sprice
+
+Links:
+  current.............: FTU-sprice-244.pkg
+  previous............: FTU-sprice-243.pkg
+
+Contents:
+  FTU-sprice-240.pkg
+  FTU-sprice-240.pkg.md5
+  FTU-sprice-241.pkg
+  FTU-sprice-241.pkg.md5
+  FTU-sprice-242.pkg
+  FTU-sprice-242.pkg.md5
+  FTU-sprice-243.pkg
+  FTU-sprice-243.pkg.md5
+  FTU-sprice-244.pkg
+  FTU-sprice-244.pkg.md5
+
+== App Image ==
+
+Current Settings:
+  Install Dir.........: /nandflash/app-images
+  Server URL..........: http://10.15.20.11/~sprice
+
+Links:
+  current.............: ETNA-AXIS-FTU-TDD-CPRI-sprice-244-APP.tgz
+  previous............: ETNA-AXIS-FTU-TDD-CPRI-sprice-243-APP.tgz
+
+Contents:
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-237-APP.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-237-APP.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-240-APP.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-240-APP.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-241-APP.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-241-APP.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-242-APP.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-242-APP.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-243-APP.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-243-APP.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-244-APP.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-244-APP.tgz.md5
+
+== Lib Image ==
+
+Current Settings:
+  Install Dir.........: /nandflash/lib-images
+  Server URL..........: http://10.15.20.11/~sprice
+
+Links:
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-241-LIB.tgz....................: ETNA-AXIS-FTU-TDD-CPRI-sprice-240-LIB.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-244-LIB.tgz....................: ETNA-AXIS-FTU-TDD-CPRI-sprice-243-LIB.tgz
+  current.............: ETNA-AXIS-FTU-TDD-CPRI-sprice-244-LIB.tgz
+  previous............: ETNA-AXIS-FTU-TDD-CPRI-sprice-243-LIB.tgz
+
+Contents:
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-234-LIB.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-234-LIB.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-240-LIB.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-240-LIB.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-242-LIB.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-242-LIB.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-243-LIB.tgz
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-243-LIB.tgz.md5
+  ETNA-AXIS-FTU-TDD-CPRI-sprice-243-LIB.tgz.md5list
+
+== OS Image ==
+
+Current Settings:
+  Install Dir.........: /nandflash/os-images
+  Server URL..........: http://10.15.20.11/~sprice
+  Bank................: BANK1
+  U-Boot Install......: no
+
+Links:
+  dtb1................: os.149-sprice.tgz.md5
+  pImage1.............: os.149-sprice.tgz.md5
+
+== FPGA Image ==
+
+Current Settings:
+  Install Dir.........: /nandflash/fpga-images
+  Server URL..........: http://10.15.20.11/~sprice
+
+"
+@endcode
+
+In order to save space, run the 'clean' command which cleans out the unused images from all image types.
+
+<b>.image.app</b>
+
+Used for installing just application images.
+
+Use the same 'install' and 'installFile' format as for packages only here you must specify an APP image tarball. The 'clean' command cleans out only the
+application images area, and the 'show' command shows the detail information just for application images.
+
+<b>.image.lib</b>
+
+Used for installing just library images.
+
+Use the same 'install' and 'installFile' format as for packages only here you must specify an LIB image tarball. The 'clean' command cleans out only the
+library images area, and the 'show' command shows the detail information just for library images.
+
+<b>.image.os</b>
+
+Used for installing just OS images.
+
+Use a similar 'get' format as for packages only here you must specify an OS image tarball. Otherwise you only specify
+the build number (there is no version). The 'clean' command cleans out only the
+OS images area, and the 'show' command shows the detail information just for library images.
+
+The OS image uses the .image settings 'bank and 'uboot' to determine which bank is installed and whether to install u-boot
+
+<b>.image.fpga</b>
+
+Used for installing fpga test images.
+
+Use the same 'installFile' format as for packages only here you must specify an FPGA image tarball. The 'clean' command cleans out only the
+fpga images area, and the 'show' command shows the detail information just for fpga images.
+
+Note that fpga images loaded via this command are marked as 'TEST' and running either this 'clean' command or the .image.clean
+will <b>always</b> delete any test fpga images.
+
+
+\subsection common_page_imagemanagement_ssec_13_3 Image Links
+<hr>
+
+<b>app-images</b>
+
+The app-images area uses the links 'current' and 'previous' to point to the latest install tarball and the previous install.
+
+The 'clean' command will delete any files not linked to, so will normally delete everything not current/previous. However, you
+can manually override this (for testing) by creating a link to a file you want to keep. Note that you are then responsible
+for removing the link and deleting the file when you're finished.
+
+<b>lib-images</b>
+
+Like app-image, lib-images also uses the 'current' and 'previous' links.
+
+However, in addition the lib-images also links equivalent tarballs to minimise downloads. Normally the library package contents
+change seldom, even though there will be a new tarball created for every build. The application detects library file equivalents and
+will create a link to an existing file rather than download a new copy. So, in the lib-images directory, you are likely to see
+a number of tarballs which are actually links rather than files.
+
+The lib-images version of 'clean' understands this process and will correctly only clear out files and links when they are no longer
+necessary.
+
+You will see an indication of library equivalence when running '.image.show', it will show the currently installed library
+and will show in brackets what file actually provides the functionality (if an equivalent is being used):
+
+@code
+->.image.show
+Status=OK Info="
+PKG        : FTU-sprice-244.pkg
+APP        : ETNA-AXIS-FTU-TDD-CPRI-sprice-244-APP.tgz
+LIB        : ETNA-AXIS-FTU-TDD-CPRI-sprice-244-LIB.tgz (ETNA-AXIS-FTU-TDD-CPRI-sprice-243-LIB.tgz)
+OS         : [PIMAGE1] os.149-sprice.tgz.md5, [DTB1] os.149-sprice.tgz.md5
+"
+@endcode
+
+In the above example build 244 is instaleld but is actually just a link to build 243.
+
+<b>fpga-images</b>
+
+Any tarballs stored in the fpga-images directory are for test purposes only, since the real fpga is included with the aplication
+tarball.
+
+A 'TEST' link is used to link to a test image which causes the board boot script to use this image in preference to the
+normal application image.
+
+Running any 'clean' will, however, delete all test images.
+
+<b>os-images</b>
+
+In order to minimise storage space used in the flash, OS tarballs are not stored (since they are eventually stored in NOR
+flash any way). However, in order to allow the application to track which files are installed (and where), we keep the MD5
+file for any installed OS images in the os-images directory. Then various links are employed, linking to the appropriate file,
+so that the application can determine the versions of the OS images installed in NOR:
+
+\li u-boot - links to the version of u-boot installed
+\li pImage1, pImage2 - links to the version of boot code installed in banks 1 and 2 respectively
+\li dtb1, dtb2 - links to the version of DTB installed in banks 1 and 2 respectively
+
+
+\subsection common_page_imagemanagement_ssec_13_4 Design Detail
+<hr>
+
+\image html imageMgr.png "Image Management Class Hierarchy"
+
+The image management software is built around the base interfaces IImage which defines the interface for a single image class,
+and IImageManagement which defines the interface to the image management system.
+
+The test interface only accesses methods via these interfaces, getting a singleton of the IImageManagement.
+
+Both interfaces are implemented by concreate classes ImageBase and ImageManagement respectively in the common library. ImageBase
+provides all of the default behaviour for downloadings and installing images. The derived class AppImage, LibImage, OsImage, and
+FpgaImage add specific behaviour for application, library, OS, and fpga images respectively.
+
+The derived class PkgImage is a special case which understands downloading the package text file, reading that file's contents
+and then using those contents to control install via the other objects (I'll describe this in more detail after introducing
+the ImageManagement class).
+
+In overall control is the ImageManagement class which, when it's created, will create a single instance of each of the above
+IImage classes. The ImageManagement class is designed to be a singleton.
+
+So, when the ImageManagement class receives a request to install a particular image type (application, library, package etc)
+it just forwards this request on to the appropriate Image object it keeps. Similarly, when a request come in that affects all
+image types, the ImageManagement object will pass that request to all of it's IImage objects (for example, setting the server
+url, or requesting an overall 'clean').
+
+As stated above, the PkgImage object is special in that in has to manage multiple image types to install the package. It does this
+by requesting an instance of IImageManagement object from the singleton factory and then uses the object via this interface. In this
+manner, PkgImage can request the ImageManagement concrete instance to install application, library and OS images by forwarding
+the requests to the concreate IImage objects. PkgImage does this without any knowledge or dependency on the ImageManagement class or the
+AppImage/LibImage/OsImage classes.
+
+The LibImage class also uses another helper class Md5List. This provides methods to read an md5list file and to compare
+files. Using this class LibImage can then determine whether two library images are equivalent (saving it from having to download multiple
+copies with the same content).
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_dvdesign_sec_14_1 Data Variant
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The Mplane::DataVariant class is a single class that can represent variables of any of the following types:
+
+\li <b>INT</b> - Decimal or hex integer. An argument can be entered as hex by prefixing the value with '0x'
+\li <b>FLOAT</b> - Floating point value
+\li <b>STRING</b> - A string
+\li <b>BOOL</b> - Boolean value (can be 'true' or 'false')
+\li <b>ENUM</b> - An enumerated type (see below for details)
+\li <b>UINT</b> - Unsigned integer
+\li <b>LONG</b> - Long integer (64 bit)
+\li <b>DOUBLE</b> - Double precision floating-point (64 bit)
+\li <b>FREQ</b> - Frequency (an instance of Mplane::Frequency)
+\li <b>POWER</b> - Power (an instance of Mplane::Power)
+
+There are a number of ways of creating a DataVariant, most of which determine the correct type to use based onn the
+initialisation. One method is to supply a names and an initial value of the correct type:
+
+@code
+    DataVariant* viA = new DataVariant("viA","12");		// "viA" is an integer 12
+    DataVariant* viB = new DataVariant("viB","this");	// "viB" is a string "this"
+    DataVariant* viC = new DataVariant("viC",16384);	// "viC" is an integer 16384
+    DataVariant* viD = new DataVariant("viD",16.384);	// "viD" is a float 16.384
+    DataVariant* viE = new DataVariant("viE",20.6f);	// "viE" is a float 20.6
+    DataVariant* viF = new DataVariant("viF","99.998");	// "viF" is a float 99.998
+    DataVariant* viX = new DataVariant("viX","0xFF");	// "viX" is an integer 255
+@endcode
+
+Another method is to provide a name=value string:
+
+@code
+    DataVariant dvs = DataVariant("string=test it");	// "string" is a string "test it"
+    DataVariant dvi = DataVariant("integer=12");		// "integer" is an int 12
+    DataVariant dvf = DataVariant("float=32.0");		// "float" is a float 32.0
+    std::string vp = "hex=0xC0DE";
+    DataVariant *dvh = new DataVariant(vp);				// "hex" is an int 0xCODE
+@endcode
+
+There are a couple of other constructor methods, both using std::string rather than char*. These are more detailed in
+that they allow you to specify the DataVariant type specifically:
+
+@code
+    DataVariantBase(const std::string& name, const std::string& type );
+    DataVariantBase(const DataVariantBase::Type& type, const std::string& name, const std::string& value = "" );
+@endcode
+
+These are necessary if you want to create an enumerated type (see @ref common_page_dvdesign_sec_14_1_3), or an array
+(see @ref common_page_dvdesign_sec_14_1_5).
+
+Examples of their use are:
+
+@code
+	// create enumerated variable 'e1'
+	DataVariant e1(std::string("e1"), std::string("ENUM(LTE5:LTE10:LTE15:LTE20)")) ;
+
+	// create array variable 'vec1' that is an array of integers
+	DataVariant vec1(std::string("vec1"), std::string("INT[]")) ;
+@endcode
+
+When a DataVariant is created without any value or type then it starts with the special type of 'NONE'. This leaves it
+open to take on the type of the first value it is set to. You can get the current Mplane::DataVariant::Type or a string
+version of the type using the following methods:
+
+@code
+	// Start with unset value
+	DataVariant dv ;
+
+	// Get type == Mplane::DataVariant::None ;
+	Mplane::DataVariant::Type type = dv.getType() ;
+
+	// Get string version ("NONE")
+	std::string typeStr = dv.getTypeStr() ;
+
+	// Set the value
+	dv.set(123) ;
+
+	// now Mplane::DataVariant::Int type ("INT")
+	type = dv.getType() ;
+	typeStr = dv.getTypeStr() ;
+@endcode
+
+You can also see whether a variable is 'unset' (i.e. has no value assigned to it, or in the 'undefined'/'unknown' state)
+by using the Mplane::DataVariant::isSet() method:
+
+@code
+	// Start with unset value
+	DataVariant dv ;
+
+	// set = false
+	bool set = dv.isSet() ;
+
+	// Set the value
+	dv.set(123) ;
+
+	// set = true
+	set = dv.isSet() ;
+
+@endcode
+
+
+\subsection common_page_dvdesign_sec_14_1_0 Type-specific set/get methods
+<hr>
+
+Along with the common methods to set values from string, integer, float, there are also type-specific access methods. Each
+methods is of the form 'setX' and 'toX' to set or get type X respectively.
+
+For example, to set or get a Frequency value you can use:
+
+@code
+	Frequency freq(123.0, Frequency::KHz) ;
+	bool ok = dv.setFreq( freq ) ;
+
+	freq = dv.toFreq() ;
+@endcode
+
+Note that the Freq and Power types internally handle all units, removing the need for extra code in the TIF helpers. So, this
+old XML and tif helper code:
+
+@code
+	<Function name="getFreq" comment="Get Tx port frequency value">
+		<Args>
+			<Data type="INT" comment="Tx port index" min="1" max="${NUM_TX_PORTS}">index</Data>
+		</Args>
+		<Return>
+			<Data type="INT" units="kHz">value</Data>
+		</Return>
+	</Function>
+
+	<Function name="setFreq" comment="Set Tx port frequency value">
+		<Args>
+			<Data type="INT" comment="Tx port index" min="1" max="${NUM_TX_PORTS}">index</Data>
+			<Data type="FLOAT" units="kHz">value</Data>
+		</Args>
+	</Function>
+
+
+	void TxPortTestHelper::getFreq( IRtiMsgParser& msgParser, DataVariantList *callList, DataVariantList *returnList )
+	{
+		...
+	        Frequency freq = txPort->getFrequency();
+	        DataVariant* value(returnList->find("value")) ;
+	        value->set( (int)freq.getInt(Frequency::str2unit(value->getUnits()) ) ) ;
+		...
+	}
+
+	void TxPortTestHelper::setFreq( IRtiMsgParser& msgParser, DataVariantList *callList, DataVariantList *returnList )
+	{
+		...
+	        DataVariant* value(callList->find("value")) ;
+	        if (value->isSet())
+	        {
+	            ret = txPort->setFrequency(Frequency(value->toFloat(), Frequency::str2unit(value->getUnits()))) ;
+				...
+	        }
+		...
+	}
+@endcode
+
+Now becomes the simpler:
+
+@code
+	<Function name="getFreq" comment="Get Tx port frequency value">
+		<Args>
+			<Data type="INT" comment="Tx port index" min="1" max="${NUM_TX_PORTS}">index</Data>
+		</Args>
+		<Return>
+			<Data type="FREQ" units="kHz">value</Data>
+		</Return>
+	</Function>
+
+	<Function name="setFreq" comment="Set Tx port frequency value">
+		<Args>
+			<Data type="INT" comment="Tx port index" min="1" max="${NUM_TX_PORTS}">index</Data>
+			<Data type="FREQ" units="kHz">value</Data>
+		</Args>
+	</Function>
+
+
+	void TxPortTestHelper::getFreq( IRtiMsgParser& msgParser, DataVariantList *callList, DataVariantList *returnList )
+	{
+		...
+	        DataVariant* value(returnList->find("value")) ;
+	        value->setFreq( txPort->getFrequency() ) ;
+		...
+	}
+
+	void TxPortTestHelper::setFreq( IRtiMsgParser& msgParser, DataVariantList *callList, DataVariantList *returnList )
+	{
+		...
+	        DataVariant* value(callList->find("value")) ;
+	        if (value->isSet())
+	        {
+	            ret = txPort->setFrequency( value->toFreq() ) ;
+				...
+	        }
+		...
+	}
+@endcode
+
+
+
+
+\subsection common_page_dvdesign_sec_14_1_1 Units
+<hr>
+
+Each Mplane::DataVariant can optionally store a units string. The units actually mean nothing to the DataVariant (the
+units do not affect the value in any way), but they can be stored and retrieved by the calling program. It is the calling
+programs responsibility to manage setting valid units and to interpret the units with the value in a meaningful way.
+
+Note that units can only be used where the base type is INT or FLOAT.
+
+Units can be set directly using a DataVariant method, or can be specified as part of the constructor where the type is
+specified as a std::string.
+
+A DataVariant user can access the current units string using the Mplane::DataVariant::getUnits() method.
+
+@code
+	// Specify units at creation
+	DataVariant dvf(std::string("dvf"), std::string("INT kHz")) ;
+
+	// units changed directly
+	dvf.setUnits("Hz") ;
+
+	// get the units string ("Hz")
+	std::string units = dvf.getUnits() ;
+@endcode
+
+
+\subsection common_page_dvdesign_sec_14_1_2 Optional Variables
+<hr>
+
+In a similar fashion to units (@ref common_page_dvdesign_sec_14_1_1), DataVariant objects have a flag that determines
+whether the variable is optional or not.
+
+This is mainly used when the DataVariant is part of a list used as calling parameters. Here, being optional indicates to
+the application software that the calling variable does not need to be specified.
+
+The optional flag must be set directly using a DataVariant method (though there are convenience functions provided by
+Mplane::DataVariantList that let you specify the units in a string at the same time as specifying the type, see @ref
+common_page_dvdesign_sec_14_2).
+
+A DataVariant user can access the state of the optional flag using the Mplane::DataVariant::isOptional() method.
+
+@code
+	// optional flag changed directly
+	dvf->setOptional(true) ;
+
+	// get the state of the flag
+	bool optional = dvf->isOptional() ;
+@endcode
+
+
+
+\subsection common_page_dvdesign_sec_14_1_3 Enumerated Types
+<hr>
+
+Enumerated type DataVariants can be created by specifying the 'ENUM' type keyword along with the list of valid enumerations
+(each separated by the ':' character). These types can only be created using the special constructor that uses a std::string
+type specifier.
+
+@code
+	DataVariant e1(std::string("e1"), std::string("ENUM(LTE5:LTE10:LTE15:LTE20)")) ;
+    e1.set("LTE15") ;
+    e1.set("LTE20") ;
+@endcode
+
+If you attempt to set an enumerated type with a value that is not a valid enumeration then the variable becomes 'unset'.
+
+@code
+	DataVariant e1(std::string("e1"), std::string("ENUM(LTE5:LTE10:LTE15:LTE20)")) ;
+    e1.set("LTE15") ;
+
+	// set = true
+	bool set = e1.isSet() ;
+
+    e1.set("WCDMA") ;
+
+	// set = false now
+	set = e1.isSet() ;
+
+@endcode
+
+
+\subsection common_page_dvdesign_sec_14_1_4 Bool Types
+<hr>
+
+The BOOL type is reated like a special case on ENUM where the default definition is the same as "ENUM(false:true)" such
+that you can set the variable to true or false and it will behave as expected.
+
+However, to make coding in the application simpler, you can also specify an optional two-value enumeration after the
+'BOOL' keyword which makes the variable respond to these extra values and to only use these values when outputting
+the current value. Whatever you specify as the optional enumeration, the values 'true' and 'false' will also always be
+valid values for setting the variable.
+
+The reason for providing this mechanism is to simplify code where you want a bool to display as, say, on/off, or up/down,
+or any other variant that makes sense to the variable you are providing.
+
+NOTE: Be careful when specifying an enumeration to always make the first entry the FALSE case. It English we usually
+say 'true or false', 'on or off' so it's more natural to specify the true case first. I could have made BOOL act in this
+way, but it makes it inconsistent with ENUM or other programming practices where the lowest value comes first.
+
+@code
+	// Specify a bool for turning TX on or off
+	DataVariant tx(std::string("tx"), std::string("BOOL(off:on)")) ;
+
+	// Can set with 'true/false' or 'on/off'
+	tx.set("false") ;
+	tx.set("on") ;
+
+	// will be true
+	std::cout << tx.isSet() ;
+
+	// will show "tx=on"
+	std::cout << tx.getNameValuePair() ;
+
+	// but trying to use an invalid value...
+	tx.set("up") ;
+
+	// ...results in an unset variable, will be false
+	std::cout << tx.isSet() ;
+
+	// will show "tx="
+	std::cout << tx.getNameValuePair() ;
+
+@endcode
+
+
+\subsection common_page_dvdesign_sec_14_1_5 Data Variant Array
+<hr>
+
+In addition, any variable can be declared as an array by suffixing the type string with '[]' for example:
+
+@code
+	// a single integer
+	DataVariant ival(std::string("ival"), std::string("INT")) ;
+
+	// an array of integers
+	DataVariant iArray(std::string("iArray"), std::string("INT[]")) ;
+@endcode
+
+When a variable is an array, it's contents are set/get with an aditional index variable to index into the array. By
+default the variable contents are shown with each array element taking the variable name followed by the index in brackets:
+
+@code
+	// Set some values
+	iArray.set(0u, 111) ;
+	iArray.set(1u, 222) ;
+	iArray.set(2u, 333) ;
+
+	// print out values: "iArray[0]=111 iArray[1]=222 iArray[2]=333"
+	std::cout << iArray.tx.getNameValuePair() ;
+@endcode
+
+However, for display purposes you can override the displayed name of each element using the variable's setName() method.
+This can be useful for those cases where the default name doesn't convey the required information. For example, reading from
+a series of 16-bit register locations you might want to set the names to the address being read.
+
+@code
+	// Set some names
+	iArray.setName(0u, "first") ;
+	iArray.setName(1u, "second") ;
+	iArray.setName(2u, "third") ;
+
+	// print out values: "first=111 second=222 third=333"
+	std::cout << iArray.tx.getNameValuePair() ;
+
+	// Or setting the value and name together:
+	iArray.set(0u, 111, "first") ;
+	iArray.set(1u, 222, "second") ;
+	iArray.set(2u, 333, "third") ;
+
+@endcode
+
+The array (or more precisely vector) scales to the size of the largest index used to set a value. Any values between index
+0 and this largest index that have not been set will remain marked as 'unset' and will not show any value when printed.
+
+@code
+	DataVariant iArray(std::string("iArray"), std::string("INT[]")) ;
+
+	// Set some values, skip index 1 and 2
+	iArray.set(0u, 111) ;
+	iArray.set(3u, 333) ;
+
+	// print out values: "iArray[0]=111 iArray[1]= iArray[2]= iArray[3]=333"
+	std::cout << iArray.tx.getNameValuePair() ;
+@endcode
+
+Another method is provided to give access to copies of the underlying array of variables: Mplane::DataVariant::getList().
+The method actually returns a std::pair where the first entry is the display name, and the second is the DataVariant variable
+(where the name will be the default initial name with an index suffix).
+
+\subsection common_page_dvdesign_sec_14_1_6 Value Methods
+<hr>
+
+Mplane::DataVariant variables return their value either via access methods that return various types, or via methods that
+convert to a string representation.
+
+@code
+	DataVariant dv("viA","12");
+
+	// get integer: 12
+	int ival = dv.toInt() ;
+
+	// get float: 12.0
+	float fval = dv.toFloat() ;
+
+	// get bool: true
+	bool bval = dv.toBool() ;
+
+	// get string: "12"
+	std::string sval = dv.toString() ;
+
+	// name/value: "viA=12"
+	std::string varval = dv.getNameValuePair() ;
+
+@endcode
+
+Note that the Mplane::DataVariant::getValue() method is essentially the same as the Mplane::DataVariant::toString()
+method, but differs when the variable is a STRING type. Here, the getValue() method will add "quotes" around the value.
+
+
+
+\subsection common_page_dvdesign_sec_14_1_7 State Methods
+<hr>
+
+The current state of the variable is accessed using the following methods:
+
+@code
+	DataVariant dvHex("dvHex","0x12");
+	DataVariant dvInt("dvInt","12");
+	DataVariant dvUnset("dvUnset");
+
+	DataVariant dvOpt("dvOpt","12");
+	dvOpt.setOptional(true) ;
+
+	// Hex
+	// is hex
+	std::cout << dvHex.isHex() ;
+
+	// is not hex
+	std::cout << dvInt.isHex() ;
+
+	// SET
+	// is set
+	std::cout << dvHex.isSet() ;
+
+	// is not set
+	std::cout << dvUnset.isSet() ;
+
+	// OPTIONAL
+	// is optional
+	std::cout << dvOpt.isOptional() ;
+
+	// is not optional
+	std::cout << dvHex.isOptional() ;
+
+@endcode
+
+The following methods either clear the value, retaining the type (Mplane::DataVariant::clear()) or do a complete reset
+of the variable leaving only the name (Mplane::DataVariant::clear()).
+
+
+\subsection common_page_dvdesign_sec_14_2 Data Variant List
+<hr>
+
+The Mplane::DataVariantList class is a class that manages Mplane::DataVariant objects in a list. The main reason for
+using this class is for creating function call argument lists: both the calling arguments and the return variables.
+
+The DataVariant variables contained in a list are created from a specification string. You can also add a previously created
+DataVariant to a list, but note that the DataVariant must be allocated on the heap because the DataVariantList takes control
+of the memory and frees all DataVariants when the list is destroyed.
+
+The DataVariantList specification string is of the form of a comma separated list of individual DataVariant variable
+specifications. A single variable specification is of the form:
+
+@code
+	TYPE NAME=VALUE (UNITS)
+@endcode
+
+Where VALUE and UNITS are optionally specified. Also, the variable specification can be wrapped in [] to mark that variable
+as optional. For example:
+
+@code
+	// Create a list of variables: freq, power, e1, bval
+	// power is optional
+	// e1 is set to an initial value of BB
+	DataVariantList dlist("INT freq (kHz),[FLOAT power (dB)],ENUM(AA:BB:CC) e1=BB,BOOL bval") ;
+@endcode
+
+You can access the variables in a list using the Mplane::DataVariantList::find() method:
+
+@code
+	// get the variable 'freq' from the list and set it's value
+	DataVariant* dvf = dlist.find("freq") ;
+	dvf->set(1234) ;
+
+	// Alternatively
+	dlist.find("freq")->set(1234) ;
+@endcode
+
+\subsection common_page_dvdesign_sec_14_3 Limits
+<hr>
+
+For types INT and FLOAT you can also specify limits, either in the DataVariantList construction string
+or via DataVariant methods used for setting and getting limits.
+
+A limit (implemented in the C++ template Mplane::Limit<T>) contains one or more of: <b>minimum</b>, <b>maximum</b>, and
+<b>step</b>. Currently 'step' is unused (but is meant to set the variable step size, like a frequency raster).
+
+For DataVariantList objects, limits are specified by appending a string of the format "{min..max/step}". If no step
+is specified then the "/step" can be ommited. If min or max are not specified then that value is left empty.
+
+Note that there can be no spaces between the type and the start of the "{min..max/step}" limit specifier. There
+cannot be any spaces within the specifier either.
+
+Some examples of setting limits are shown below:
+
+@code
+	// fval limited to values between 1.1 and 2.5
+	DataVariantList dlist1("FLOAT{1.1..2.5} fval") ;
+
+	// ival limited to values between -1 and 1
+	DataVariantList dlist2("INT{-1..1} ival") ;
+
+	// ival must be greater than or equal to 1
+	DataVariantList dlist3("INT{1..} ival") ;
+
+	// ival must be less than or equal to 10
+	DataVariantList dlist4("INT{..10} ival") ;
+
+	// freq limited to values between 700000 and 2345000
+	// step size (or raster) set to 20 - not currently used
+	DataVariantList dlist5("FLOAT{700000..2345000/20} freq") ;
+
+	// Create DataVariant then set limits using familiar text format
+    DataVariant vi(DataVariant::Float, "vi", "1.0");
+    vi.setLimits("0.0..10.0") ;
+
+@endcode
+
+Once limits have been set, they can be retrieved from the DataVariant:
+
+@code
+    DataVariant vi(DataVariant::Float, "vi", "1.0");
+    vi.setLimits("0.0..10.0") ;
+
+	// Retrieve string representation of limits
+    EXPECT_EQ("0.0", vi.getLimitsMin()) ;
+    EXPECT_EQ("10.0", vi.getLimitsMax()) ;
+    EXPECT_EQ("", vi.getLimitsStep()) ;
+
+@endcode
+
+Limits can also be checked on the DataVariant or on the contents of the DataVariantList:
+
+@code
+	// DataVariant limits checks
+    DataVariantBase vi(DataVariantBase::Float, "vi", "1.0");
+    EXPECT_EQ( vi.getName(), "vi" );
+    EXPECT_TRUE(vi.setLimits("0.0..10.0")) ;
+    EXPECT_TRUE(vi.checkLimits()) ;
+    vi.set("20.0") ;
+    EXPECT_FALSE(vi.checkLimits()) ;
+    vi.set("-1.0") ;
+    EXPECT_FALSE(vi.checkLimits()) ;
+
+	// DataVariantList limits checks
+	DataVariantList dlist1("FLOAT{1.1..2.5} fval,FLOAT{0.0..20.1} fval2") ;
+
+	std::string error ;
+
+	DataVariant* dv = dlist1.find("fval") ;
+	dv->set("3.4") ;
+	EXPECT_FALSE(dv->checkLimits()) ;
+	EXPECT_FALSE(dv->checkLimits(error)) ;
+	EXPECT_EQ("fval greater than maximum 2.5", error) ;
+
+	error = "" ;
+	EXPECT_FALSE(dlist1.checkLimits(error)) ;
+	EXPECT_EQ("fval greater than maximum 2.5", error) ;
+	EXPECT_FALSE(dlist1.checkLimits()) ;
+	EXPECT_EQ("fval greater than maximum 2.5", dlist1.getError()) ;
+
+	dv = dlist1.find("fval2") ;
+	EXPECT_TRUE(dv->checkLimits()) ;
+	dv->set("5.6") ;
+	EXPECT_TRUE(dv->checkLimits()) ;
+	dv->set("51.6") ;
+	EXPECT_FALSE(dv->checkLimits()) ;
+	EXPECT_FALSE(dv->checkLimits(error)) ;
+	EXPECT_EQ("fval2 greater than maximum 20.1", error) ;
+	EXPECT_FALSE(dlist1.checkLimits()) ;
+	EXPECT_EQ("fval greater than maximum 2.5, fval2 greater than maximum 20.1", dlist1.getError()) ;
+
+	dv->set("-51.6") ;
+	EXPECT_FALSE(dv->checkLimits()) ;
+	EXPECT_FALSE(dv->checkLimits(error)) ;
+	EXPECT_EQ("fval2 less than minimum 0", error) ;
+	EXPECT_FALSE(dlist1.checkLimits()) ;
+	EXPECT_EQ("fval greater than maximum 2.5, fval2 less than minimum 0", dlist1.getError()) ;
+
+@endcode
+
+\subsection common_page_dvdesign_sec_14_4 Design Details
+<hr>
+
+For full details of the design architecture and how to extend DataVariant with new types, please see
+<A HREF="../common-DataVariant/index.html" target="_blank">DataVariant Design Document</A>
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_tifioctl_sec_15_1 TIF IoCtl Module
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The test interface (tif) provides the test methods that access class instance methods via those class singletons. In order
+to make the design robust (following best design practices for object oriented design) we always work via a virtual interface
+defined in vrh (or vrs). This means that the test interface only has access to those methods provided in the virtual interface.
+
+Also, the virtual interface methods will (by definition) only consist of the common methods that are non board specific.
+
+\image html tif-ioctl-problem.png
+
+In order to access board-specific methods via the test interface, we need a common, standard interface that can allow
+us access to specific methods in an object, methods that won't be available via the virtual interface and will probably
+only exist for a certain board variant of an object.
+
+\image html tif-ioctl-solution.png
+
+The Mplane::TifIoctl interface provides a mechanism for accessing methods that would normally be unavailable. It provides
+an IOCTL-like interface that consists of a command name along with calling arguments and return arguments. The TifIoctl
+interface manages dispatch of valid commands to the appropriate method in the target object, the object being reposible
+for executing the actual command and providing any required data back to the calling test interface.
+
+\subsection common_page_tifioctl_sec_15_2 Example
+<hr>
+
+A description by example is the easiest means to seeing how this works. The following example provides the Etna carrier
+UL and DL sync status to the test interface. This is done via the Mplane::ICarrierHardwareList interface to an Etna-specific
+carrier hardware list singleton.
+
+We start with the command definition in an xml file:
+
+@code
+	<Function name="getSync" comment="Show sync status of carrier. Output string is stored in Info return variable.">
+		<Args>
+			<Data type="INT" comment="Carrier index">Index</Data>
+		</Args>
+		<Return>
+			<Data type="STRING[]" comment="UL sync values, one per antenna">ulSync</Data>
+			<Data type="STRING[]" comment="DL sync values, one per antenna">dlSync</Data>
+		</Return>
+	</Function>
+
+@endcode
+
+This defines the test function "getSync" that requires a carrier index number. It will then display the UL and DL sync
+status, one status per antenna (note the use of a string array to store each status value per antenna).
+
+We now need to add the Mplane::ITifIoctl interface to the Mplane::EtnaCarrierHardwareList. The actual interface is
+implemented by the template Mplane::TifIoctl which needs to be derived from. You also need to initialise it with
+a pointer to the object that is actually implementing the interface.
+
+In the EtnaCarrierHardware header file:
+@code
+#include "TifIoctl.hpp"
+
+...
+
+class EtnaCarrierHardwareList :
+	public CommonCarrierHardwareList<EtnaCarrierHardware>,
+	public TifIoctl<EtnaCarrierHardwareList>
+{
+	...
+
+    // TifIoctl commands
+
+    //
+    // Gets UL and DL sync status for the carrier on all antennas. DataVariant variables used are:
+    //
+    // Caller:
+    //    INT index	- carrier index
+    // Return:
+    //    STRING[] dlSync - array of strings for DL sync, one per antenna
+    //    STRING[] ulSync - array of strings for UL sync, one per antenna
+    //
+    // Sync string will contain a comma separated list of the sync state
+    //
+    //
+    bool getSync(DataVariantList* callerArgs, DataVariantList* returnArgs) ;
+
+};
+@endcode
+
+In the EtnaCarrierHardware C++ file:
+@code
+
+// Create object - need to construct TifIoctl giving it a reference to this object
+EtnaCarrierHardwareList::EtnaCarrierHardwareList() :
+	CommonCarrierHardwareList<EtnaCarrierHardware>(),
+	TifIoctl<EtnaCarrierHardwareList>(*this)
+{
+	// Register command with TifIoctl
+	registerCommand("getSync", "INT index", "STRING[] ulSync,STRING[] dlSync", &EtnaCarrierHardwareList::getSync) ;
+}
+
+// Method called when "getSync" TifIoctl command executed
+bool EtnaCarrierHardwareList::getSync(DataVariantList* callerArgs, DataVariantList* returnArgs)
+{
+	// Check carrier index
+	int carrierIdx = callerArgs->find("index")->toInt() ;
+	if ((carrierIdx < 0) || ((unsigned)carrierIdx >= size()))
+		throw std::range_error("Carrier index out of range") ;
+
+	// TODO
+
+
+	// return true to indicate success to TifIoctl
+	return true
+}
+@endcode
+
+You can see that the object is constructed and has any TifIoctl commands registered so that the appropriate method can be
+called. The method is registered with DataVariantList specification strings. The first defines the caller arguments, the
+second defines the return arguments.
+
+The TifIoctl ensures that a command is always called with sufficient caller arguments to set all of the expected call
+parameters; and that the returned values fill in all of the expected return variables.
+
+The getSync() method needs to read the sync values using the appropriate Mplane::EtnaCarrierHardware instance, and return
+those values in the return args. The full code for this method is provided below for completeness:
+
+@code
+bool EtnaCarrierHardwareList::getSync(DataVariantList* callerArgs, DataVariantList* returnArgs)
+{
+	int carrierIdx = callerArgs->find("index")->toInt() ;
+	if ((carrierIdx < 0) || ((unsigned)carrierIdx >= size()))
+		throw std::range_error("Carrier index out of range") ;
+
+	// Get the carrier
+	EtnaCarrierHardware *ch = getCarrierHardware(carrierIdx) ;
+
+	// Grab the sync info
+	std::vector< std::set<EtnaCarrierHardware::SyncStatus> > ulSync( ch->getUlSync() ) ;
+	std::vector< std::set<EtnaCarrierHardware::SyncStatus> > dlSync( ch->getDlSync() ) ;
+
+    std::vector< SharedPtr<ITxPort> > txPorts = ITxPortFactory::getPorts( ) ;
+    std::vector< SharedPtr<IRxPort> > rxPorts = IRxPortFactory::getPorts( ) ;
+    unsigned numTx = txPorts.size() ;
+    unsigned numRx = rxPorts.size() ;
+
+    // Create strings
+	for (unsigned ant=0; ant < numRx; ++ant)
+	{
+		returnArgs->find("ulSync")->set(ant, calcSyncStatusString(ulSync[ant])) ;
+	}
+	for (unsigned ant=0; ant < numTx; ++ant)
+	{
+		returnArgs->find("dlSync")->set(ant, calcSyncStatusString(dlSync[ant])) ;
+	}
+
+	return true ;
+}
+
+@endcode
+
+Finally we need to fill in the code in the test interface object (in the file created in tif/ETNA/Model/src).
+
+@code
+void EtnaCarrierTestHandler::getSync(  DataVariantList *callList, DataVariantList *returnList )
+{
+	// Called with:
+	// * INT Index
+	// Returns:
+	// * ENUM(OK:ERROR) Status
+	// * [STRING Info]
+	// * [STRING Message]
+	// * STRING[] ulSync
+	// * STRING[] dlSync
+	//
+
+	// Insert you're code here : %%-->
+	if (!checkCarrierIndex(callList, returnList))
+		return ;
+
+	SharedPtr<ICarrierHardwareList> carrierHardwareList( ICarrierHardwareList::getInstance() ) ;
+
+	// invoke the TifIoctl interface to handle this command
+	SharedPtr<ITifIoctl> tifIoctl = dynamic_pointer_cast<ITifIoctl>(carrierHardwareList) ;
+    tifIoctl->executeCommand("getSync", callList, returnList) ;
+
+	// <--%%
+}
+@endcode
+
+
+First we get the ICarrierHardwareList singleton. We then immediately cast it to an ITifIoctl because we know that the
+actual singleton instance will be an EtnaCarrierHardwareList.
+
+Now we need to set up the DataVariantList objects for calling args and return args. We've actually made our lives easier
+here by ensuring that the calling arguments and return variables for the TifIoctl command match the arguments for the
+test interface function. As they do we can just pass the pointers directly to the executeCommand method and we're done.
+
+Note that the return arguments actually don't execatly match. The test interface always has the extra variables Status,
+Info, and Message provided for feeding back status and information. However, both Info and Message are optional, and Status
+is always provided with a default value. TifIoctl is intelligent enough to know that these return arguments therefore
+do not need to be set and will not complain if the TifIoctl command doesn't set them.
+
+If the arguments needed to be set up by hand, then the following code would be used:
+
+@code
+void EtnaCarrierTestHandler::getSync(  DataVariantList *callList, DataVariantList *returnList )
+{
+	// Insert you're code here : %%-->
+	if (!checkCarrierIndex(callList, returnList))
+		return ;
+
+	SharedPtr<ICarrierHardwareList> carrierHardwareList( ICarrierHardwareList::getInstance() ) ;
+
+	// invoke the TifIoctl interface to handle this command
+	SharedPtr<ITifIoctl> tifIoctl = dynamic_pointer_cast<ITifIoctl>(carrierHardwareList) ;
+
+	// create args and set up the index value
+	DataVariantList callArgs("INT index") ;
+    DataVariantList returnArgs("STRING[] ulSync,STRING[] dlSync") ;
+    callArgs.find("index")->set( callList->find("index")->toInt() ) ;
+
+	// call method
+    tifIoctl->executeCommand("getSync", &callArgs, &returnArgs) ;
+
+	// pass returned values back
+    returnList->find("ulSync")->set( returnArgs.find("ulSync") ) ;
+    returnList->find("dlSync")->set( returnArgs.find("dlSync") ) ;
+
+	// <--%%
+}
+@endcode
+
+Note that it is preferred to write the code such that any errors in assumptions cause an immediate crash so that the code
+can be quickly fixed.
+
+For example, the test method EtnaCarrierTestHandler::getSync is assuming that the TifIoctl "getSync"
+command has the call and return arguments as shown. If that changed so that an argument was removed or renamed, then
+the find() method would return a null pointer and the dereference would crash the program.
+
+Coding in this fashion means we spot errors in assumptions, typos ettc much quicker and get to fix them. If we had coded
+in a defensive manner (for example returning an error message) then we might not immediately recognise the problem.
+
+This also points out that the test interface and TifIoctl object are "coding to contract". By that I mean that there
+is no formal interface that a compiler would be able to determine errors in, but both ends are assuming an interface
+and we code to that. Hence it is more important to spot errors more quickly.
+
+Another point is that we should always write tests that fully check these interfaces to ensure we immediately spot errors.
+Having the program crash means that just sucessfully running the test interface command will check all of our assumptions.
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_delay_overview Delay Module
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+In a radio design there are many instances where a delay must be specified. However, along with the normal seconds based
+delay, there are also delays specified in units of basic frames, UI (related to CPRI line rate), and others.
+
+The <b>Delay</b> class provides a flexible, extensible framework for calculating delays based on equations of mixed units.
+The framework makes it easy to add additional units as required by the application.
+
+\subsection common_delay_design Design
+<hr>
+
+\image html delay.png
+
+The delay framework uses objects derived from IDelayUnit (via DelayUnit) to provide the actual functionality for each
+time unit. IDelayUnit defines the interface for the units, which mainly consists of being able to convert to and from
+nanoseconds. DelayUnit provides some common string conversion functions.
+
+Each delay unit provides the code to convert from a value in it's own units into nanoseconds, or vice versa. The Delay
+class then becomes simply a wrapper for a pointer to an IDelayUnit and adds the comparison and arithmetic operators.
+
+When a new Delay object is created, a value is specified along with an associated IDelayUnit instance that defines it's
+units. In a calulation, the Delay therefore knows it's current units and can use the IDelayUnit pointer to convert from
+the units value into a nanoseconds value if required.
+
+Calculations will try to keep the delay values in their specfied units (to preserve precision). So, if all delays are
+in UI (say) then they will all add/subtract resulting in a UI value. However, if the calculation consists of mixed
+units, then each rhs value will be converted to the units of the lhs value for each pair of calculations:
+
+\image html delay-calc.png
+
+Each pair of values is used in a temporary calculation creating a temporary Delay object. This delay object initially
+copies the value and units of the lhs argument. It then takes the rhs argument, uses the rhs IDelayUnit to convert to
+nanoseconds, then uses it's own IDelayUnit to convert from nanoseconds into the required units and pefroms the arithmetic
+on the resulting value. This repeats for all operators in the equation until we have a single value in the units of the
+first value specified in the equation.
+
+
+\subsection common_delay_create Delay Construction
+<hr>
+
+A delay class derived from Delay needs to specify which DelayUnit classes it supports - i.e. it specifies the valid
+units that a delay can be defined in, and converted to and from.
+
+For example, the EtnaDelay class uses the common DelayUnits (DelayUnitNS, DelayUnitBF, and DelayUnitUI) along with some
+ETNA-specific delays:
+
+@code
+class EtnaDelay : public Delay
+{
+public:
+	// Declare which units we support
+	static const DelayUnitNS& NS ;
+	static const DelayUnitBF& BF ;
+	static const DelayUnitUI& UI ;
+	static const DelayUnitCLK& CLK ;
+	static const DelayUnitCLK128& CLK128 ;
+	static const DelayUnitFPGA& FPGA ;
+	static const DelayUnitFpgaTimer& FpgaTimer ;
+	...
+
+};
+@endcode
+
+Now the Etna delay units will be specified via the EtnaDelay class. Examples are:
+
+@code
+EtnaDelay::NS		// delay in nanoseconds
+EtnaDelay::BF		// delay in basic frames
+...
+@endcode
+
+A Delay is created usually by specifying the delay units. However Delay (or derived classes) are usually created such that
+the default DelayUnit is NS, so these are equivalent constructors defining nanosecond delays:
+
+@code
+Delay a_ns(10) ;	// 10ns delay
+Delay b_ns(20, Delay::NS) ;	// 20ns delay
+@endcode
+
+If a Delay is copy constructed, it takes the units of the RH delay or delay expression:
+
+@code
+Delay a = 30 ; // 30 ns
+Delay b = Delay(40) ; // 40 ns
+Delay c = Delay(50, Delay::BF) ; // 50BF
+@endcode
+
+Arithmetic expressions can either use pre-defined Delay objects or temporary Delay objects created in the expression:
+
+@code
+Delay ns(10) ;
+Delay bf(10, Delay::BF) ;
+Delay sum = ns + bf + Delay(20) ; // sum is a Delay in ns = 10ns + 10BF + 20ns
+@endcode
+
+\subsection common_delay_linerate Line Rate
+<hr>
+
+In radios, a number of delays are reliant on the current fibre line rate. If a DelayUnit uses the line rate then it needs
+to be specified when creating the delay. Then, in calculations involving units with line rates, delays with different
+line rates need to be normalised so that they can be summed together.
+
+Some line rate examples are:
+
+@code
+Delay a_ui(10, Delay::UI) ;		// uses default line rate of 3.072GHz
+Delay b_ui(10, Delay::UI, 6144.0) ;		// uses line rate of 6.144GHz
+
+Delay c_ui = a_ui + b_ui ;
+@endcode
+
+In the examples above, the final sum (c_ui) will actually be 15UI at a line rate of 3.072GHz. The rh argument to the
+sum (b_ui) is first converted to a line rate of 3.072GHz because that's the line rate used by the first argument
+encountered. At 3.072GHz the 10UI is equivalent to 5UI (to give the same delay in nanoseconds).
+
+\subsection common_delay_value Delay Value
+<hr>
+
+Given a delay (or a delay as the result of some calculation) how do you then get at it's contents?
+
+The Delay class provides methods for reading the current value, units, and (where appropriate) the line rate. It also
+provides methods for setting new units, and for rounding the delay (either to the nearest current units, or to some
+new set of units).
+
+Note that you can query the units object returned by the get units method to determine whether the current units
+use the line rate.
+
+@code
+
+	Delay a_ns(10) ;
+	Delay b_bf(20, Delay::BF) ;
+	Delay c_ui(30, Delay::UI, 6144.0) ;
+
+	// Get the delays
+	std::cout << a_ns.get() ; // prints 10
+	std::cout << b_bf.get() ; // prints 20
+	std::cout << c_ui.get() ; // prints 30
+
+	// Get delays in ns as floats
+	std::cout << a_ns.get(Delay::NS) ; // prints 10
+	std::cout << b_bf.get(Delay::NS) ; // prints 20
+	std::cout << c_ui.get(Delay::NS) ; // prints 30
+
+	// Get delays in ns as ints
+	std::cout << a_ns.getInt(Delay::NS) ; // prints 10
+	std::cout << b_bf.getInt(Delay::NS) ; // prints 20
+	std::cout << c_ui.getInt(Delay::NS) ; // prints 30
+
+	// Get units
+	if (c_ui.getUnit().usesLineRate())
+	{
+		// show line rate if this delay unit uses it
+		std::cout << c_ui.getLineRate() << std::endl ; // shows 6144
+	}
+
+@endcode
+
+An example of converting from one delay unit to another is:
+
+@code
+	// Got a delay in nanoseconds - create an EtnaDelay with this value
+	EtnaDelay adjDelay(delay, EtnaDelay::NS) ;
+
+	// then use the EtnaDelay to convert to an integer number of clocks at a specified line rate
+	adjDelay.round(EtnaDelay::CLK, lineRateMHz) ;
+
+@endcode
+
+
+\subsection common_delay_print Printing
+<hr>
+
+The Delay class is defined with overload operators for "<<" so that the delay object can be displayed or added to a
+stringstream. All of the delay classes use a common output format of showing the value, the units, and then (if required)
+the current line rate.
+
+Some example outputs are:
+
+@code
+Delay a_ns(10) ;
+Delay b_bf(20, Delay::BF) ;
+Delay c_ui(30, Delay::UI, 6144.0) ;
+
+std::cout << a_ns ;
+std::cout << b_bf ;
+std::cout << c_ui ;
+
+@endcode
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_calmanagement Cal File Management Design
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+Cal file management covers the download and installation of the various calibration XML files in the system.
+
+Details of the cal file management is in the following subsections.
+
+____
+\section common_page_calmanagement_sec Details of Cal File Management
+____
+
+The cal file download is very similar to the image management system used to install application tarballs. However, in this case each installed
+cal file must be stored in a specific fixed file path in order for the cal object to be able to read the file. So, even though the filename of
+the remote file can be anything, that file is always downloaded to the same location and filename.
+
+\subsection common_page_calmanagement_tif Test Interface Operations
+____
+
+This section describes the test interface commands implemented for cal file management.
+
+<b>.cal</b>
+
+The top-level for all cal file downloads is .cal. Here you can set the remote server url from which all cal files will be downloaded.
+
+@code
+/->.cal.url http://swin-11/~guest/test_files/cal
+@endcode
+
+<b>.cal.tx</b>
+
+Used for installing TX cal files.
+
+Use the 'install' command to download and install the TX cal file to it's fixed location in the system. Optionally you can specify a remote filename
+to download a particular file, otherwise uses the same filename as is used to store it in the system.
+
+@code
+/->.cal.tx.install
+/->.cal.tx.install ftu_tx_cal.xml
+@endcode
+
+<b>.cal.rx</b>
+
+Used for installing RX cal files.
+
+Use the 'install' command to download and install the RX cal file to it's fixed location in the system. Optionally you can specify a remote filename
+to download a particular file, otherwise uses the same filename as is used to store it in the system.
+
+@code
+/->.cal.rx.install
+/->.cal.rx.install ftu_rx_cal.xml
+@endcode
+
+\subsection common_page_calmanagement_design Design Detail
+____
+
+\image html CalDownloadMgr.png "Cal Download Management Class Hierarchy"
+
+The cal file download hierarchy is similar the the image management system. The basic unit is the ICalDownload class
+which provides methods for downloading a cal file and installing it into a fixed location.
+
+The TX and RX cal files are derived from this interface specifically to download the respective cal file types.
+
+The ICalDownloadManagement interface provides the methods used by the test interface to download each required cal
+file. Also, this interface provides the Tx and Rx cal objects (which actually parse the xml cal file) with the
+fixed path of each file ion the file system.
+
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_queuebuffer Queue Buffer Design
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+Queue Buffer is a Task-based template class which provides a buffered queue.
+
+Details of the Queue Buffer is in the following subsections.
+
+____
+\section common_page_queuebuffer_sec Details of Queue Buffer
+____
+
+\image html QueueBuffer.png "Queue Buffer Design"
+
+The QueueBuffer template class provides a queue of any type that can be quickly added to.
+
+The class derives from Task and so has a run() method which is used to continuously empty the queue (at a possibly
+lower rate), calling the provided callback functor for each element removed from the queue.
+
+The intentions of this class is to provide a buffer between fast bursty code (which needs a quick response time and cannot
+be held up when adding elements to the queue), and slower destination code (for example logging data to a file, processing the data,
+or sending the data over a network).
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_appoptions Application Options
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The Mplane::AppOptions class provides command line argument processing and a singleton object for the rest of
+the application to be able to read the current option settings.
+
+\subsection common_page_appoptions_sec1 Defining the application options
+____
+
+In order to process command line options you need to create an instance of Mplane::IAppOptions. You do this in the application's
+main(), passing the command line arguments to the creation method. You also provide an "options specification" in the form
+of a std::vector of elements, each element defining an named option that the application will accept, the option's type, a description
+of the option and some other optional arguments.
+
+The constructor of the IAppOptions singleton then processes the command line arguments setting the option values and making these
+settings available.
+
+An example IAppOptions creation is:
+
+@code
+    // Define expected options and process the command line
+	std::shared_ptr<IAppOptions> opts(IAppOptions::createInstance(argc, argv,
+		"Advanced Radio Tester",
+		std::vector<std::shared_ptr<IAppOptionSpec> >{
+			IAppOptionSpec::factory("ethbb",  DataVariant::String, "Ethernet interface name (over baseband)"),
+			IAppOptionSpec::factory("ethcdi", DataVariant::String, "Ethernet interface name (control and debug)"),
+		}
+	)) ;
+
+@endcode
+
+In the above example, the first string passed in is some descriptive text that is output as part of the '--help' option
+(see @ref common_page_appoptions_sec3).
+
+Use the IAppOptionSpec::factory() method to create option specification elements. The general form of this method is:
+
+@code
+factory(const std::string& name, const DataVariant::Type& type, const std::string& description)
+@endcode
+
+where you specify an option name, and DataVariant type, and a description. The name is then used as the command line argument name
+(for example setting name to 'test' would then expect an option '--test'), and internally the name is used when the application
+wants to read the current value of the option.
+
+With the above example, two options are defined both of which expect string parameters. The command line can then be used like:
+
+@code
+$ program --ethbb firstname --ethcdi secondname
+@endcode
+
+\subsection common_page_appoptions_sec2 Option defaults and the environment
+____
+
+In addition to specifying options as shown above, overloads of the factory method exist which allow you to also set a default value
+and an environment variable name.
+
+When an environment variable name is specified in the factory() method, if the option is not specified in the command line then the
+specified environment variable is read. If that variable contains a setting then the option is set to that value.
+
+Similarly, if a default value is specified in the factory() method, if the option is not set in the command line (or by an
+environment variable if applicable) then that option is set to this default value.
+
+____
+\subsection common_page_appoptions_sec3 Built-in options
+____
+
+Certain options are automatically handled by the AppOptions class. The --help option is set so that it outputs the application
+descriptive string followed by whatever options have been specified.
+
+____
+\subsection common_page_appoptions_sec3 Using the options
+____
+
+In the application code you access the current option settings via the AppOption singleton. Using this you read an option by using the
+'getData()' method which returns a DataVariant constant copy of the named option. You can then use the normal DataVariant methods
+(isSet(), toString() etc) to extract the value for use in your program.
+
+For example, to get the value of the 'ethcdi' option use:
+
+@code
+	std::shared_ptr<IAppOptions> options( IAppOptions::getInstance() ) ;
+	const DataVariant dv(options->getOption("ethbb")) ;
+
+	if (dv.isSet())
+	{
+    	std::string ethBaseband(dv.toString()) ;
+		...
+	}
+@endcode
+
+
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_ssdp SSDP - Simple Service Discovery Protocol
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+The Mplane::Ssdp class provides an object which uses the multicast SSDP service (ip 239.255.255.250, port 1900)
+to allow controller entities to discover all Mplane boards running this object and connected to the same network.
+
+\subsection common_page_ssdp_sec1 Multicast Overview
+____
+
+Multicast allows multiple clients and servers to be able to send and receive data using a single common ip address
+and port. Multicast addresses are in the range 224.0.0.0 to 239.255.255.255.
+
+Packets sent/received via the multicast address are UDP.
+
+In Linux, a socket used for sending to a multicast address/port is created and used as:
+
+@code
+	// UDP socket
+	mSock = ::socket(AF_INET, SOCK_DGRAM, 0);
+
+	// Create an address/port for the multicast address
+	std::string address("239.255.255.250") ;
+	unsigned port(1900) ;
+	mAddress.sin_family = AF_INET;
+	mAddress.sin_addr.s_addr = inet_addr(address.c_str());
+	mAddress.sin_port = htons(port);
+
+	// Send data
+	::sendto(mSock, s.c_str(), s.size(), MSG_NOSIGNAL, (struct sockaddr *) &mAddress, sizeof(mAddress)) ;
+
+@endcode
+
+And for a socket to be used to receive data from a multicast address/port it needs to use the special multicast
+IP settings as shown:
+
+@code
+	// UDP socket
+	mSock = ::socket(AF_INET, SOCK_DGRAM, 0);
+
+	// Create an address/port for the multicast address
+	std::string address("239.255.255.250") ;
+	unsigned port(1900) ;
+
+	// Add membership to the multicast address, listening on any address
+	struct ip_mreq mreq ;
+	mreq.imr_multiaddr.s_addr = ::inet_addr(address.c_str());
+	mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+	::setsockopt(mSock, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq)) ;
+
+	// Bind to any address & multicast port
+    mAddress.sin_family = AF_INET;
+    mAddress.sin_addr.s_addr = INADDR_ANY;
+    mAddress.sin_port = htons(port);
+    ::bind(mSock, (struct sockaddr *) &mAddress, sizeof(mAddress)) ;
+
+	// Receive
+	socklen_t addrlen(sizeof(mAddress));
+	int status = ::recvfrom(mSock, buf, maxRecBuf, 0, (struct sockaddr *) &mAddress, &addrlen);
+
+@endcode
+
+
+\subsection common_page_ssdp_sec2 SSDP Overview
+____
+
+The full SSDP details are provided in http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf.
+
+Basically, the protocol allows multiple devices on the same network to discover each other's presence and
+capabilities.
+
+SSDP uses the multicast ip address 239.255.255.250 and UDP port 1900.
+
+Each device added to a network sends a notification to the multicast address signalling it's presence, along with
+some basic information. These devices will also respond to a search command, replying with the same information.
+The information packet is sent using HTTP/1.1 text format.
+
+Any control device on the network can then listen to the multicast address and see which devices have sent out
+notifications. The control device can also send search requests to force all devices to respond with their information.
+
+All devices have a universally unique identifier (UUID) formatted as per http://www.rfc-base.org/rfc-3986.html.
+
+An example of a notification message is:
+
+@code
+NOTIFY * HTTP/1.1
+HOST: 239.255.255.250:1900
+CACHE-CONTROL: max-age=1810
+LOCATION: http://10.0.1.254:9000/TMSDeviceDescription.xml
+NT: uuid:55076f6e-6b79-4d65-6465-1c6f65557a3f
+NTS: ssdp:alive
+SERVER: Linux/2.x.x, UPnP/1.0, pvConnect UPnP SDK/1.0, Twonky UPnP SDK/1.1
+USN: uuid:55076f6e-6b79-4d65-6465-1c6f65557a3f
+
+@endcode
+
+where
+\li HOST - Is the multicast ip:port
+\li CACHE-CONTROL - The max-age directive specifies the number of seconds that this advertisement is valid.
+After this duration, control points SHOULD assume the device (or service) is no longer available
+\li LOCATION - Field value contains a URL to the UPnP description of the root device.
+\li NT - Field value contains Notification Type.
+\li NTS - Field value contains Notification Sub Type (ssdp:alive or ssdp:byebye)
+\li SERVER - The first product token identifes the operating system in the form OS name/OS version, the second token
+represents the UPnP version and MUST be UPnP/1.1, and the third token identifes the product using the form
+product name/product version.
+\li USN - Field value contains Unique Service Name.
+
+and an example of a search meassage is:
+
+@code
+M-SEARCH * HTTP/1.1
+HOST: 239.255.255.250:1900
+MAN: "ssdp:discover"
+MX: 3
+ST: ssdp:all
+
+@endcode
+
+where
+\li HOST - Is the multicast ip:port
+\li MAN - Defines the namespace of the HTTP Extension Framework (must be "ssdp:discover")
+\li MX - Maximum wait time in seconds. Devices should delay their response by a random duration of 0 to this many second.
+\li ST - Search target. Using ssdp:all searches for all devices and services
+
+Note that all messages must have their lines terminated by CR LF, and end the message with an empty line containing just CR LF.
+
+
+\subsection common_page_ssdp_sec3 Mplane SSDP Extensions
+____
+
+The standard defines a number of fields used in the notification messages along with a LOCATION from which
+a device can gain additional information.
+
+For Mplane use, it is more efficient for us to include all required information as part of the message. To this
+end I've defined some additional Mplane-specific fields (all starting with the name "AXIS-") to provide this
+information. Having fields in the message beginning "AXIS" also allows a monitor program to filter out those
+messages without the Mplane extensions.
+
+\li AXIS-IP - ip address of the unit
+\li AXIS-UNIT - application name (e.g. "ART")
+\li AXIS-HOST - host name of the unit
+
+An example ART message is:
+
+@code
+HTTP/1.1 200 OK
+HOST: 239.255.255.250:1900
+CACHE-CONTROL: max-age=30
+LOCATION: 10.15.160.249:49500
+NT: uuid:acea8150-0000-0000-0000-002424251909
+NTS: "sdp-alive"
+SERVER: Linux/3.10.41Axis UPnP/1.1 ART/sprice-1207
+USN: uuid:acea8150-0000-0000-0000-002424251909
+AXIS-IP: 10.15.160.249
+AXIS-UNIT: ART
+AXIS-HOST: AAUK15300002
+
+
+@endcode
+
+\subsection common_page_ssdp_sec4 Required Mplane::IAppOptions
+____
+
+When the application starts and instantiates the SSDP object, it must wait until the network interface
+is up and has been allocated an ip address. To do this, the Mplane::Ssdp object needs to be told the name
+of the network interface it has to monitor.
+
+To provide the network interface name, I've added an "ethssdp" option to discoverable applications via the
+IAppOptions interface. This command line option is normally set in the application start up script to be the
+appropriate network interface (for example, on ART it is set to "vlanbr").
+
+
+\subsection common_page_ssdp_sec5 Simple Monitor Example
+____
+
+A simple monitor program that uses Mplane::MulticastSocket is shown below. It starts by sending out
+a search message to get the connected devices to respond, and then just listens and shows all multicast
+packets on the SSDP address:port.
+
+@code
+const std::string MSEARCH(
+    "M-SEARCH * HTTP/1.1\r\n"
+    "HOST: 239.255.255.250:1900\r\n"
+    "MAN: \"ssdp:discover\"\r\n"
+    "MX: 3\r\n"
+    "ST: ssdp:all\r\n"
+    "\r\n"
+) ;
+
+
+int main(void)
+{
+	MulticastSocket msock ;
+
+	if (!msock.create())
+	{
+		std::cerr << "ERROR: Unable to create multicast socket" << std::endl ;
+		return 1 ;
+	}
+
+	if (!msock.setMulticast(MulticastSocket::MULTICAST_ADDRESS, 1900))
+	{
+		std::cerr << "ERROR: Unable to bind to multicast port" << std::endl ;
+		return 1 ;
+	}
+
+
+	// Chuck out a search
+	if (!msock.send(MSEARCH))
+	{
+		std::cerr << "ERROR: Unable to send message" << std::endl ;
+		return 1 ;
+	}
+
+
+	if (!msock.bind(1900))
+	{
+		std::cerr << "ERROR: Unable to bind" << std::endl ;
+		return 1 ;
+	}
+
+	// listen for client notifications
+	std::string buff ;
+	while(1)
+	{
+		int numBytes(msock.recv(buff)) ;
+		if (numBytes <= 0)
+		{
+			std::cerr << "ERROR: Unable to receive message" << std::endl ;
+			return 1 ;
+		}
+
+        std::cout << buff << std::endl ;
+	}
+
+    return 0;
+}
+@endcode
+
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_bootenv U-Boot Environment
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+U-Boot provides an environment of variable/values pairs which are stored in the NOR flash. We actually support
+a dual banked approach where one environment is marked as the active bank and the other the inactive bank. Any changes
+to the current settings (read from the active bank) are then written to the inactive bank and the active/inactive flags
+swapped. This ping-pong swapping of banks means that there is always a bank containing the previous (working) copy of the
+variables.
+
+For boot purposes the utility "i2cenv" is built as part of the OS and is available to the root user. For applications, rather
+than have a class that wraps up calls to this utility, I've ported the C code from i2cenv into C++ as various classes that
+the BootEnv class uses.
+
+BootEnv then provides methods for reading/writing the variables and handles banks swapping etc transparently.
+
+
+\subsection common_page_boooootenv_sec1 Data Structure
+____
+
+The environment is stored in NOR flash, each bank in it's own partition. These partitions are treated by Linux as seperate
+devices as shown in /proc/mtd. An example of /proc/mtd contents is:
+
+@code
+~ # cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 003c0000 00010000 "boot1"
+mtd1: 003c0000 00010000 "boot2"
+mtd2: 00010000 00010000 "dtb2"
+mtd3: 00010000 00010000 "dtb1"
+mtd4: 00010000 00010000 "ubenv2"
+mtd5: 00010000 00010000 "ubenv1"
+mtd6: 00040000 00010000 "u-boot"
+mtd7: 04000000 00004000 "filesystem"
+~ #
+@endcode
+
+Showing that bank 1 is /dev/mtd5 and bank 2 is /dev/mtd4. The contents of this memory is:
+
+\li CRC - A 32-bit crc (using CRC-32 algorithm) that covers all of the data section
+\li Flag - A byte flag which is set ot 0x00 for the inactive bank, and 0x01 for the active bank
+\li Data - All bytes following the flag containg the environment
+
+The enviroment data consists of NUL termiated strings of the form "variable=value". At the end of the
+list of strings there is a final terminating NUL byte. Note that all subsequent bytes are 0xFF which is
+the NOR flash erase state.
+
+An example of the contents is:
+
+@code
+~ # hexdump -C /dev/mtd5
+00000000  35 e7 ce 15 01 61 63 74  69 76 65 6f 73 3d 32 00  |5....activeos=2.|
+00000010  61 74 65 69 64 3d 61 74  65 2d 73 77 69 6e 2d 32  |ateid=ate-swin-2|
+00000020  36 30 34 00 62 61 75 64  72 61 74 65 3d 31 31 35  |604.baudrate=115|
+00000030  32 30 30 00 62 6f 6f 74  31 3d 62 6f 6f 74 6d 20  |200.boot1=bootm |
+00000040  30 78 66 66 38 30 30 30  30 30 20 2d 20 30 78 66  |0xff800000 - 0xf|
+00000050  66 66 39 30 30 30 30 00  62 6f 6f 74 32 3d 62 6f  |ff90000.boot2=bo|
+00000060  6f 74 6d 20 30 78 66 66  62 63 30 30 30 30 20 2d  |otm 0xffbc0000 -|
+00000070  20 30 78 66 66 66 38 30  30 30 30 00 62 6f 6f 74  | 0xfff80000.boot|
+00000080  61 72 67 73 3d 72 6f 6f  74 3d 2f 64 65 76 2f 72  |args=root=/dev/r|
+00000090  61 6d 20 72 77 20 63 6f  6e 73 6f 6c 65 3d 74 74  |am rw console=tt|
+000000a0  79 53 30 2c 31 31 35 32  30 30 00 62 6f 6f 74 63  |yS0,115200.bootc|
+000000b0  6d 64 3d 72 75 6e 20 62  6f 6f 74 32 00 62 6f 6f  |md=run boot2.boo|
+000000c0  74 64 65 6c 61 79 3d 35  00 62 6f 6f 74 75 72 6c  |tdelay=5.booturl|
+000000d0  3d 00 65 74 68 31 61 64  64 72 3d 30 30 3a 32 34  |=.eth1addr=00:24|
+000000e0  3a 32 34 3a 32 35 3a 31  39 3a 30 39 00 65 74 68  |:24:25:19:09.eth|
+000000f0  32 61 64 64 72 3d 30 30  3a 32 34 3a 32 34 3a 32  |2addr=00:24:24:2|
+00000100  35 3a 31 39 3a 30 61 00  65 74 68 33 61 64 64 72  |5:19:0a.eth3addr|
+00000110  3d 30 30 3a 32 34 3a 32  34 3a 32 35 3a 31 39 3a  |=00:24:24:25:19:|
+00000120  30 62 00 65 74 68 34 61  64 64 72 3d 30 30 3a 32  |0b.eth4addr=00:2|
+00000130  34 3a 32 34 3a 32 35 3a  31 39 3a 30 63 00 65 74  |4:24:25:19:0c.et|
+00000140  68 35 61 64 64 72 3d 30  30 3a 32 34 3a 32 34 3a  |h5addr=00:24:24:|
+00000150  32 35 3a 31 39 3a 30 64  00 65 74 68 36 61 64 64  |25:19:0d.eth6add|
+00000160  72 3d 30 30 3a 32 34 3a  32 34 3a 32 35 3a 31 39  |r=00:24:24:25:19|
+00000170  3a 30 65 00 65 74 68 37  61 64 64 72 3d 30 30 3a  |:0e.eth7addr=00:|
+00000180  32 34 3a 32 34 3a 32 35  3a 31 39 3a 30 66 00 65  |24:24:25:19:0f.e|
+00000190  74 68 61 63 74 3d 70 70  63 5f 34 78 78 5f 65 74  |thact=ppc_4xx_et|
+000001a0  68 30 00 65 74 68 61 64  64 72 3d 30 30 3a 32 34  |h0.ethaddr=00:24|
+000001b0  3a 32 34 3a 32 35 3a 31  39 3a 30 38 00 66 6f 72  |:24:25:19:08.for|
+000001c0  63 65 3d 31 00 68 6f 73  74 6e 61 6d 65 3d 41 41  |ce=1.hostname=AA|
+000001d0  55 4b 31 35 33 30 30 30  30 32 00 68 77 42 6f 61  |UK15300002.hwBoa|
+000001e0  72 64 49 44 3d 63 30 00  68 77 42 6f 61 72 64 52  |rdID=c0.hwBoardR|
+000001f0  65 76 3d 31 00 68 77 42  6f 61 72 64 53 65 72 69  |ev=1.hwBoardSeri|
+00000200  61 6c 4e 75 6d 3d 42 30  41 2d 30 30 30 35 33 56  |alNum=B0A-00053V|
+00000210  31 35 31 34 30 30 33 38  00 6c 69 6e 65 72 61 74  |15140038.linerat|
+00000220  65 3d 34 00 6c 6f 61 64  73 5f 65 63 68 6f 3d 00  |e=4.loads_echo=.|
+00000230  6d 65 6d 3d 31 33 31 30  35 32 6b 00 70 72 6f 64  |mem=131052k.prod|
+00000240  75 63 74 43 6f 64 65 3d  41 32 35 58 58 31 58 37  |uctCode=A25XX1X7|
+00000250  30 30 32 30 30 30 31 30  35 48 00 72 61 64 69 6f  |002000105H.radio|
+00000260  48 69 67 68 46 72 65 71  3d 32 37 30 30 30 30 30  |HighFreq=2700000|
+00000270  00 72 61 64 69 6f 4c 6f  77 46 72 65 71 3d 37 30  |.radioLowFreq=70|
+00000280  30 30 30 30 00 73 65 72  76 65 72 69 70 3d 31 39  |0000.serverip=19|
+00000290  32 2e 31 36 38 2e 31 30  2e 31 00 76 65 72 3d 55  |2.168.10.1.ver=U|
+000002a0  2d 42 6f 6f 74 20 31 2e  33 2e 34 2d 30 30 30 30  |-Boot 1.3.4-0000|
+000002b0  31 2d 67 31 30 63 65 39  61 64 20 28 4a 75 6c 20  |1-g10ce9ad (Jul |
+000002c0  31 37 20 32 30 31 35 20  2d 20 31 37 3a 35 31 3a  |17 2015 - 17:51:|
+000002d0  30 38 29 20 45 43 42 20  42 75 69 6c 64 20 34 32  |08) ECB Build 42|
+000002e0  2d 41 52 54 2e 31 2e 58  2d 52 65 6c 65 61 73 65  |-ART.1.X-Release|
+000002f0  2d 42 75 69 6c 64 00 69  6e 69 74 3d 00 00 ff ff  |-Build.init=....|
+00000300  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
+*
+00010000
+~ #
+@endcode
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+<hr>
+\section common_page_test Unit Tests
+<hr>
+<hr>
+\ref _home "Go to top of page"
+
+<hr>
+\section common_page_test_sec_99 Host Based Unit Tests
+<hr>
+\subsection common_page_test_ssec99_1 Code Coverage Summary
+<hr>
+\include datatype/test/coverage.txt
+<hr>
+\include initialise/test/coverage.txt
+<hr>
+\include logging/test/coverage.txt
+<hr>
+\include service/test/coverage.txt
+<hr>
+\include ServicesMonitor/test/coverage.txt
+<hr>
+\include socket/test/coverage.txt
+<hr>
+\include task/test/coverage.txt
+<hr>
+\include observer/test/coverage.txt
+<hr>
+\include pointer/test/coverage.txt
+<hr>
+\include fault/test/coverage.txt
+<hr>
+\include imageManagement/gtest/coverage.txt
+<hr>
+\include DataVariant/gtest/coverage.txt
+<hr>
+\include Delay/gtest/coverage.txt
+<hr>
+\include Benchmark/gtest/coverage.txt
+
+<hr>
+\subsection common_page_test_ssec99_2 Unit Test Results
+<hr>
+\include datatype/test/cppunit.txt
+<hr>
+\include initialise/test/cppunit.txt
+<hr>
+\include logging/test/cppunit.txt
+<hr>
+\include service/test/cppunit.txt
+<hr>
+\include ServicesMonitor/test/cppunit.txt
+<hr>
+\include socket/test/cppunit.txt
+<hr>
+\include task/test/cppunit.txt
+<hr>
+\include observer/test/cppunit.txt
+<hr>
+\include pointer/test/cppunit.txt
+<hr>
+\include fault/test/cppunit.txt
+<hr>
+\include imageManagement/gtest/gtest.txt
+<hr>
+\include DataVariant/gtest/gtest.txt
+<hr>
+\include Delay/gtest/gtest.txt
+<hr>
+\include Benchmark/gtest/gtest.txt
+
+*/

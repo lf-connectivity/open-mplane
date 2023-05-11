@@ -1,0 +1,13 @@
+{
+  "commands": [
+    {
+      "connect": {}
+    },
+    {
+      "streamNotifications": {}
+    },
+    {
+      "startSupervision": {}
+    }
+  ]
+}

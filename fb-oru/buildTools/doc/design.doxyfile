@@ -1,0 +1,21 @@
+# Doxyfile 1.8.1.1
+
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+
+# The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
+# by quotes) that should identify the project.
+
+PROJECT_NAME = "Build Tools Document"
+
+@INCLUDE_PATH = $(ROOTPATH)/buildTools/doxygen/
+
+@INCLUDE = design.doxyfile
+
+@INPUT = design.dox
+
+@RECURSIVE = NO
+
+@EXAMPLE_RECURSIVE = YES
+

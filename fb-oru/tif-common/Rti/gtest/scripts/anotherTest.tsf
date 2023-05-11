@@ -1,0 +1,8 @@
+# Another test that does a bit more
+# and has multi-line comments at the start
+
+cd /
+ls /
+help
+
+# should be done now

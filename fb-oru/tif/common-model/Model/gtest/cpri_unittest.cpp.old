@@ -1,0 +1,92 @@
+/*!
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * \file      cpri_unittest.cpp
+ * \brief     <one-line description of file>
+ *
+ *
+ * \details   <multi-line detailed description of file>
+ *
+ */
+
+#include "gtest/gtest.h"
+
+#include <regex.h>
+
+#include <cstdio>
+#include <string>
+#include <iostream>
+#include <fstream>
+
+#include "stringfunc.hpp"
+#include "model_fixture.h"
+
+#include "CommonCpri.h"
+using namespace Mplane ;
+
+
+std::shared_ptr<ICpri> Mplane::ICpri::getInterface()
+{
+    static std::shared_ptr<ICpri> _pTestInstance(new CommonCpri());
+
+    return _pTestInstance;
+}
+
+class CpriModelTests : public ModelTests
+{
+public:
+//    std::string checkSet(const std::string& path, unsigned index, const std::string& var, const std::string& setVal,
+//            const std::string& getVal="")
+//    {
+//        std::string result ;
+//
+//        std::stringstream ss ;
+//
+//        ss.str("") ;
+//        ss << path << ".set " << index << " " << toLower(var) << "=" << setVal ;
+//        result = runCmdOk(ss.str()) ;
+//        EXPECT_TRUE( result.find("Status=OK") != std::string::npos ) << "Unable to set " << var ;
+//
+//        ss.str("") ;
+//        ss << path << ".get " << index ;
+//        result = runCmdOk(ss.str()) ;
+//
+//        ss.str("") ;
+//        ss << var << "=" ;
+//        if (!getVal.empty())
+//            ss << getVal ;
+//        else
+//            ss << setVal ;
+//        EXPECT_TRUE( result.find(ss.str()) != std::string::npos ) << var << "test. Could not find " << ss.str() ;
+//
+//        return result ;
+//    }
+};
+
+//===================================================================================================================
+/*
+ * Unit tests
+ */
+
+//-------------------------------------------------------------------------------------------------------------------
+TEST_F(CpriModelTests, RunMethods)
+{
+    // start by running all methods
+    std::string result ;
+
+    result = runCmdOk("/cpri.NumPorts") ;
+    EXPECT_TRUE( result.find("Status=OK") != std::string::npos );
+    result = runCmdOk("/cpri.get 0") ;
+    EXPECT_TRUE( result.find("Status=OK") != std::string::npos );
+//    result = runCmdOk("/cpri.set 0") ;
+//    EXPECT_TRUE( result.find("Status=OK") != std::string::npos );
+    result = runCmdOk("/cpri.showPort 0") ;
+    EXPECT_TRUE( result.find("Status=OK") != std::string::npos );
+    result = runCmdOk("/cpri.showCtl") ;
+    EXPECT_TRUE( result.find("Status=OK") != std::string::npos );
+    result = runCmdOk("/cpri.showAll") ;
+    EXPECT_TRUE( result.find("Status=OK") != std::string::npos );
+}

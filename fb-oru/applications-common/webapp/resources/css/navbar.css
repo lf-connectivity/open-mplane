@@ -1,0 +1,167 @@
+/*----------------------------------------------------------------------------
+	navbar.css
+
+	Menubar styles
+
+
+ ----------------------------------------------------------------------------*/
+
+
+/*----------------------------------------------------------------------------
+ Navigation bar
+----------------------------------------------------------------------------*/
+.navbar {
+	background: #bd2626 none repeat scroll 0 0;
+    height: 45px;
+
+	color: white ;
+	text-shadow: 0 1px 2px #636363 ;
+	vertical-align: middle ;
+	
+	width: 100% ;
+	left: 0 ;
+/*
+	position: fixed ;
+	top: 60px ;
+*/
+}
+
+
+
+.navbar ul {
+	list-style-type: none ;
+	margin: 0 ;
+	padding: 0 ;
+	overflow: hidden ;
+}
+
+.navbar:after {
+	content: "."; 
+	visibility: hidden; 
+	display: block; 
+	height: 0; 
+	clear: both;
+}
+
+
+.navbar li {
+	display: block ;
+	float: left ;
+    width: 80px ;
+    padding-top: 15px ;
+    padding-bottom: 10px ;
+
+	vertical-align: middle ;
+	text-align: center ;
+}
+
+.navbar .dropdown-content {
+	display: none ;
+	position: absolute ;
+	min-width: 80px ;
+	background-color: #303030;
+	color: white ;
+	padding: 4px ;
+}
+
+
+.navbar .dropdown-content a {
+	text-align: left ;
+	color: white;
+    text-decoration: none;
+    display: block;
+    padding-left: 10px ;
+    padding-right: 10px ;
+}
+
+.navbar .dropdown-content a:hover {
+	background-color: #868686;
+}
+
+
+.navbar li:hover {
+	background-color: #303030;
+}
+
+/*.navbar li:hover .dropdown-content {*/
+
+.navbar li:hover .dropdown-content {
+	display: block;
+}
+
+
+
+.navbar-logo {
+	display: block ;
+	float: left ;
+}
+
+.navbar img {
+	display: block ;
+	float: left ;
+}
+.navbar-logo-text {
+	display: block ;
+	float: left ;
+	font-size: 30px ;
+	font-family: "Verdana", Geneva, sans-serif ;
+	padding-top: 5px ;
+	margin-left: -35px ;
+	margin-right: 50px ;
+}
+
+.navbar .nav-search {
+	float: right ;
+
+	background: #bd2626 none repeat scroll 0 0;
+    padding-top: 5px ;
+
+	color: white ;
+	text-shadow: 0 1px 2px #636363 ;
+	vertical-align: middle ;
+}
+
+.navbar .nav-search input {
+	
+	float: left ;
+	margin-top: 5px ;
+	height: 20px ;
+	width: 140px ;
+	border: 1px solid #931313;
+	border-radius: 3px ;
+}
+
+.navbar .nav-search button {
+	
+	float: left ;
+	height: 26px ;
+	width: 30px ;
+	margin-right: 10px ;
+	margin-top: 5px ;
+	text-align: center ;
+	
+    background-color: #aa1616;
+    background-image: linear-gradient(to bottom, #d71c1c, #aa1616);
+    border-color: #aa1616 #aa1616 #931313;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+	border-radius: 3px ;
+}
+
+.navbar .nav-search button:hover {
+	
+    background-image: linear-gradient(to bottom, #aa1616, #d71c1c);
+}
+
+.menu-radio,
+.menu-checkbox {
+	text-align: left ;
+	padding: 0 4px 0 4px ;
+}
+
+.menu-radio:hover,
+.menu-checkbox:hover {
+	background-color: #868686;
+}
+

@@ -1,0 +1,17 @@
+vendor=FB 
+code=FBOR-12345678 
+buildName=ZCU111-FBC-ORANRRH-1.0.0.4#240 
+buildId=240
+buildVersion=1.0.0.4
+
+[os]
+fileName=os.ZCU111-local-123-0.0.tgz 
+fileVersion=0.0 
+path=os.ZCU111-local-123-0.0.tgz 
+checksum=993b9a047b5f0b2c9235ded1d6e0c0fc
+
+[app]
+fileName=ZCU111-FBC-ORANRRH-1.0.0.4-240-APP.tgz 
+fileVersion=1.0.0.4 
+path=ZCU111-FBC-ORANRRH-1.0.0.4-240-APP.tgz 
+checksum=76b645e28b0b53122b4428f4ab9eb4b9

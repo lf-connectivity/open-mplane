@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.js " crossorigin="anonymous"></script>
+    <script src= "https://code.jquery.com/jquery-3.3.1.min.js"> </script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"> </script>
+    <script src= "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"> </script>
+    <script src= "https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"> </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+
+    <script src= "homepage.js"> </script>
+    <link rel="stylesheet" href="homepage.css"/>
+  </head>
+  <body onload="init()">
+    <center>
+      <div class="container">
+        <div class="row">
+          <h2>Alarms</h2>
+        </div>
+        <div class="row">
+          <div id="alarms-scroll">
+            <table id="alarms-table" class="table-striped table-fixed border-success">
+              <thead>
+                <tr>
+                  <th data-field="id">
+                    <span class="text-success">
+                      Alarm
+                    </span>
+                  </th>
+                  <th data-field="severity">
+                    <span class="text-success">
+                      Severity
+                    </span>
+                  </th>
+                  <th data-field="description">
+                    <span class="text-success">
+                      Description
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </center>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+This is version -
+
+ORAN-WG4.MP-YANGs-v02.00
+
+This has been downloaded from - 
+
+https://www.o-ran.org/specification-access
+Section WG4: The Open Fronthaul Interfaces Workgroup

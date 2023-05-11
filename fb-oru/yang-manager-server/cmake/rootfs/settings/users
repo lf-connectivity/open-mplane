@@ -1,0 +1,12 @@
+# User creation file
+#
+# user:group:password:home
+#
+# NOTE: Currently password is NOT encrypted by: openssl passwd $password
+# (but it should be!)
+#
+oran:sudo:Thunga1e:/O-RAN
+swmuser:swm:Caezoor8:/home/swmuser
+fmpmuser:fm-pm:eeF7cash:/home/fmpmuser
+nmsuser:nms:pooPh0on:/home/nmsuser
+

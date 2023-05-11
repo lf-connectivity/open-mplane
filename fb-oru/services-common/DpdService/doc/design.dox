@@ -1,0 +1,338 @@
+/**
+\mainpage DPD Control Service
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+
+<hr>
+\section radioService_common_dpdservice_scope Scope
+<hr>
+This document describes the DPD service used to control and monitor the DPD processor.
+
+<hr>
+\section radioService_common_dpdservice_overview	Overview
+<hr>
+
+The DPD service is predominantly a monitoring service which routes DPD EVENT messages off to registered clients.
+For example the VSWR alarm monitor will register with this service to receive VSWR measurements from the DPD; the power
+control loop will register to receive TX power measurements, and so on.
+
+Carrier configuration will also need to use this service to send control messages to the DPD. These messages restart the DPD
+algorithm on carrier configuration changes, set target PAR on CFR changes etc. The DPD service is the central point through which
+other tasks running in the application can send messages to the DPD.
+
+<hr>
+\section radioService_common_dpdservice_sec_2 Details of Design
+<hr>
+
+\image html dpdservice-dataflow.png "Data flow from DPD to registered clients"
+
+As shown in the diagram above, the DPD service connects to the DPD (via Mplane::DpdComms derived from Mplane::FpgaComms).
+
+The DPD service registers as a client for all the Mplane::IFpgaMsg EVENT messages (i.e. ignores MATLAB, LOG, TEXT etc messages). Every time
+the DPD service receives an EVENT message it forwards this message on to the array of Mplane::FpgaCommsMsgMonitor objects it creates at start up, and these
+monitor objects process the EVENT message looking for particular data.
+
+Each of these Mplane::FpgaCommsMsgMonitor objects is used for a specific purpose (for example VSWR measurement, TX power measurement etc) and
+has been created to monitor a specific variable in the EVENT message. If this variable is present in the message then a specific method in
+the DPD service is called which relates to the monitor's purpose (VSWR measurement etc). The method creates a class object specific for the purpose,
+for example VSWR measurement will have a class which provides the VSWR power level measured.
+
+Once the class object for the specific purpose has been created it is forwarded on to all the clients registered with the DPD service for this information.
+
+The DPD services class provides a callback for each of it's monitors. These callbacks are actually implemented as a template method:
+
+@code
+template<class ConcreteDataType, class VirtualDataType, class VirtualClientType>
+void DpdService::handleEvent(std::map<std::string, DataVariant> attributes)
+@endcode
+
+and each FpgaCommsMsgMonitor is created with the callback set to the appropriate types for that monitor. For example, the alarms monitor is created with
+the callback defined as:
+
+@code
+handleEvent<DpdAlarm, IDpdAlarm, IDpdAlarmClient>(attributes)
+@endcode
+
+Basically this is just a means of not having to write the same method several times with slightly different types.
+
+What this event handler does is creates the correct concrete data type (e.g. DpdAlarm), passes the map of variable/value pairs to this object so it
+can set up it's own data members, and then notifies any registered Observers for this type (I'll come back to this shortly). So, assuming a client
+has registered itself with DPD services for a particular type of information, that client will then receive a data object containing that information,
+and the client can use the class methods of that data class to access the information.
+
+In the diagram above this is shown as the message monitor creating a class (in the example IXxx or IYyy) and passing that class on to the registered
+clients (it's actually the DPD service that the clients register with, and methods within the DPD service which create the data classes to forward,
+but the diagram shows a simplified view of the concept).
+
+DPD services is declared as a subject of each of the types of information were monitoring (e.g. DPD alarms, VSWR, TX power etc). So the Subject<>
+template is used for notifying Observers and for attaching observers. Since the class is multiply inherited you have to cast to the appropriate
+Subject<> type to ensure the correct attach/notify methods are called. So save users of this class from that pain I added some utility methods
+attachAlarm(), attachVswr() etc which hide all the casting away.
+
+Note also that the DPD service is actually a task-based service deriving from Mplane::TaskEvent so as to be a Task which
+responds to events (the arrival of a new EVENT message).
+
+
+<hr>
+\section radioService_common_dpdservice_sec_3 EVENT types
+<hr>
+
+The common DPD service currently provides classes which handle the following types of information contained within a DPD EVENT message:
+
+\li DPD Alarms - DPD error status ('err' variable) will be set to an error enumeration value, possibly with some other supporting variables
+depending on the error type.
+
+\li VSWR measurements - The DPD processor will take VSWR measurements at the end of every DPD update cycle. These measurements are reported as part
+of the EVENT message in variables TBD.
+
+\li TX power measurements - The DPD update produces TX power calculations/measurements which are reported in variables TBD.
+
+The DPD service handles these types of information by providing interfaces to the respective clients (e.g. Mplane::IDpdAlarmClient etc)
+along with interfaces to the appropriate data class sent to that client (e.g. Mplane::IDpdAlarm).
+
+In the source code (under services/common/DpdServices/inc) there is a subdirectory <b>client</b> in which the client interfaces are defined.
+Similarly under subdirectory <b>data</b> there are the interfaces for the respective data classes. Note that also in subdirectory <b>data</b>
+are definitions for concrete data classes which the DPD service uses to create the data.
+
+Note that the common DPD services class does not use any of these handlers, it just provides the objects and makes them available for
+application-specific DPD services derived objects to use.
+
+
+\subsection radioService_common_dpdservice_sec_2_1 DPD Alarms
+<hr>
+
+DPD alarms are handled by Mplane::IDpdAlarmClient, which is sent data objects Mplane::DpdAlarm (derived from virtual interface Mplane::IDpdAlarm).
+
+An example EVENT message containing the information used for alarms is shown
+below:
+
+@code
+tx=0 Q=8 B=12 G=0.0500 N=10 i=37 success=17 fail=2 err=SPURIOUS eff=-16.8397 Gexp=0.9279 evm=0.0000
+@endcode
+
+The important parameters are described below:
+\li <b>err</b> - This is specific error relating to the DPD control process or the DPD algorithm itself
+\li <b>fail</b> - This is the number of consecutive failures of DPD iterations [monitor trigger]
+
+As shown, the message monitor searches for messages containing the variable <b>err</b> and will send
+a data class (shown below) when that variable and the others are all present.
+
+This data is passed on to alarm handlers (to let them decide how to process the information) when fail>0.
+
+The IDpdData class created and sent to clients:
+
+@code
+class DpdAlarm : public IDpdData {
+
+	enum class DpdAlarmType ;
+
+	// Get the failure count
+	unsigned getFailCount() const ;
+
+	// Get the alarm type
+	DpdAlarmType getAlarmType() const ;
+
+};
+@endcode
+
+
+\subsection radioService_common_dpdservice_sec_2_2 VSWR Measurements
+<hr>
+
+VSWR measurements are handled by Mplane::IDpdVswrClient, which is sent data objects Mplane::DpdVswr (derived from virtual interface Mplane::IDpdVswr).
+
+An example EVENT message containing the information used for VSWR measurement is shown
+below:
+
+@code
+tx=0 srxAtten=63 XrmsRef=6925 YrmsRef=6925 fwdGerr=0.2
+tx=0 srxAtten=32 XrmsRef=6925 YrmsRef=6925 revGerr=-0.33
+@endcode
+
+The important parameters are described below:
+\li <b>tx</b> - This indicates which of the antenna paths the measurement relates to
+\li <b>srxAtten</b> - This indicates the SRx attenuator setting that was used to obtain the measurements.  It is assumed to be an integer in the range [0..63]
+\li <b>XrmsRef</b>, <b>YrmsRef</b>  - These are the configured levels that are expected for their
+respective signals and effectively define the nominal gain.  When the calibrations are done they
+will be done at a specific gain and any variation in these settings compared to those used to do the
+calibration will need to be accounted for in the power calculation.  The PCL will not need XrmsRef and
+YrmsRef independently, just the X->Y gain.
+\li <b>fwdGerr</b> - This is the forward measured gain in dB relative to the reference gain
+\li <b>revGerr</b> - This is the reverse measured gain in dB relative to the reference gain [monitor trigger]
+
+The event containing <b>fwdGerr</b> will be handled by the TX power monitoring (so for VSWR calculations, the VSWR
+alarm must register for this event as well as the VSWR event).
+
+To calulate the reverse measurement, the message monitor searches for messages containing the variable <b>revGerr</b> and will send
+a data class (shown below) when that variable and the others are all present.
+
+The IDpdData class created and sent to clients:
+
+@code
+class DpdVswr : public IDpdData {
+	// Get tx path [1..NUM_TX_PORTS]
+	unsigned getTxPort() const ;
+
+	// Get XrmsRef in dB
+	Power getXrmsRef() const ;
+
+	// Get XrmsRef in dB
+	Power getXrmsRef() const ;
+
+	// Get revGerr in dB
+	Power getRevGerr() const ;
+};
+@endcode
+
+
+\subsection radioService_common_dpdservice_sec_2_3 TX Power Measurements
+<hr>
+
+TX power measurements are handled by Mplane::IDpdTxpowerClient, which is sent data objects Mplane::DpdTxpower (derived from virtual interface Mplane::IDpdTxpower).
+
+An example EVENT message containing the information used for TX power measurement (as used by PCL) is shown
+below:
+
+@code
+tx=0 srxAtten=63 XrmsRef=6925 YrmsRef=6925 fwdGerr=0.2
+@endcode
+
+The important parameters are described below:
+\li <b>tx</b> - This indicates which of the antenna paths the measurement relates to
+\li <b>srxAtten</b> - This indicates the SRx attenuator setting that was used to obtain the measurements.  It is assumed to be an integer in the range [0..63]
+\li <b>XrmsRef</b>, <b>YrmsRef</b>  - These are the configured levels that are expected for their
+respective signals and effectively define the nominal gain.  When the calibrations are done they
+will be done at a specific gain and any variation in these settings compared to those used to do the
+calibration will need to be accounted for in the power calculation.  The PCL will not need XrmsRef and
+YrmsRef independently, just the X->Y gain.
+\li <b>fwdGerr</b> - This is the forward measured gain in dB relative to the reference gain [monitor trigger]
+
+As shown, the message monitor searches for messages containing the variable <b>fwdGerr</b> and will send
+a data class (shown below) when that variable and the others are all present.
+
+The IDpdData class created and sent to clients:
+
+@code
+class DpdTxpower : public IDpdData {
+	// Get tx path [1..NUM_TX_PORTS]
+	unsigned getTxPort() const ;
+
+	// Get XrmsRef in dB
+	Power getXrmsRef() const ;
+
+	// Get XrmsRef in dB
+	Power getXrmsRef() const ;
+
+	// Get fwdGerr in dB
+	Power getFwdGerr() const ;
+};
+@endcode
+
+
+<hr>
+\section radioService_common_dpdservice_sec_4 DPD Control
+<hr>
+
+The DPD processor contains a state machine for each TX path, and these state machines need to be controlled by the
+power control loop (PCL). There are 3 main commands used to control the DPD:
+
+\li <b>start</b> - start running DPD iterations.
+\li <b>stop</b> - stops the DPD iterations once any that have already been started are completed
+\li <b>reset</b> - this resets both the DPD filter to unity and the DPD control state machine
+
+The per-TX path control of these 3 commands is provided in the virtual interface Mplane::IDpdControl which Mplane::DpdService implements:
+
+\dotfile dpdcontrol.dot "DPD Control Hierarchy"
+
+The interface is defined as:
+
+@code
+class IDpdControl
+{
+public:
+    //
+    // Method defines a static method used to get the single instance of
+    // the DPD controller module.
+    //
+    // \return a reference to the DPD control interface class
+    //
+    static std::shared_ptr<IDpdControl> getInterface();
+
+    //
+    // This method will reset the DPD on the specified channel to
+    // unity gain
+    // \param tx - tx path [1..MAX] to be reset
+    // \return true if all ok; false on failure
+    //
+    virtual bool resetDpd(unsigned tx) = 0;
+
+    //
+    // This method will enable adaption of the DPD on the specified
+    // channel
+    // \param tx - tx path to enable
+    // \param timeoutMs - timeout time in millisecs
+    // \return true if all ok; false on failure
+    //
+    virtual bool startDpd(unsigned tx, unsigned timeoutMs) = 0;
+
+    //
+    // This method will stop the DPD on the specified channel
+    // \param tx - tx path [1..MAX] to be restarted
+    // \return true if all ok; false on failure
+    //
+    virtual bool stopDpd(unsigned tx) = 0;
+
+};
+@endcode
+
+Notice that the <b>startDpd</b> method also includes a timeout time (in milliseconds). This is because after sending
+the 'start' command to the DPD, the method then waits for the DPD to complete at least 1 successful iteration. If for
+some reason the DPD does not complete an iteration, the timeout value will be used to time the command out and return
+with a failure indicator.
+
+A user of this interface and either access them via the Mplane::IDpdControl singleton (which the application-specific DPD service
+will provide), or can access them via the Mplane::DpdService object.
+
+To provide the per-TX control, Mplane::DpdService instantiates instances of Mplane::DpdControlTx (one per TX path). It is this object
+which implements the 3 commands. Note that Mplane::DpdControlTx implements the commands using a lower-level base class
+Mplane::DpdControlBase which provides the DPD messaging (and can be inherited by other classes wanting to communicate with the DPD)
+
+
+<hr>
+\section radioService_common_dpdservice_sec_5 PAPR Changes
+<hr>
+
+One of the parameters required by the DPD algorithm is the current CFR PAPR target. DpdControlTx provides a method for doing this
+that Mplane::DpdService (and derived objects) can use to send changes to the DPD.
+
+Note that Mplane::DpdService only provides the framework for this messaging, see application-specific services for details
+of how this is used.
+
+
+<hr>
+\section radioService_common_dpdservice_sec_10 Dependencies
+<hr>
+
+Uses Mplane::FpgaCommsMsgMonitor to handle processing the messages from the DPD embedded processor.
+
+
+
+<hr>
+\section radioService_common_dpdservice_sec_11 Host Based Unit Tests
+<hr>
+\subsection radioService_common_dpdservice_ssec_11_1 Code Coverage Summary
+<hr>
+
+\include common/DpdService/test/coverage.txt
+
+<hr>
+\subsection radioService_common_dpdservice_ssec_11_2 Unit Test Results
+<hr>
+
+\include common/DpdService/gtest/gtest.txt
+
+
+*/

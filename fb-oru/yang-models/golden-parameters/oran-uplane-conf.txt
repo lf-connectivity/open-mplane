@@ -1,0 +1,474 @@
+1. O-DU sends 'get' command to determine the presence of following instances: multiple static-low-level-[tr]x-endpoints, multiple [tr]x-arrays and the relations between them. O-RU replies <rpc-reply><data> including key information on number of endpoints, band number, number of arrays and polarization.
+
+<?xml version="1.0" encoding="utf-8"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="">
+  <get>
+    <filter type="subtree">
+      <upc:user-plane-configuration xmlns:upc="urn:o-ran:uplane-conf:1.0"/>
+    </filter>
+  </get>
+</rpc>
+
+Example: Response of 2x2 capable radio
+<?xml version="1.0" encoding="utf-8"?>
+<data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+	<user-plane-configuration xmlns="urn:o-ran:uplane-conf:1.0">
+	  <upc:tx-arrays> <upc:name>tx0</upc:name> </upc:tx-arrays>
+	  <upc:tx-arrays> <upc:name>tx1</upc:name> </upc:tx-arrays>
+	  <upc:rx-arrays> <upc:name>rx0</upc:name> </upc:rx-arrays>
+	  <upc:rx-arrays> <upc:name>rx1</upc:name> </upc:rx-arrays>
+	  
+	  <endpoint-types> 
+	  	<id>0</id> 
+	  	<supported-frame-structures>0x90</supported-frame-structures>
+	  	<supported-frame-structures>0xA0</supported-frame-structures>
+	  	<supported-frame-structures>0xB0</supported-frame-structures>
+	  	<supported-frame-structures>0xC0</supported-frame-structures>
+	  	<supported-frame-structures>0x81</supported-frame-structures>
+	  	<supported-frame-structures>0x91</supported-frame-structures>
+	  	<supported-frame-structures>0xA1</supported-frame-structures>
+	  	<supported-frame-structures>0xB1</supported-frame-structures>
+	  	<supported-frame-structures>0xC1</supported-frame-structures>
+	  	<supported-frame-structures>0x92</supported-frame-structures>
+	  	<supported-frame-structures>0xA2</supported-frame-structures>
+	  	<supported-frame-structures>0xB2</supported-frame-structures>
+	  	<supported-section-types>1</supported-section-types>
+	  <endpoint-types>
+	  <endpoint-types> 
+	  	<id>1</id> 
+	  	<supported-frame-structures>0x90</supported-frame-structures>
+	  	<supported-frame-structures>0xA0</supported-frame-structures>
+	  	<supported-frame-structures>0xB0</supported-frame-structures>
+	  	<supported-frame-structures>0xC0</supported-frame-structures>
+	  	<supported-frame-structures>0x81</supported-frame-structures>
+	  	<supported-frame-structures>0x91</supported-frame-structures>
+	  	<supported-frame-structures>0xA1</supported-frame-structures>
+	  	<supported-frame-structures>0xB1</supported-frame-structures>
+	  	<supported-frame-structures>0xC1</supported-frame-structures>
+	  	<supported-frame-structures>0x92</supported-frame-structures>
+	  	<supported-frame-structures>0xA2</supported-frame-structures>
+	  	<supported-frame-structures>0xB2</supported-frame-structures>
+	  	<supported-section-types>3</supported-section-types>
+	  <endpoint-types>
+	  
+	  <static-low-level-tx-endpoints> <upc:name>tx0cc0</upc:name> <array>tx0</array> <endpoint-type>0</endpoint-type> </static-low-level-tx-endpoints>
+	  <static-low-level-tx-endpoints> <upc:name>tx1cc0</upc:name> <array>tx1</array> <endpoint-type>0</endpoint-type> </static-low-level-tx-endpoints>
+	  <static-low-level-tx-endpoints> <upc:name>tx0cc1</upc:name> <array>tx0</array> <endpoint-type>0</endpoint-type> </static-low-level-tx-endpoints>
+	  <static-low-level-tx-endpoints> <upc:name>tx1cc1</upc:name> <array>tx1</array> <endpoint-type>0</endpoint-type> </static-low-level-tx-endpoints>
+	
+	  <static-low-level-rx-endpoints> <upc:name>rx0cc0</upc:name> <array>rx0</array> <endpoint-type>0</endpoint-type> </static-low-level-rx-endpoints>
+	  <static-low-level-rx-endpoints> <upc:name>rx1cc0</upc:name> <array>rx1</array> <endpoint-type>0</endpoint-type> </static-low-level-rx-endpoints>
+	  <static-low-level-rx-endpoints> <upc:name>rx0cc1</upc:name> <array>rx0</array> <endpoint-type>0</endpoint-type> </static-low-level-rx-endpoints>
+	  <static-low-level-rx-endpoints> <upc:name>rx1cc1</upc:name> <array>rx1</array> <endpoint-type>0</endpoint-type> </static-low-level-rx-endpoints>
+	
+	  <static-low-level-rx-endpoints> <upc:name>prach0cc0</upc:name> <array>rx0</array> <endpoint-type>1</endpoint-type> </static-low-level-rx-endpoints>
+	  <static-low-level-rx-endpoints> <upc:name>prach1cc0</upc:name> <array>rx1</array> <endpoint-type>1</endpoint-type> </static-low-level-rx-endpoints>
+	  <static-low-level-rx-endpoints> <upc:name>prach0cc1</upc:name> <array>rx0</array> <endpoint-type>1</endpoint-type> </static-low-level-rx-endpoints>
+	  <static-low-level-rx-endpoints> <upc:name>prach1cc1</upc:name> <array>rx1</array> <endpoint-type>1</endpoint-type> </static-low-level-rx-endpoints>
+	
+	</user-plane-configuration>
+</data>
+
+2. O-DU sends edit-config to create low-level-[tr]x-endpoints, with the same name as static-low-level-[tr]x-endpoints. The uniqueness of eaxc-id is mandatory within all endpoints related to same interface elements that have relationship to low-level-rx-endpoint elements or low-level-tx-endpoint elements. Number of instances of low-level-[tr]x-endpoints depend on contents of selected test profile eg. for number of CCs. It may be less than number of instances of static-low-level-[tr]x-endpoints. O-RU replies <rpc-reply><ok/></rpc-reply>.
+
+Example:
+<?xml version="1.0" encoding="utf-8"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="">
+  <edit-config>
+    <target>
+      <running/>
+    </target>
+    <config>
+		<upc:user-plane-configuration xmlns:upc="urn:o-ran:uplane-conf:1.0" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+
+		  <upc:low-level-tx-endpoints nc:operation="create"> <upc:name>tx0cc0</upc:name> </upc:low-level-tx-endpoints>
+		  <upc:low-level-tx-endpoints nc:operation="create"> <upc:name>tx1cc0</upc:name> </upc:low-level-tx-endpoints>
+		  <upc:low-level-tx-endpoints nc:operation="create"> <upc:name>tx0cc1</upc:name> </upc:low-level-tx-endpoints>
+		  <upc:low-level-tx-endpoints nc:operation="create"> <upc:name>tx1cc1</upc:name> </upc:low-level-tx-endpoints>
+		  
+		  <upc:low-level-rx-endpoints nc:operation="create"> <upc:name>rx0cc0</upc:name> </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="create"> <upc:name>rx1cc0</upc:name> </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="create"> <upc:name>rx0cc1</upc:name> </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="create"> <upc:name>rx1cc1</upc:name> </upc:low-level-rx-endpoints>
+		  
+		  <upc:low-level-rx-endpoints nc:operation="create"> <upc:name>prach0cc0</upc:name> </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="create"> <upc:name>prach1cc0</upc:name> </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="create"> <upc:name>prach0cc1</upc:name> </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="create"> <upc:name>prach1cc1</upc:name> </upc:low-level-rx-endpoints>
+		</upc:user-plane-configuration>
+	</config>
+  </edit-config>
+</rpc>
+
+3. O-DU sends <rpc><edit-config> to create [tr]x-array-carriers. Number of created instances of [tr]x-array-carriers is equivalent to number of CCs times number of arrays, where number of CCs is defined by operator. Appropriate values are configured to absolute-frequency-center, channel-bandwidth, gain, and so on. The leaf “active” is ‘INACTIVE’ for all just created [tr]x-array-carriers. O-RU replies <rpc-reply><ok/></rpc-reply>.
+
+Example:
+<?xml version="1.0" encoding="utf-8"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="">
+  <edit-config>
+    <target>
+      <running/>
+    </target>
+    <config>
+		<upc:user-plane-configuration xmlns:upc="urn:o-ran:uplane-conf:1.0" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+		  <upc:tx-array-carriers nc:operation="create"> <upc:name>txcc0</upc:name> <upc:active>INACTIVE</upc:active> </upc:tx-array-carriers>
+		  <upc:tx-array-carriers nc:operation="create"> <upc:name>txcc1</upc:name> <upc:active>INACTIVE</upc:active> </upc:tx-array-carriers>
+		  
+		  <upc:rx-array-carriers nc:operation="create"> <upc:name>rxcc0</upc:name> <upc:active>INACTIVE</upc:active> </upc:rx-array-carriers>
+		  <upc:rx-array-carriers nc:operation="create"> <upc:name>rxcc1</upc:name> <upc:active>INACTIVE</upc:active> </upc:rx-array-carriers>
+		</upc:user-plane-configuration>
+	</config>
+  </edit-config>
+</rpc>
+
+4. O-DU sends <rpc><edit-config> to create processing-elements related to interfaces offering access to desired endpoints. The key information such as MAC address is configured according to selected transport flow, eg. o-ru-mac-address, o-du-mac-address and vlan-id for C/U-Plane in case of Ethernet flow. O-RU replies <rpc-reply><ok/></rpc-reply>.
+
+Example:
+<?xml version="1.0" encoding="utf-8"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="">
+  <edit-config>
+    <target>
+      <running/>
+    </target>
+    <config>
+		<pe:processing-elements xmlns:pe="urn:o-ran:processing-element:1.0" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+		  <pe:ru-elements nc:operation="create"> 
+		  	<pe:name>pe0</pe:name> 
+		  	<pe:ru-mac-address>11:22:33:44:55:66</pe:ru-mac-address> 
+		  	<pe:vlan-id>1</pe:vlan-id> 
+		  	<pe:o-du-mac-address>11:22:33:44:55:67</pe:ru-mac-address> 
+		  </pe:ru-elements>
+		</pe:processing-elements>
+	</config>
+  </edit-config>
+</rpc>
+
+5. O-DU sends <rpc><edit-config> to create low-level-[tr]x-link(s) to make relationship between low-level-[tr]x-endpoint(s), [tr]x-array-carriers and processing elements belonging to transport. The number of instance(s) for low-level-[tr]x-links is equivalent to that of instance(s) of low-level-[tr]x-endpoints.
+
+Example:
+<?xml version="1.0" encoding="utf-8"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="">
+  <edit-config>
+    <target>
+      <running/>
+    </target>
+    <config>
+		<upc:user-plane-configuration xmlns:upc="urn:o-ran:uplane-conf:1.0" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+		  <upc:low-level-tx-links nc:operation="create"> 
+		  	<upc:name>tx0cc0</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:tx-array-carrier>txcc0</upc:tx-array-carrier> 
+		  	<upc:low-level-tx-endpoint>tx0cc0</upc:low-level-tx-endpoint> 
+		  </upc:low-level-tx-links>
+		  <upc:low-level-tx-links nc:operation="create"> 
+		  	<upc:name>tx1cc0</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:tx-array-carrier>txcc0</upc:tx-array-carrier> 
+		  	<upc:low-level-tx-endpoint>tx1cc0</upc:low-level-tx-endpoint> 
+		  </upc:low-level-tx-links>
+		  <upc:low-level-tx-links nc:operation="create"> 
+		  	<upc:name>tx0cc1</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:tx-array-carrier>txcc1</upc:tx-array-carrier> 
+		  	<upc:low-level-tx-endpoint>tx0cc1</upc:low-level-tx-endpoint> 
+		  </upc:low-level-tx-links>
+		  <upc:low-level-tx-links nc:operation="create"> 
+		  	<upc:name>tx1cc1</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:tx-array-carrier>txcc1</upc:tx-array-carrier> 
+		  	<upc:low-level-tx-endpoint>tx1cc1</upc:low-level-tx-endpoint> 
+		  </upc:low-level-tx-links>
+		  
+		  <upc:low-level-rx-links nc:operation="create"> 
+		  	<upc:name>rx0cc0</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:rx-array-carrier>rxcc0</upc:rx-array-carrier> 
+		  	<upc:low-level-rx-endpoint>rx0cc0</upc:low-level-rx-endpoint> 
+		  </upc:low-level-rx-links>
+		  <upc:low-level-rx-links nc:operation="create"> 
+		  	<upc:name>rx1cc0</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:rx-array-carrier>rxcc0</upc:rx-array-carrier> 
+		  	<upc:low-level-rx-endpoint>rx1cc0</upc:low-level-rx-endpoint> 
+		  </upc:low-level-rx-links>
+		  <upc:low-level-rx-links nc:operation="create"> 
+		  	<upc:name>rx0cc1</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:rx-array-carrier>rxcc1</upc:rx-array-carrier> 
+		  	<upc:low-level-rx-endpoint>rx0cc1</upc:low-level-rx-endpoint> 
+		  </upc:low-level-rx-links>
+		  <upc:low-level-rx-links nc:operation="create"> 
+		  	<upc:name>rx1cc1</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:rx-array-carrier>rxcc1</upc:rx-array-carrier> 
+		  	<upc:low-level-rx-endpoint>rx1cc1</upc:low-level-rx-endpoint> 
+		  </upc:low-level-rx-links>
+		  
+		  <upc:low-level-rx-links nc:operation="create"> 
+		  	<upc:name>prach0cc0</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:rx-array-carrier>rxcc0</upc:rx-array-carrier> 
+		  	<upc:low-level-rx-endpoint>prach0cc0</upc:low-level-rx-endpoint> 
+		  </upc:low-level-rx-links>
+		  <upc:low-level-rx-links nc:operation="create"> 
+		  	<upc:name>prach1cc0</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:rx-array-carrier>rxcc0</upc:rx-array-carrier> 
+		  	<upc:low-level-rx-endpoint>prach1cc0</upc:low-level-rx-endpoint> 
+		  </upc:low-level-rx-links>
+		  <upc:low-level-rx-links nc:operation="create"> 
+		  	<upc:name>prach0cc1</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:rx-array-carrier>rxcc1</upc:rx-array-carrier> 
+		  	<upc:low-level-rx-endpoint>prach0cc1</upc:low-level-rx-endpoint> 
+		  </upc:low-level-rx-links>
+		  <upc:low-level-rx-links nc:operation="create"> 
+		  	<upc:name>prach1cc1</upc:name> 
+		  	<processing-element>pe0</processing-element> 
+		  	<upc:rx-array-carrier>rxcc1</upc:rx-array-carrier> 
+		  	<upc:low-level-rx-endpoint>prach1cc1</upc:low-level-rx-endpoint> 
+		  </upc:low-level-rx-links>
+  
+		</upc:user-plane-configuration>
+	</config>
+  </edit-config>
+</rpc>
+
+6. Configure a carrier. Use capabilities read in step 1 to determine which link(s) to use.
+
+Example- create a 2x2 LTE20: uses links tx0cc0, tx1cc0, rx0cc0, rx1cc0, prach0cc0, prach1cc0
+
+<?xml version="1.0" encoding="utf-8"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="">
+  <edit-config>
+    <target>
+      <running/>
+    </target>
+    <config>
+		<upc:user-plane-configuration xmlns:upc="urn:o-ran:uplane-conf:1.0" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+
+		  <upc:tx-array-carriers nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>txcc0</upc:name> 
+		  	<upc:active>ACTIVE</upc:active>
+		  	<upc:center-of-channel-bandwidth>2120000000</upc:center-of-channel-bandwidth>
+		  	<upc:channel-bandwidth>20000000</upc:channel-bandwidth>
+		  	<upc:type>LTE</upc:type>
+		  </upc:tx-array-carriers>
+		  <upc:rx-array-carriers nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>rxcc0</upc:name> 
+		  	<upc:active>ACTIVE</upc:active>
+		  	<upc:center-of-channel-bandwidth>1720000000</upc:center-of-channel-bandwidth>
+		  	<upc:channel-bandwidth>20000000</upc:channel-bandwidth>
+		  	<upc:type>LTE</upc:type>
+		  </upc:rx-array-carriers>
+		
+		  <upc:low-level-tx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>tx0cc0</upc:name> 
+		  	<upc:frame-structure>0xB0</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>160</upc:cp-length>
+		  	<upc:cp-length-other>144</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x00</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-tx-endpoints>
+		  <upc:low-level-tx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>tx1cc0</upc:name> 
+		  	<upc:frame-structure>0xB0</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>160</upc:cp-length>
+		  	<upc:cp-length-other>144</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x01</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-tx-endpoints>
+		
+		  <upc:low-level-rx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>rx0cc0</upc:name> 
+		  	<upc:frame-structure>0xB0</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>160</upc:cp-length>
+		  	<upc:cp-length-other>144</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x00</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>rx1cc0</upc:name> 
+		  	<upc:frame-structure>0xB0</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>160</upc:cp-length>
+		  	<upc:cp-length-other>144</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x01</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-rx-endpoints>
+		
+		  <upc:low-level-rx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>prach0cc0</upc:name> 
+		  	<upc:frame-structure>0xB0</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>160</upc:cp-length>
+		  	<upc:cp-length-other>144</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x08</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>prach1cc0</upc:name> 
+		  	<upc:frame-structure>0xB0</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>160</upc:cp-length>
+		  	<upc:cp-length-other>144</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x09</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-rx-endpoints>
+
+		</upc:user-plane-configuration>
+	</config>
+  </edit-config>
+</rpc>
+
+Example- create a 2x2 NR50: uses links tx0cc1, tx1cc1, rx0cc1, rx1cc1, prach0cc1, prach1cc1
+
+<?xml version="1.0" encoding="utf-8"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="">
+  <edit-config>
+    <target>
+      <running/>
+    </target>
+    <config>
+		<upc:user-plane-configuration xmlns:upc="urn:o-ran:uplane-conf:1.0" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+
+		  <upc:tx-array-carriers nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>txcc1</upc:name> 
+		  	<upc:active>ACTIVE</upc:active>
+		  	<upc:center-of-channel-bandwidth>2645000000</upc:center-of-channel-bandwidth>
+		  	<upc:channel-bandwidth>50000000</upc:channel-bandwidth>
+		  	<upc:type>NR</upc:type>
+		  </upc:tx-array-carriers>
+		  <upc:rx-array-carriers nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>rxcc1</upc:name> 
+		  	<upc:active>ACTIVE</upc:active>
+		  	<upc:center-of-channel-bandwidth>2525000000</upc:center-of-channel-bandwidth>
+		  	<upc:channel-bandwidth>50000000</upc:channel-bandwidth>
+		  	<upc:type>NR</upc:type>
+		  </upc:rx-array-carriers>
+		
+		  <upc:low-level-tx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>tx0cc1</upc:name> 
+		  	<upc:frame-structure>0xA2</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>304</upc:cp-length>
+		  	<upc:cp-length-other>288</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x10</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-tx-endpoints>
+		  <upc:low-level-tx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>tx1cc1</upc:name> 
+		  	<upc:frame-structure>0xA2</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>304</upc:cp-length>
+		  	<upc:cp-length-other>288</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x11</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-tx-endpoints>
+		
+		  <upc:low-level-rx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>rx0cc1</upc:name> 
+		  	<upc:frame-structure>0xA2</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>304</upc:cp-length>
+		  	<upc:cp-length-other>288</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x10</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>rx1cc1</upc:name> 
+		  	<upc:frame-structure>0xA2</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>304</upc:cp-length>
+		  	<upc:cp-length-other>288</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x11</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-rx-endpoints>
+		
+		  <upc:low-level-rx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>prach0cc1</upc:name> 
+		  	<upc:frame-structure>0xA2</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>304</upc:cp-length>
+		  	<upc:cp-length-other>288</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x18</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-rx-endpoints>
+		  <upc:low-level-rx-endpoints nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"> 
+		  	<upc:name>prach1cc1</upc:name> 
+		  	<upc:frame-structure>0xA2</upc:frame-structure>
+		  	<upc:cp-type>NORMAL</upc:cp-type>
+		  	<upc:cp-length>304</upc:cp-length>
+		  	<upc:cp-length-other>288</upc:cp-length-other>
+		  	<upc:e-axcid>
+		  		<upc:o-du-port-bitmask>0x80</upc:o-du-port-bitmask>
+		        <upc:band-sector-bitmask>0x40</upc:band-sector-bitmask>    
+		        <upc:ccid-bitmask>0x30</upc:ccid-bitmask>         
+		    	<upc:ru-port-bitmask>0x0F</upc:ru-port-bitmask>
+		    	<upc:eaxc-id>0x19</upc:eaxc-id>
+		  	</upc:e-axcid>
+		  </upc:low-level-rx-endpoints>
+
+		</upc:user-plane-configuration>
+	</config>
+  </edit-config>
+</rpc>
+

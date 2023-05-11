@@ -1,0 +1,308 @@
+module o-ran-lbm {
+  yang-version 1.1;
+  namespace "urn:o-ran:lbm:1.0";
+  prefix "o-ran-lbm";
+
+  import ietf-yang-types {
+    prefix yang;
+    revision-date 2013-07-15;
+  }
+
+  import ietf-interfaces {
+    prefix if;
+  }
+
+  import o-ran-interfaces {
+    prefix "o-ran-int";
+  }
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the module capabilities for
+    the O-RAN Radio loop-back protocol (IEEE 802.1ag).
+    It is derived from MEF-38 (Service OAM Fault Management YANG Modules, April 2012)
+
+    Copyright 2019 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2019-02-04" {
+    description
+      "version 1.0.0
+
+      1) imported model from xRAN
+      2) changed namespace and reference from xran to o-ran";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+  typedef priority-type {
+    type uint32 {
+      range "0..7";
+    }
+    description
+      "A 3 bit priority value to be used in the VLAN tag, if present
+       in the transmitted frame.";
+    reference "[802.1q] 12.14.7.3.2:e";
+  }
+
+  typedef mep-id-type {
+    type uint16 {
+      range "1..8191";
+    }
+    description
+      "Maintenance association End Point Identifier (MEPID): A small integer,
+       unique over a given Maintenance Association, identifying a
+       specific MEP.";
+    reference "[802.1q] 3.19 and 19.2.1";
+  }
+
+  typedef vlan-id-type {
+    type uint16 {
+      range "1..4094";
+    }
+    description
+      "The VLAN-ID that uniquely identifies a VLAN.  This is the 12-bit VLAN-ID
+       used in the VLAN Tag header.";
+    reference "[802.1q] 9.6";
+  }
+
+  typedef md-level-type {
+    type int32 {
+      range "0..7";
+    }
+    description
+      "Maintenance Domain Level (MD Level) identifier.  Higher numbers
+       correspond to higher Maintenance Domains, those with the greatest
+       physical reach, with the highest values for customers' CFM PDUs.
+       Lower numbers correspond to lower Maintenance Domains, those with
+       more limited physical reach, with the lowest values for CFM PDUs
+       protecting single bridges or physical links.";
+    reference "[802.1q] 18.3, 21.4.1, IEEE8021-CFM-MIB.Dot1agCfmMDLevel";
+  }
+
+  typedef lbm-transaction-id-type {
+    type uint32;
+    description
+      "A loopback transaction identifier";
+    reference "[802.1q] 21.7.3";
+  }
+
+// grouping
+
+  grouping md-group {
+    list maintenance-domain {
+      key "id";
+      description
+        "A Maintenance Domain managed object is required in order to create an MA
+         with a MAID that includes that Maintenance Domain's Name. From
+         this Maintenance Domain managed object, all Maintenance
+         Association managed objects associated with that Maintenance
+         Domain managed object can be accessed, and thus controlled.";
+      reference "[802.1q] 12.14.5";
+
+      leaf id {
+        type string;
+        description
+          "A unique identifier of a Maintenance Domain";
+        reference "[802.1q] 12.14.5";
+      }
+
+      leaf name {
+        type string;
+        description
+          "The value for the Maintenance Domain Name. Only the name-type
+          'character-string' is supported";
+        reference "[802.1q] 21.6.5.1 (Table 21-19), 12.14.5.3.2:a";
+      }
+
+      leaf md-level {
+        type md-level-type;
+        default 0;
+        description
+          "Integer identifying the Maintenance Domain Level (MD Level).  Higher
+           numbers correspond to higher Maintenance Domains, those with the
+           greatest physical reach, with the highest values for customers'
+           CFM PDUs.  Lower numbers correspond to lower Maintenance
+           Domains, those with more limited physical reach, with the lowest
+           values for CFM PDUs protecting single bridges or physical links.";
+        reference "[802.1q] 12.14.5.1.3:b";
+      }
+
+      list maintenance-association {
+        key "id";
+        description
+          "This list represents Maintenance Entity Groups (Y.1731) or
+           Maintenance Associations (802.1ag). MEGs/MAs are sets of
+           MEPs, each configured to the same service inside a common
+           OAM domain.";
+        leaf id {
+          type string;
+          description
+            "A unique identifier of a Maintenance Association";
+          reference "[802.1q] 12.14.6";
+        }
+        leaf name {
+          type string;
+
+          description
+            "The value for the Maintenance Association Name. Only the name-type
+            'character-string' is supported";
+          reference "[802.1q] 12.14.5.3.2:b, Table 21-20";
+        }
+
+        list component-list {
+          key "component-id";
+          description
+            "A list of components each of which can be managed in a manner
+             essentially equivalent to an 802.1Q bridge.";
+          reference "[802.1q] IEEE8021-CFM-V2-MIB.ieee8021CfmMaCompTable";
+
+          leaf component-id {
+            type uint32;
+            description
+              "The bridge component within the system to which the information
+               in this maintenance-association applies";
+            reference "[802.1q] IEEE8021-CFM-V2-MIB.ieee8021CfmMaComponentId";
+          }
+
+          leaf name {
+            type string;
+
+            description
+              "The value for the Maintenance Association Name. Only the name-type
+              'character-string' is supported";
+            reference "[802.1q] 12.14.5.3.2:b, Table 21-20";
+          }
+
+          leaf-list vid {
+            type leafref {
+              path "/if:interfaces/if:interface/o-ran-int:vlan-id";
+            }
+            min-elements 1;
+            ordered-by user;
+            description
+              "The VID(s) monitored by this MA, or 0, if the MA is not attached to any
+               VID. The first VID returned is the MA's Primary VID";
+            reference "[802.1q] 12.14.5.3.2:b";
+          }
+
+          leaf-list remote-meps {
+            type mep-id-type;
+            description
+              "A list of the MEPIDs of the MEPs in the MA.";
+            reference "[802.1q] 12.14.6.1.3:g";
+          }
+
+          list maintenance-association-end-point {
+            key "mep-identifier";
+            description
+              "The list of Maintenance association End Points in a specific Maintance
+              Association.";
+
+            leaf mep-identifier {
+              type mep-id-type;
+              description
+                "Integer that is unique among all the MEPs in the same MA. Other
+                definition is: a small integer, unique over a given
+                Maintenance Association, identifying a specific Maintenance
+                association End Point.";
+              reference "[802.1q] 12.14.6.3.2:b";
+            }
+
+            leaf interface {
+              type leafref {
+                path "/if:interfaces/if:interface/if:name";
+              }
+              mandatory true;
+              description
+              "An interface, either a Bridge Port or an aggregated IEEE 802.3 port
+               within a Bridge Port, to which the MEP is attached. Each interface in
+               the system is uniquely identified by an interface-name. The structure
+               and content of the name is outside the scope of this specification.";
+              reference "[802.1q] 12.14.7.1.3:b";
+            }
+
+            leaf primary-vid {
+              type leafref {
+                path "/if:interfaces/if:interface/o-ran-int:vlan-id";
+              }
+              mandatory true;
+              description
+              "The Primary VID of the MEP. The value 0 indicates that either the
+               Primary VID is that of the MEP's MA or that the MEP's MA is
+               associated with no VID";
+              reference "[802.1q] 12.14.7.1.3:d";
+            }
+
+            leaf administrative-state {
+              type boolean;
+              mandatory true;
+              description
+                "The administrative state of the MEP";
+              reference "[802.1q] 12.14.7.1.3:e";
+            }
+
+            leaf mac-address {
+              type leafref {
+                path "/if:interfaces/if:interface/o-ran-int:mac-address";
+              }
+              config false;
+              description
+                "The MAC address of the MEP";
+              reference "[802.1q] 12.14.7.1.3:i";
+            }
+
+            container loopback {
+              config false;
+              description
+                "Data definitions related to the Loopback function.";
+              leaf replies-transmitted {
+                type yang:counter32;
+                config false;
+                mandatory true;
+                description
+                  "The total number of LBRs transmitted.";
+                reference "[802.1q] 12.14.7.1.3:ad";
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+// top level container
+  container md-data-definitions {
+    description
+      "Data definitions related to the maineance domains used for supporting
+      Ethernet loopback connectivity checks";
+    uses md-group;
+  }
+}

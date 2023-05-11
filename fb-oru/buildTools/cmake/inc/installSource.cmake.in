@@ -1,0 +1,109 @@
+##======================================================================================================================
+## CMake script to install package file
+##
+##======================================================================================================================
+
+# Define variables - passed across from main script
+set (GITDIR "@GITDIR@")
+set (TARGET "@TARGET@")
+set (SRC_ROOTFS "@SRC_ROOTFS@")
+set (PACKAGE_DIR "@PACKAGE_DIR@")
+set (PACKAGE_SRC_NAME "@PACKAGE_SRC_NAME@")
+set (PACKAGE_SOURCE_LIST "@PACKAGE_SOURCE_LIST@")
+set (PROJECT_NAME "@PROJECT_NAME@")
+set (SOURCE_PATHS "@SOURCE_PATHS@")
+set (BUILD_VERSION "@BUILD_VERSION@")
+set (BUILD_NUMBER "@BUILD_NUMBER@")
+
+##----------------------------------------------------------------------------------------------------------------------
+## Error check
+
+if (SRC_ROOTFS STREQUAL "")
+	message(FATAL_ERROR "Unable to set src rootfs")
+endif ()
+
+if (PACKAGE_DIR STREQUAL "")
+	message(FATAL_ERROR "Unable to set package dir")
+endif ()
+if (PACKAGE_SRC_NAME STREQUAL "")
+	message(FATAL_ERROR "Unable to set src name")
+endif ()
+
+##----------------------------------------------------------------------------------------------------------------------
+## Include Modules
+list(APPEND CMAKE_MODULE_PATH ${GITDIR}/buildTools/cmake/Modules)
+include(settings)
+include(rse_functions)
+
+##----------------------------------------------------------------------------------------------------------------------
+## Settings
+
+set (APP_SRC_DIR "${SRC_ROOTFS}/${PROJECT_NAME}-${BUILD_VERSION}-${BUILD_NUMBER}")
+
+## Set up the package directory
+file(MAKE_DIRECTORY ${PACKAGE_DIR})
+
+
+# Clear out old contents
+execute_process(
+    COMMAND rm "-rf" "${SRC_ROOTFS}"
+)
+
+## Set up the rootfs directory
+file(MAKE_DIRECTORY ${SRC_ROOTFS})
+
+
+##----------------------------------------------------------------------------------------------------------------------
+## Install
+
+message("installSource - START")
+
+
+message("installSource - SOURCE_PATHS=${SOURCE_PATHS}")
+
+# Create the application source
+file(MAKE_DIRECTORY ${APP_SRC_DIR})
+
+# Copy app source files 
+foreach (src ${SOURCE_PATHS})
+	execute_process(
+	    WORKING_DIRECTORY ${APP_SRC_DIR}
+	    COMMAND cp "${src}" "."
+	)
+endforeach()
+
+
+# Unpack source packages into rootfs
+foreach (tgz ${PACKAGE_SOURCE_LIST})
+	execute_process(
+	    WORKING_DIRECTORY ${SRC_ROOTFS}
+	    COMMAND tar "xf" "${tgz}"
+	)
+endforeach()
+
+# Facebook Proprietary
+# Clean out any proprietary code
+file(GLOB_RECURSE cpplist ${SRC_ROOTFS}/*.cpp)
+file(GLOB_RECURSE hlist ${SRC_ROOTFS}/*.h)
+foreach (src ${cpplist} ${hlist})
+	execute_process(
+	    WORKING_DIRECTORY ${SRC_ROOTFS}
+	    COMMAND sed -i /Proprietary/,/Proprietary/d "${src}"
+	)
+endforeach()
+# Facebook Proprietary
+
+# tgz
+file (GLOB files RELATIVE ${SRC_ROOTFS} "${SRC_ROOTFS}/*")
+execute_process(
+    WORKING_DIRECTORY ${SRC_ROOTFS}
+    COMMAND tar "zcf" "${PACKAGE_DIR}/${PACKAGE_SRC_NAME}.tgz" ${files}
+)
+
+# Finish by clearing out the source copies
+execute_process(
+    COMMAND rm "-rf" "${SRC_ROOTFS}"
+)
+
+message("installSource - END") 
+

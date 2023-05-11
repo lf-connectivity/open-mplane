@@ -1,0 +1,23 @@
+From a1879d1aef692886d9526b02eaa787a6535d4cdc Mon Sep 17 00:00:00 2001
+From: Michal Vasko <mvasko@cesnet.cz>
+Date: Tue, 12 May 2020 16:06:01 +0200
+Subject: [PATCH] netconf_nmda BUGFIX get username based on nc session
+
+Fixes #617
+---
+ src/netconf_nmda.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/netconf_nmda.c b/src/netconf_nmda.c
+index aa42612ce..1f519bf28 100755
+--- a/src/netconf_nmda.c
++++ b/src/netconf_nmda.c
+@@ -224,7 +224,7 @@ np2srv_rpc_getdata_cb(sr_session_ctx_t *session, const char *UNUSED(op_path), co
+     ly_set_free(nodeset);
+
+     /* perform correct NACM filtering */
+-    ncac_check_data_read_filter(&data_get, sr_session_get_user(session));
++    ncac_check_data_read_filter(&data_get, np_get_nc_sess_user(session));
+
+     /* add output */
+     node = lyd_new_output_anydata(output, NULL, "data", data_get, LYD_ANYDATA_DATATREE);

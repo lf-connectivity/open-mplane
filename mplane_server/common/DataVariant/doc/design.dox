@@ -1,0 +1,154 @@
+/**
+\mainpage DataVariant Design Document
+\anchor _home
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section common_datavariant_scope Scope
+<hr>
+
+This document describes the classes created to provide the DataVariant class which can store and convert a value from and to
+various supported types
+
+
+<hr>
+\section common_datavariant_overview Overview
+<hr>
+
+The Mplane::DataVariant class supports the storage of a single value that can be one of a specific set of supported types
+(the types being defined in Mplane::DataVariantTypes). This value can then be reported as a string or converted into any one of
+the other supported types.
+
+In addition for managing the data variance, the classes also provide support for optional values, default values, arrays, and
+lists of DataVariant values defined by a format string.
+
+In order to keep the code maintainable and flexible, the classes have been split as follows:
+
+\li DataVariantList.cpp - Provides support for creating lists of DataVariant objects
+\li DataVariantBase.cpp - The base DataVariant class
+\li DataVariant.cpp - Adds array support on top of the base DataVariant class
+\li DataVariantSettings.cpp - Maintains a map of all the defined variables so that TIF can expand any variable values in the DataVariants
+(variables being defined as ${NAME})
+\li DataVariantVector.cpp - A utility class that provides static methods for converting DataVariant arrays to and from STL std::vector
+\li DataVariantType\* - Collection of classes that provide the type-specific getter and setter for DataVariant
+\li DataVariantType\ DataVariantTypes.cpp - Class that inherits all DataVariantType\* types. This is simply a convenience wrapper
+so that the DataVariant class constructors only need to inherit from the single class
+\li DvType\* - Collection of classes that provide the actual types. There is a single class for each of the supported types
+\li DvTypeFactory.cpp - Factory class that creates a new DvTypeX instance based on the requested type
+
+<hr>
+\section common_datavariant_design	Design Details
+<hr>
+
+When Mplane::DataVariant only supported a couple of types it was simple to keep those type values and the code to manage them all in the single
+class (Mplane::DataVariant). As we've required support for new types this has impacted the class and made it hard to maintain.
+
+So, the old Mplane::DataVariant class has been refactored into multiple support classes. While refactoring, I set some design
+objectives to try to make the DataVariant class more flexible:
+
+\li Remove the type-specific details for the top-level DataVariant
+\li Make adding a new type as simple as possible, affecting the least number of files/classes
+\li Add type specific setter/getter methods (to remove the issues with the compiler being unable to determine which overloaded method to use)
+\li Make each type independent from each other
+\li Be able to convert from one type to any other
+\li Properly support units for types like Frequency and Power, so all the support code to convert values in the TIF code is removed
+\li Minimise TIF support code
+
+The first problem was to pull out all of the type-specific code and create a class per type.
+
+\image html dv-types.png
+
+Mplane::IDvType defines the virtual interface to any Mplane::DataVariant type class. Mplane::DvTypeBase is a base class that implements default methods
+for the interface as well as providing utility functions that the type-specific classes can then use.
+
+Each type is implemented in DvTypeX (where X is the type). This is the class that actually has the storage for that particular type (e.g. DvTypeFreq
+has storage for a Frequency value).
+
+To create an instance of each type-specific class I created DvTypeFactory as the only place which has a switch statement of all
+possible types. So given a type string or type, the factory class can create any of the supported class instances.
+
+The next problem is how does the DataVariant class use these Mplane::DataVariant type classes.
+
+\image html dv-architecture.png
+
+The diagram above shows how the single DataVariantBase class uses the types. The DataVariantBase class has a single instance of a shared pointer
+to an Mplane::IDvType. The actual instance is created using the Mplane::DvTypeFactory. Initially a default Mplane::DataVariantBase will contain a pointer to
+an Mplane::IDvType which is provided by a Mplane::DvTypeNone (i.e. a NULL type that has no storage and does nothing).
+
+When the type is actually set on the Mplane::DataVariant, the new type is created and pointed to; the previous type object is automatically destroyed.
+
+The diagram also shows the solution to the next problem: how to add type-specific getter/setter methods to the Mplane::DataVariant class for each
+type supported, <b>without</b> changing the Mplane::DataVariant class code. This is achieved by creating a virtual interface IDvX for each type X which
+defines a setX() and toX() method. Obviously these methods will then be implemented by the actual type class DvTypeX. To add the methods
+to the Mplane::DataVariant, we need a per-type Mplane::DataVariant class defined which also implements these setter/getter methods. This is done by the classes
+DataVariantX (for eaxmple Mplane::DataVariantInt, Mplane::DataVariantFloat etc).
+
+Each DataVariantX class implements the setter/getter method by calling the equivalent setter/getter on the underlying type (though there
+is a bit of a wrinkle involved, more of which later). In order to do this, all DatVariantX classes need to keep a reference to
+the Mplane::DataVariant shared pointer to an Mplane::IDvType so that the type methods can be called. Remember that this pointer can dynamically change
+at runtime to whichever type the Mplane::DataVariant is set to, so these classes really do use a reference to the shared pointer:
+
+@code
+	class DataVariantBool : public DataVariantTypeBase, public virtual IDvBool {
+	public:
+		DataVariantBool(std::shared_ptr<IDvType>& dv) ;
+		...
+@endcode
+
+normally you make a copy of the shared pointer so that the count is incremented - here we really do need access to the actual shared pointer
+
+To pull all of this together and add the setter/getter methods of all the types to the DatVariant class we just inherit all of the
+DataVariantX classes. To make inheriting this big list of classes more maintainable (there are multiple DataVariantBase constructors, so each
+would normally need to have the list) I've wrapped them all up into a wrapper class Mplane::DatVariantTypes. This means that all of the
+Mplane::DataVariantBase constructors can just construct the Mplane::DatVariantTypes class.
+
+In terms of adding new types, this framework now only has 3 places that have all of the types:
+
+\li DataVariantType.h - Defines the enumeration list of types
+\li DvTypeFactory.cpp - Has a "big switch" statement that creates each of the supported types
+\li DataVariantTypes.cpp - Wrapper class that inherits from all the DataVariantX classes
+
+Back to the final problem: calling the appropriate setter/getter methods and converting between types.
+
+\image html dv-setx.png
+
+The first diagram shows the case where the DataVariantX is being used to access the setter/getter methods for type X. For example
+the code may be running "setFreq()" on a Mplane::DatVariant, in which case the "FREQ" type will be being used and DataVariantFreq is providing
+the setter/getter methods.
+
+In this case, the underlying type of the Mplane::DataVariant is also X so the DataVariantX can cast it's pointer to the virtual Mplane::IDvType
+into a pointer to an object that provides the IDvX interface. DataVariantX can then directly access the setX() and toX() methods.
+
+In the Freq example this would mean that DataVariantFreq casts it's pointer to an Mplane::IDvFreq and accesses setFreq() or toFreq().
+
+
+\image html dv-convertx.png
+
+The next diagram shows the conversion case. Here, DataVariantX's underlying type is not X but is any of the other types (call it Y).
+Since one of our design goals is to isolate types such that no one type has knowledge of or dependency on any other type, we need a mechanism
+for conversion.
+
+This conversion mechanism is provided by the Mplane::IDvAccess virtual interface. This interface defines an intermediate type, guaranteed to be sufficient
+to transport any of the supported types, along with methods that can convert to/from the supported types. It is required that all of the supported
+types must support the Mplane::IDvAccess interface, and each one takes care of the conversion.
+
+Now, the DataVariantX needs only manage it's own temporary intermediate type variable and then use it's underlying type's Mplane::IDvAccess methods.
+
+Note that ideally we'd use a single intermediate type, but as a compromise between efficiency and preserving the value's resolution, I chose to
+provide both an integer type and a floating-point type. Each type then uses the most appropriate intermediate in order to preserve it's value.
+
+Secondly, I initially made the code as generic as possible by creating a DvTypeX temporary in DataVariantX and used that temporary's setX()/toX() methods
+along with it's toInterX()/fromInterX() methods. This made the code very generic and I could reuse a macro for all DataVariantX classes. However,
+benchmarking showed that this creation and use of a DvTypeX was quite costly, so for efficiency reasons I changed the code so that each DataVariantX
+directly manages it's own InterInt / InterFloat temporary.
+
+For similar reasons of efficiency, benchmarking showed that for simple types (i.e. int, float etc) it was much more efficient to use the InterInt/InterFloat
+values directly. So for some types you will see that the DataVariantX code doesn't bother checking what it's underlying
+type is and simply uses the Mplane::IDvAccess methods.
+
+
+
+*/

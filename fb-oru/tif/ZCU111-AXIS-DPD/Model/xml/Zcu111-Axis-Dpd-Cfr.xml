@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+ 	<Board name="ZCU111-AXIS-DPD">
+		<Device name="Cfr" path="/cfr" comment="CFR control functions">
+		<xinclude:include href="../../../helper/common/xml/Cfr.xml#Cfr"/>
+		</Device>
+	</Board>
+</TestInterface>

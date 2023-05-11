@@ -1,0 +1,46 @@
+Each node in a textual tree diagram is printed as (taken from RFC 8340):
+
+<status>--<flags> <name><opts> <type> <if-features>
+
+<status> is one of:
++ for current
+x for deprecated
+o for obsolete
+
+<flags> is one of:
+rw for configuration data nodes and choice nodes
+ro for non-configuration data nodes and choice nodes,
+output parameters to rpcs and actions, and
+notification parameters
+-w for input parameters to rpcs and actions
+-u for uses of a grouping
+-x for rpcs and actions
+-n for notifications
+mp for nodes containing a "mount-point" extension statement
+Case nodes do not have any <flags>.
+
+<name> is the name of the node
+(<name>) means that the node is a choice node
+:(<name>) means that the node is a case node
+If the node is augmented into the tree from another module,
+its name is printed as <prefix>:<name>, where <prefix> is the
+prefix defined in the module where the node is defined.
+If the node is a case node, there is no space before the
+<name>.
+
+<opts> is one of:
+? for an optional leaf, choice, anydata, or anyxml
+! for a presence container
+* for a leaf-list or list
+[<keys>] for a list's keys
+/ for a top-level data node in a mounted module
+@ for a top-level data node of a module identified in a
+mount point parent reference
+
+<type> is the name of the type for leafs and leaf-lists
+If the type is a leafref, the type is printed as either
+(1) "-> TARGET", where TARGET is the leafref path,
+with prefixes removed if possible or (2) "leafref".
+
+<if-features> is the list of features this node depends on,
+printed within curly brackets and a question mark "{...}?"

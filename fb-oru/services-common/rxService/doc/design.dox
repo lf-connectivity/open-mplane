@@ -1,0 +1,70 @@
+/**
+\mainpage Common Radio Recieve Path Control Service
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section radioService_common_rxService_scope Scope
+<hr>
+
+This document contains detailed design information for the rxService module,
+part of the services component.
+
+It provides enough information to allow readers and developers to understand
+what services are provided for the Rx path through the radio to meet the
+performance requirements.
+
+The details of how those services are performed is provided by the Low Level
+Design documentation that is generated from the implementation of the design.
+
+For system level design please refer to the Design Overview Documentation at <BR>
+<A HREF="./htmldoc_DEMI/index.html" target="_blank"><B>Design Overview Document</B></A>
+<BR>
+
+<hr>
+\section radioService_common_rxService_overview	Overview
+<hr>
+
+
+<hr>
+\section radioService_common_rxService_sec_2 Details of Design
+<hr>
+
+<hr>
+\subsection radioService_common_rxService_sec_2_1 Rx Gain Control (RGC)
+<hr>
+
+Rx Services is responsible for maintaining constant gain across the Rx path on the RRH.
+
+<hr>
+\section radioService_common_rxService_sec_3_1 Dependencies
+<hr>
+
+
+<hr>
+\section radioService_common_rxService_sec_3_3 Interface Dependencies
+<hr>
+
+<hr>
+\subsection radioService_common_rxService_sec_3_3_1 Example subsection
+<hr>
+
+
+<hr>
+\section radioService_common_rxServicesec_4 Host Based Unit Tests
+<hr>
+\subsection radioService_common_rxServicessec_1_1 Code Coverage Summary
+<hr>
+
+\include common/rxService/test/coverage.txt
+
+<hr>
+\subsection radioService_common_rxServicessec_1_2 Unit Test Results
+<hr>
+
+\include common/rxService/test/cppunit.txt
+
+
+*/

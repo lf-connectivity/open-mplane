@@ -1,0 +1,152 @@
+#!/bin/bash
+
+VERSION="1.01"
+
+from=${1:-ETNA}
+to=${2:-ETNA_FTU}
+
+DEBUG=
+
+##-- Functions -------------------------------------------------------
+function logDebug()
+{
+	if [ ! -z "$DEBUG" ]
+	then
+		echo "DEBUG: $*"
+	fi
+}
+
+function relative()
+{
+	# both $1 and $2 are absolute paths beginning with /
+	# returns relative path to $2/$target from $1/$source
+	local source=$1
+	local target=$2
+	
+	common_part=$source # for now
+	result="" # for now
+	
+	while [[ "${target#$common_part}" == "${target}" ]]; do
+	    # no match, means that candidate common part is not correct
+	    # go up one level (reduce common part)
+	    common_part="$(dirname $common_part)"
+	    # and record that we went back, with correct / handling
+	    if [[ -z $result ]]; then
+	        result=".."
+	    else
+	        result="../$result"
+	    fi
+	done
+	
+	if [[ $common_part == "/" ]]; then
+	    # special case for root (no common path)
+	    result="$result/"
+	fi
+	
+	# since we now have identified the common part,
+	# compute the non-common part
+	forward_part="${target#$common_part}"
+	
+	# and now stick all parts together
+	if [[ -n $result ]] && [[ -n $forward_part ]]; then
+	    result="$result$forward_part"
+	elif [[ -n $forward_part ]]; then
+	    # extra slash removal
+	    result="${forward_part:1}"
+	fi
+	
+	echo $result
+}
+
+##== Main ============================================================
+
+# Count the number of changed files
+linkCount=0
+removeCount=0
+
+# Find all the files in the source directory - copy to destination
+files=$(find ${from} -type f)
+for src in $files 
+do
+	fromdir=$(dirname $src)
+
+	# Make the path relative to the directory
+	rel=${src#${from}}
+	reldir=$(dirname $rel)
+	base=$(basename $rel)
+	
+	todir=${to}${reldir}
+	
+	# ensure directory is created in destination
+	mkdir -p $todir
+	
+	# Create a link path that is relative to the destination
+	relpath=$(relative $todir $fromdir) 
+	
+	##echo relpath=$relpath
+	lnk=$relpath/$base
+	
+	#echo $todir/$base
+	
+	# Check that the destination doesn't already have a file
+	if [ -f $todir/$base ] && [ ! -L $todir/$base ]
+	then
+		echo " * File exists: skipped"
+	else
+		# skip already linked files
+		if [ ! -f $todir/$base ]
+		then
+			linkCount=$((linkCount+1))
+		fi
+
+		rm -f $todir/$base 2>/dev/null
+		ln -sf $lnk $todir/$base
+		
+		# Add to gitignore
+		grep_out=$(grep "/$base " $todir/.gitignore)
+		
+		logDebug grep "/$base " $todir/.gitignore
+		logDebug RESULT: $grep_out	
+		
+		if [ ! -f $todir/.gitignore ] || [ -z $grep_out ]
+		then
+			logDebug ADD		
+			# NOTE: Use a trailing space in the file so that we can correctly match the end of the filename and
+			# don't get spurious matches of substrings 
+			echo "/$base " >> $todir/.gitignore
+		fi
+	fi
+
+done
+
+# Find all the files in the destination directory - remove any that are not in source directory
+logDebug Finding invalid links/files
+files=$(find ${to} -type f -o -type l)
+for dest in $files 
+do
+	logDebug dest=$dest
+	todir=$(dirname $dest)
+
+	# Make the path relative to the directory
+	rel=${dest#${to}}
+	reldir=$(dirname $rel)
+	base=$(basename $rel)
+	
+	fromdir=${from}${reldir}
+	src=${fromdir}/${base}
+
+	logDebug src=$src
+	
+	# check to see if source file exists
+	if [ "$base" != ".gitignore" ] && [ ! -e $src ]
+	then
+		echo " * File ${reldir}/${base} does not exist in source: removed"
+		removeCount=$((removeCount+1))
+		rm -f $dest
+	fi
+done
+
+echo $linkCount newly linked files
+echo $removeCount removed files
+exit $((linkCount + removeCount))
+

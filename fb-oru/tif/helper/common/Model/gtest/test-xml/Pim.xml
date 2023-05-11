@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="Pim" path="/pim" comment="PIM control">
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#setCarriers"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#portOpen"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#portClose"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#portShow"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#logOpen"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#logClose"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#logShow"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#apiVersion"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#set"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#get"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#restart"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#search"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#initialSearch"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#dispersiveSearch"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#update"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#start"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#stop"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#startTssi"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#stopTssi"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#orthogonalise"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#pdp"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#avgPdp"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#enableStim"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#disableStim"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#dump"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#reset"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#runTest"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#frd"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#fwr"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#capture"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#getCoeffs"/>
+			<xinclude:include href="../../../../../helper/common/xml/Pim.xml#xcorr"/>
+		</Device>
+	</Board>
+</TestInterface>

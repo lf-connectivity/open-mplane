@@ -1,0 +1,174 @@
+#!groovy
+
+node {
+    wrap([$class: 'TimestamperBuildWrapper']) {
+
+//println RELEASE_BUILD
+//println RELEASE_VERSION
+
+    def jobname = env.JOB_NAME
+    def buildnum = env.BUILD_NUMBER.toInteger()
+	def builddir = "/data/proj"
+//	def workspace = "${builddir}/${jobname}"
+	def workspace = env.WORKSPACE
+	
+	def desc = currentBuild.description
+	
+println jobname
+println buildnum
+println workspace
+println desc
+
+
+//def job = Jenins.instance.getItem(jobname)
+//println job
+// Get the map of all jobs
+def items = Jenkins.getInstance().getItemMap() ;
+println items
+def job = items[jobname]
+items = [:]
+println job
+//job.setDescription("dummy text")
+def build = job.getBuildByNumber(buildnum)
+println build
+build.setDescription("dummy text")
+
+build = null
+job = null
+
+println "Start WS"
+
+//	ws("${workspace}") {
+
+jobname = "petalinux-ZCU111-AXIS-ART"
+
+        def fields = jobname.split('-')
+        if (fields.size() < 4)
+        {
+            error("Invalid job name $jobname")
+        }
+
+        def target = fields[0].toUpperCase() ;
+        def board = fields[1].toUpperCase() ;
+        def customer = fields[2].toUpperCase() ;
+        def app = fields[3].toUpperCase() ;
+
+        println "JOB: $target $board $customer $app"
+
+//	    def fname = "buildTools/cmake/make/builds/${board}-${customer}-${app}.cfg"
+//	    if ( fileExists(fname) ) {
+//	        echo "Found file"
+//	    }
+//	    def file = readFile fname
+//	    def lines = file.split('\n')
+//
+	    def fpga = ''
+//	    for (int i=0; i < lines.size(); ++i)
+//	    {
+//	        println lines[i]
+//            def vars = lines[i].split(':=')
+//            if (vars.size() == 2)
+//            {
+//                if (vars[0] == 'FPGA')
+//                {
+//                    fpga = vars[1]
+//                    println "FPGA: $fpga"
+//                }
+//            }
+//	    }
+
+		def branch = "sp-rfsoc"
+		def reposStr = ""
+
+        // get the build tools
+        stage('Checkout tools') {
+			doCheckout("buildTools", branch)
+			dir("${workspace}/buildTools/cmake") {
+	            reposStr = sh(script: "make TARGET=${target} BOARD=${board} CUSTOMER=${customer} APPLICATION=${app} show-repos", returnStdout: true).trim()
+			}
+        }
+
+println "repos: ${reposStr}"
+
+		// Mark the code checkout 'stage'....
+		stage('Checkout') {
+
+    		def repos=reposStr.split()
+    		for (int i=0; i < repos.size(); ++i)
+    		{
+        		doCheckout(repos[i], branch)
+    		}
+        }
+
+
+		// Mark the code build 'stage'....
+		stage('Build') {
+
+			// Run the build
+	//		dir("${workspace}/buildTools/cmake") {
+	//			withEnv([
+	//			"WORKSPACE=${workspace}",
+	//			'BUILD_BOARD=ECB',
+	//			'BUILD_CUSTOMER=THALES',
+	//			'BUILD_APPLICATION=ATG',
+	//			'FPGA=xc7k160',
+	//			"ROS_PATH=${builddir}/shared/ros/build/ECB",
+	////			'PDF_HEADING="<CENTER><H1><B>Thales ATG Project</B></H1><BR><H2>Test Interface Documentation<BR>Version 1.1</H2></CENTER>"'
+	//			]) {
+	////				sh 'sh $WORKSPACE/buildTools/jenkins/scripts/ppc-continuous.sh'
+	////				sh 'echo $WORKSPACE/buildTools/jenkins/scripts/ppc-continuous.sh'
+	//                sh "make TARGET=x86_64 BOARD=ECB CUSTOMER=THALES APPLICATION=ATG cppcheck"
+	//			}
+	//		}
+
+		}
+
+		// Mark the code build 'stage'....
+		stage('Post-build') {
+//        step([$class: 'ArtifactArchiver', artifacts: "applications/${customer}-${app}/build/ppc-${board}-${customer}-${app}/packages/*", fingerprint: true])
+		}
+
+
+	}
+
+
+//    }
+}
+
+def doCheckout(repo, branch) {
+
+    println "checkout ${repo} (${branch})"
+    
+// For now, skip fpga
+if (repo == "fpga")
+    return
+    
+			checkout([
+				$class: 'GitSCM',
+				branches: [[name: "${branch}"]],
+//				doGenerateSubmoduleConfigurations: false,
+				extensions: [
+					[
+						$class: 'CheckoutOption',
+						timeout: 20
+					],
+					[
+						$class: 'RelativeTargetDirectory',
+						relativeTargetDir: "${repo}",
+					],
+//					[
+//						$class: 'CloneOption',
+//						noTags: false,
+//						reference: '',
+//						shallow: true
+//					]
+				],
+//				submoduleCfg: [],
+				userRemoteConfigs: [[url: "gitolite@swin-11:asp/${repo}.git"]]
+			])
+
+//    git([url: "gitolite@swin-11:asp/${repo}.git", branch: "$branch"])
+  
+
+}
+

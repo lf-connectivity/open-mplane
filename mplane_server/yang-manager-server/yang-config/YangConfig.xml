@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <General>
+    <OranInfo oranVersion="7.01" product="Mplane-ORAN-Radio" variant="0.1" />
+    <ProductInfo formatVersion="1.0" company="Mplane" />
+  </General>
+  <yang-version value="1.1" />
+  <module-ietf-netconf-acm>
+    <container-nacm>
+      <leaf-enable-nacm value="true" access="rw" />
+      <leaf-read-default value="permit" access="rw" />
+      <leaf-write-default value="deny" access="rw" />
+      <leaf-exec-default value="permit" access="rw" />
+      <leaf-enable-external-groups value="true" access="rw" />
+      <leaf-denied-operations value="0" access="ro" />
+      <leaf-denied-data-writes value="0" access="ro" />
+      <leaf-denied-notifications value="0" access="ro" />
+      <container-groups>
+        <list-group>
+          <listEntry>
+            <leaf-name value="" access="rw" />
+            <listLeaf-user-name>
+              <entry value="" access="rw" />
+            </listLeaf-user-name>
+          </listEntry>
+        </list-group>
+      </container-groups>
+      <list-rule-list>
+        <listEntry>
+          <leaf-name value="" access="rw" />
+          <listLeaf-group>
+            <entry value="" access="rw" />
+          </listLeaf-group>
+          <list-rule>
+            <listEntry>
+              <leaf-name value="" access="rw" />
+              <leaf-module-name value="*" access="rw" />
+              <choice-rule-type>
+                <case-notification>
+                  <leaf-notification-name value="" access="rw" />
+                </case-notification>
+              </choice-rule-type>
+              <leaf-access-operations value="*" access="rw" />
+              <leaf-action value="permit" access="rw" />
+              <leaf-comment value="" access="rw" />
+            </listEntry>
+          </list-rule>
+        </listEntry>
+      </list-rule-list>
+    </container-nacm>
+  </module-ietf-netconf-acm>
+  <module-o-ran-usermgmt>
+    <file-version value="1.0" />
+    <container-users>
+      <list-user>
+        <listEntry>
+          <leaf-name value="" access="rw" />
+          <leaf-account-type value="PASSWORD" access="rw" />
+          <leaf-password value="" access="rw" />
+          <leaf-enabled value="false" access="rw" />
+        </listEntry>
+      </list-user>
+    </container-users>
+  </module-o-ran-usermgmt>
+  <module-ietf-interfaces>
+    <container-interfaces>
+      <list-interface>
+        <listEntry>
+          <leaf-name value="eth0" access="rw" />
+          <leaf-description value="25G interface eth port 0" access="rw" />
+          <leaf-enabled value="true" access="rw" />
+          <leaf-type value="ethernetCsmacd" access="rw" />
+          <leaf-oper-status value="up" access="ro" />
+          <leaf-speed value="25000000000" access="ro" />
+          <leaf-l2-mtu value="9000" access="rw" />
+          <leaf-vlan-tagging value="true" access="rw" />
+          <container-class-of-service>
+            <leaf-u-plane-marking value="7" access="rw" />
+            <leaf-c-plane-marking value="7" access="rw" />
+            <leaf-m-plane-marking value="2" access="rw" />
+            <leaf-s-plane-marking value="7" access="rw" />
+          </container-class-of-service>
+        </listEntry>
+        <listEntry>
+          <leaf-name value="eth0_cu" access="rw" />
+          <leaf-description value="25G interface with VLAN over eth port 0 for CU-plane traffic" access="rw" />
+          <leaf-type value="l2vlan" access="rw" />
+          <leaf-oper-status value="up" access="ro" />
+          <leaf-speed value="25000000000" access="ro" />
+          <leaf-base-interface value="eth0" access="rw" />
+          <leaf-vlan-id value="4000" access="rw" />
+          <leaf-mac-address value="00:11:22:33:44:88" access="rw" />
+        </listEntry>
+      </list-interface>
+    </container-interfaces>
+  </module-ietf-interfaces>
+  <module-o-ran-interfaces />
+  <module-o-ran-module-cap />
+  <module-o-ran-processing-element>
+    <container-processing-elements>
+      <leaf-maximum-number-of-transport-flows value="1" />
+    </container-processing-elements>
+  </module-o-ran-processing-element>
+</root>

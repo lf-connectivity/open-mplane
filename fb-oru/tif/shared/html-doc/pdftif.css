@@ -1,0 +1,172 @@
+/* Test Interface */
+body, table, div, p, dl {
+	/* font: normal 14px/22px Roboto,serif; */
+	font: normal 11px/17px Roboto,serif;
+}
+
+.contents {
+/*	position: relative ;*/
+}
+
+div.header
+{
+	background-color: #D8E3FA;
+	margin:  0px;
+	border-bottom: 1px solid #94AEE2;
+}
+
+
+div.footer {
+	position: absolute ;
+	bottom:0;
+	width: 100%;
+	margin: 5px ;
+}
+
+
+
+h1
+{
+	color: rgb(61, 87, 140);
+	background-color: #F9FAFC;
+	margin:  12px 0 4px 0;
+	padding:  10px 0 10px 0;
+	border-top: 1px solid #C4CFE5;
+	border-bottom: 1px solid #C4CFE5;
+}
+
+
+h3 {
+	padding: 5px 0 5px 0 ; 
+	border-top: thin solid rgb(74, 106, 170) ;
+	border-bottom: thin solid rgb(74, 106, 170) ;
+}
+
+.method {
+	color: #006061 ;
+}
+
+.variable {
+	color: #006061 ;
+}
+
+span.varType
+{
+        margin-left:-7px;
+        padding-left: 25px;
+	color: #069201 ;
+	font-style: italic ;
+}
+
+span.varTypeTitle
+{
+	font-weight: bold;
+	color: black ;
+}
+
+div.path
+{
+        margin-left:-7px;
+        padding-left: 25px;
+}
+
+
+/* caller/return args */
+div.args, div.argsOptional
+{
+        margin-left:-7px;
+        padding-left: 25px;
+}
+
+.argType {
+	color: #069201 ;
+	font-style: italic ;
+}
+
+.argName {
+	color: #08018F ;
+	font-style: italic ;
+}
+
+.argUnits {
+	color: #993366 ;
+	font-style: italic ;
+}
+
+.argDefault {
+	color: #404060 ;
+	font-style: italic ;
+}
+
+.argOpt {
+	color: #606060 ;
+	font-style: italic ;
+}
+
+.argOdd {
+	background-color: #F9FAFC;
+}
+
+.argEven {
+	background-color: #FFFFFF;
+}
+
+
+table {
+	table-layout:fixed; 
+	width: 100%;
+}
+td {
+	overflow: hidden;
+	vertical-align: text-top;
+}
+
+div.example {
+    padding: 4px;
+    margin: 0px;
+	background-color: #FBFCFD;
+	border: 1px solid #C4CFE5;
+}
+
+div.example div.line {
+	font-family: monospace, fixed;
+    font-size: 11px;
+	min-height: 11px;
+	line-height: 1.0;
+	text-wrap: unrestricted;
+	white-space: -moz-pre-wrap; /* Moz */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3  */
+	word-wrap: break-word;      /* IE 5.5+ */
+	text-indent: -53px;
+	padding-left: 53px;
+	padding-bottom: 0px;
+	margin: 0px;
+	-webkit-transition-property: background-color, box-shadow;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-property: background-color, box-shadow;
+	-moz-transition-duration: 0.5s;
+	-ms-transition-property: background-color, box-shadow;
+	-ms-transition-duration: 0.5s;
+	-o-transition-property: background-color, box-shadow;
+	-o-transition-duration: 0.5s;
+	transition-property: background-color, box-shadow;
+	transition-duration: 0.5s;
+}
+
+div.example div.line.comment {
+	color: #609060 ;
+	font-style: italic ;
+}
+
+div.example div.line.command {
+	color: #303080 ;
+}
+
+div.heading p
+{
+	font: bold 40px/60px Roboto,serif; 
+	font: normal 36px/54px Roboto,serif; 
+}
+

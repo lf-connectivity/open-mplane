@@ -1,0 +1,35 @@
+<!ELEMENT ECBCalibrationTx (TxPaCal+)>
+<!ATTLIST ECBCalibrationTx version CDATA #REQUIRED>
+<!ATTLIST ECBCalibrationTx country CDATA #IMPLIED>
+<!ATTLIST ECBCalibrationTx facility CDATA #IMPLIED>
+<!ATTLIST ECBCalibrationTx operator CDATA #IMPLIED>
+<!ATTLIST ECBCalibrationTx xmlns:html CDATA "http://www.w3.org/TR/REC-html40">
+<!ATTLIST ECBCalibrationTx xmlns:xinclude CDATA "http://www.w3.org/2001/XInclude">
+
+<!ELEMENT TxPaCal (Path,Date,LinearTemperatureCompensation,FrequencyTable+)>
+<!ATTLIST TxPaCal comment CDATA #IMPLIED>
+
+<!ELEMENT Path (#PCDATA)*>
+<!ELEMENT Version (#PCDATA)*>
+<!ELEMENT Date (#PCDATA)*>
+
+<!ELEMENT LinearTemperatureCompensation (Coefficient)>
+
+<!ELEMENT Coefficient (#PCDATA)*>
+<!ATTLIST Coefficient units CDATA #IMPLIED>
+
+<!ELEMENT FrequencyTable (Frequency, Point+)>
+<!ATTLIST FrequencyTable comment CDATA #IMPLIED>
+
+<!ELEMENT Frequency (#PCDATA)>
+
+<!ELEMENT Point (Power,PwrIn, DetADC)>
+
+<!ELEMENT Power (#PCDATA)>
+
+<!ELEMENT PwrIn (#PCDATA)>
+
+<!ELEMENT DetADC (#PCDATA)>
+
+<!ELEMENT xinclude:include EMPTY>
+<!ATTLIST xinclude:include href CDATA #REQUIRED>

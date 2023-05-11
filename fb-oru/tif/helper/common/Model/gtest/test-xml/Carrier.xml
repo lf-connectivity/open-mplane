@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="Carrier" path="/carrier" comment="Common Carrier settings functions">
+			<xinclude:include href="../../../../../helper/common/xml/Carrier.xml#NumCarriers"/>
+			<xinclude:include href="../../../../../helper/common/xml/Carrier.xml#TxPaths"/>
+			<xinclude:include href="../../../../../helper/common/xml/Carrier.xml#RxPaths"/>
+			<xinclude:include href="../../../../../helper/common/xml/Carrier.xml#show"/>
+			<xinclude:include href="../../../../../helper/common/xml/Carrier.xml#showAll"/>
+			<xinclude:include href="../../../../../helper/common/xml/Carrier.xml#set"/>
+			<xinclude:include href="../../../../../helper/common/xml/Carrier.xml#get"/>
+		</Device>
+	</Board>
+</TestInterface>

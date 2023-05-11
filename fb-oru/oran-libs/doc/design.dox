@@ -1,0 +1,107 @@
+/**
+\mainpage ORAN Libraries
+<BR>
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section oranlibs_scope Scope
+<hr>
+
+This document is intended to provide details of the ORAN libraries.
+
+<hr>
+\section oranlibs_usage	Using the ORAN libraries
+<hr>
+
+The third-party libraries compiled in oran-libs are created with suitable cmake meta files to allow the libraries to be found and used.
+
+The general use case for a library is to add the following to your CMakeLists.txt file:
+
+@code
+addRepoLib( libs  oran-libs ${library_name} )
+...
+
+## Executable
+add_executable(${app} ${SOURCES})
+addLinkLibs(${app} ${libs})
+
+@endcode
+
+In other words, use <b>addRepoLib</b> giving it the repository name <b>oran-libs</b> followed by the name of the library you want to link against.
+
+\note Some of the libraries have dependencies on other libraries. You need to add those dependencies using addRepoLib in order to create a
+sucessful link (otherwise you'll get a load of "unresolved symbol.." errors)
+
+
+The following sections detail each of the compiled libraries with an example of the cmake command to use in order to link against that library.
+Dependency libraries are shown in the example where the library depends on others.
+
+\subsection oranlibs_pcre pcre
+
+@code
+addRepoLib( libs  oran-libs pcre )
+@endcode
+
+\subsection oranlibs_yang libyang
+
+@code
+addRepoLib( libs  oran-libs libyang )
+
+# dependencies
+addRepoLib( libs  oran-libs pcre )
+@endcode
+
+\subsection oranlibs_zlib zlib
+
+@code
+addRepoLib( libs  oran-libs zlib )
+@endcode
+
+\subsection oranlibs_sysrepo sysrepo
+
+@code
+addRepoLib( libs  oran-libs sysrepo )
+
+# dependencies
+addRepoLib( libs  oran-libs libyang )
+addRepoLib( libs  oran-libs pcre )
+@endcode
+
+\subsection oranlibs_openssl openssl
+
+@code
+addRepoLib( libs  oran-libs openssl )
+
+# dependencies
+addRepoLib( libs  oran-libs zlib )
+@endcode
+
+\subsection oranlibs_ssh libssh
+
+@code
+addRepoLib( libs  oran-libs libssh )
+
+# dependencies
+addRepoLib( libs  oran-libs openssl )
+addRepoLib( libs  oran-libs zlib )
+@endcode
+
+\subsection oranlibs_netconf2 libnetconf2
+
+@code
+addRepoLib( libs  oran-libs libnetconf2 )
+
+# dependencies
+addRepoLib( libs  oran-libs libyang )
+addRepoLib( libs  oran-libs pcre )
+addRepoLib( libs  oran-libs libssh )
+addRepoLib( libs  oran-libs openssl )
+addRepoLib( libs  oran-libs zlib )
+@endcode
+
+
+
+*/

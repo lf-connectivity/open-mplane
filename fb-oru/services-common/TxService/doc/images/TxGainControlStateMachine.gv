@@ -1,0 +1,30 @@
+digraph TxGainControlStateMachine {
+	size="7.5,10"
+	
+	ready -> pa_off [ label = "init" ];
+	ready -> pa_on [ label = "init" ];
+	pa_off -> pa_on [ label = "TxOnEvent" ];
+	pa_on -> seek_waitbb [ label = "Delay" ];
+	seek_waitbb -> seek_init [ label = "BbDetected" ];
+	seek_init -> seek_converge [ label = "P>Pconverge" ];
+	seek_converge -> seek_up [ label = "DpdSuccess(1)" ];
+	seek_converge -> seek_down [ label = "DpdSuccess(1)" ];
+	seek_up -> track_converge [ label = "Locked" ];
+	seek_down -> track_converge [ label = "Locked" ];
+	track_converge -> track [ label = "DpdSuccess(N)" ];
+	track -> track_fast [ label = "Unlocked" ];
+	track_fast -> track [ label = "Locked" ];
+	track -> new_target [ label = "NewTargetEvent" ];
+	new_target -> seek_up [ label = "P<Ptarget" ];
+	new_target -> seek_down [ label = "P>Ptarget" ];
+	track -> fault [ label = "FaultEvent" ];
+	track_fast -> fault [ label = "FaultEvent" ];
+	track_converge -> fault [ label = "FaultEvent" ];
+	seek_up -> fault [ label = "FaultEvent" ];
+	seek_down -> fault [ label = "FaultEvent" ];
+	seek_converge -> fault [ label = "DpdFail" ];
+
+	//{ rank=same; ready, pa_off, pa_on, new_target, fault }
+	//{ rank=same; seek_wait_bb, seek_init, seek_converge, seek_up, seek_down }
+	//{ rank=same; track, track_converge, track_fast }
+}

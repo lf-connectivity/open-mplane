@@ -1,0 +1,126 @@
+module o-ran-ethernet-forwarding {
+  yang-version 1.1;
+  namespace "urn:o-ran:ethernet-fwd:1.0";
+  prefix "o-ran-eft";
+
+  import ietf-yang-types {
+    prefix "yang";
+  }
+
+  import o-ran-interfaces {
+    prefix "or-if";
+  }
+
+  import ietf-interfaces {
+    prefix "if";
+  }
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the Ethernet forwarding table of an O-RU.
+    This is an option capability used when supporting 'shared cell' operation.
+
+    Copyright 2020 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2020-04-17" {
+    description
+      "version 3.0.0
+
+      1. Initial version";
+
+    reference "ORAN-WG4.M.0-v03.00";
+  }
+
+  grouping ethernet-ft {
+    description
+      "Ethernet forwarding table.";
+
+    leaf aging-time {
+      type uint32 {
+        range "10..10000000";
+      }
+      units "seconds";
+      default "300";
+      description
+        "The timeout period in seconds for aging out
+        dynamically-learned forwarding information.";
+    }
+
+    list filtering-entry {
+      key "address vlan-id";
+      config false;
+      description
+        "List of the entries within the Ethernet forwarding table.
+        This list is keyed by the MAC address and VLAN of the Ethernet frame.";
+
+      leaf address {
+        type yang:mac-address;
+        description
+          "A MAC address (unicast, multicast, broadcast) for
+          which the device has forwarding and/or filtering
+          information.";
+      }
+
+      leaf vlan-id {
+        type uint16 {
+          range "0..4094";
+        }
+        description
+          "VLAN-ID entry in the forwarding table, used during the
+          look-up when receiving an in-coming Ethernet frame to determine
+          how to forward.
+
+          A value of 0 indicates that the filtering entry is for an un-tagged
+          frame/MAC address";
+      }
+
+      list port-map {
+        key "port-ref";
+        description
+          "The list of entries composing the port map.";
+        leaf port-ref {
+          type leafref {
+            path "/if:interfaces/if:interface/or-if:port-reference/or-if:port-number";
+            }
+          description
+            "The interface port reference associated with this map.";
+        }
+      }
+    }
+  }
+
+  container ethernet-forwarding-table {
+    description "Top level container defining forwarding tables for Ethernet";
+
+    uses ethernet-ft;
+  }
+
+}

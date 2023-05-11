@@ -1,0 +1,11 @@
+#!/bin/bash -x
+
+# Generate the test TIF that uses all of the helpers to create a test environment
+rm ../test-xml/*
+cp -r ../../../xml/*.xml ../test-xml/
+
+# Convert to use xinclude
+../../../../../../buildTools/tools/convert-tif-xml.pl -board Helper -depth 5 ../test-xml/*.xml
+
+# Re-generate test interface
+../../../../../../buildTools/sysroot/bin/GenTool -dir ../test-interfaces ../test-xml/*.xml

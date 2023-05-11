@@ -1,0 +1,126 @@
+module o-ran-laa {
+  yang-version 1.1;
+  namespace "urn:o-ran:laa:1.0";
+  prefix "o-ran-laa";
+
+  import o-ran-module-cap {
+    prefix "mcap";
+    revision-date 2019-07-03;
+  }
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the configuration for Carrier-selection and dynamic frequency selection (DFS).
+    Also this module defines operations for DFS measurement.
+
+    Copyright 2019 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2019-07-03" {
+    description
+      "version 1.1.0
+
+      1) fixing broken constraints (configuration cannot be dependent on
+        operational state). This is a backwards incompatible revision.
+
+        As these constraints only apply when the LAA feature is used, and also
+        when considering the limited number of implementation that need to be
+        taken into consideration for backwards compatibility, it has been
+        agreed to NOT increment the namespace integer.";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+  revision "2019-02-04" {
+    description
+      "version 1.0.0
+
+      1) imported model from xRAN
+      2) changed namespace and reference from xran to o-ran";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+  grouping laa-configuration {
+    description
+      "Grouping for LAA configuration";
+
+    leaf number-of-laa-scarriers {
+      type uint8;
+      description "Number of LAA secondary carriers to be supported at O-RU.";
+    }
+
+    leaf multi-carrier-type {
+      type enumeration {
+        enum A1;
+        enum A2;
+        enum B1;
+        enum B2;
+      }
+      description
+        "This value indicates the list of multi carrier types which as per the document,
+        3GPP TS 36.213 V13.6.0 (2017-06) 15.1.5 Channel access procedure for transmission(s) on multiple carriers.";
+    }
+
+    leaf multi-carrier-tx {
+      type boolean;
+      description
+        "This value indicates whether self-deferral is activated or not.";
+    }
+
+    leaf multi-carrier-freeze {
+      when "../multi-carrier-type='A1'";
+      type boolean;
+      description "This value indicates if the absence of other technology in the unlicensed band can be guaranteed.";
+    }
+
+    leaf laa-ending-dwpts-supported {
+      type boolean;
+      description
+        "This value indicates whether LAA ending in DwPTS is supported.";
+    }
+
+    leaf laa-starting-in-second-slot-supported {
+      type boolean;
+      description
+        "This value indicates whether LAA starting in second slot is supported";
+    }
+  }
+
+  container laa-config {
+    must "number-of-laa-scarriers <= /mcap:module-capability/mcap:rw-sub-band-info/mcap:rw-number-of-laa-scarriers" {
+      error-message "number of laa secondary carriers must be less than supported number of laa scells.";
+    }
+    presence "indicates LAA configuration";
+    description "Container to specify all LAA specific configuration";
+
+    uses laa-configuration;
+  }
+}

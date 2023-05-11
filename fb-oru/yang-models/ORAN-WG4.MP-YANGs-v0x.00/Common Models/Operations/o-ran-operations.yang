@@ -1,0 +1,278 @@
+module o-ran-operations {
+  yang-version 1.1;
+  namespace "urn:o-ran:operations:1.0";
+  prefix "o-ran-ops";
+
+  import ietf-yang-types {
+    prefix yang;
+  }
+
+  import ietf-netconf-acm {
+    prefix nacm;
+    reference
+      "RFC 8341: Network Configuration Access Control Model";
+  }
+
+  import ietf-hardware {
+    prefix hw;
+  }
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the YANG model used for O-RAN operations.
+
+    Copyright 2019 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2019-07-03" {
+    description
+      "version 2.0.0
+
+      1) added timezone-name
+      2) added ru-instance-id
+      3) backward compatible changes to introduce groupings.";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+  revision "2019-02-04" {
+    description
+      "version 1.0.0
+
+      1) imported model from xRAN
+      2) changed namespace and reference from xran to o-ran";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+
+  typedef timezone-name {
+    type string;
+    description
+      "A time zone name as used by the Time Zone Database,
+      sometimes referred to as the 'Olson Database'.
+
+      The complete set of valid values is defined in
+      https://www.iana.org/time-zones.
+
+      The exact set of supported values is an
+      implementation-specific matter.";
+
+    reference
+      "RFC 6557: Procedures for Maintaining the Time Zone Database
+      IANA Time Zone Database https://www.iana.org/time-zones ";
+  }
+
+  typedef version {
+    type string {
+      pattern '[0-9]+(\.[0-9]+){1,2}';
+    }
+    description
+      "this type definition is used to represent the version of the WG4
+      fronthaul interface.";
+  }
+
+  grouping operational-group {
+
+// Container used for WG4 specific declarations
+    container declarations {
+      //FIXME - determine whether it is acceptable to WG4 to change this to a presence
+      //container, where the presence indicates the NETCONF server supports WG4
+      //defined functionality
+      config false;
+      description "WG4 Specific Declarations of supported version of standards";
+
+      leaf ru-instance-id {
+        type string;
+        must "re-match(current(), concat(/hw:hardware/hw:component/hw:mfg-name,
+          '_', /hw:hardware/hw:component/hw:model-name, '_',
+          /hw:hardware/hw:component/hw:serial-num ))";
+        description
+          "a unique instance identifier that may be used to identify a
+          particular hardware instance, e.g., when used performing hierarchical
+          management via the O-DU.";
+      }
+
+      leaf supported-mplane-version {
+        type version;
+        default "1.0.0";
+        description "Parameter provides highest M-Plane specification version device is compliant with.";
+      }
+
+      leaf supported-cusplane-version {
+        type version;
+        default "1.0.0";
+        description "Parameter provides highest CUS-Plane specification version device is compliant with.";
+      }
+
+      list supported-header-mechanism {
+        description "list provides information regarding type and version of headers.";
+        key protocol;
+
+        leaf protocol {
+          type enumeration {
+            enum ECPRI {
+              description
+                "Indicates that an O-RU supports the ecpri header format
+                for the C/U plane";
+            }
+            enum IEEE-1914-3 {
+              description
+                "Indicates that an O-RU supports the 1914.3 header format
+                for the C/U plane";
+            }
+          }
+          description "Transport protocol type.";
+        }
+
+        leaf ecpri-concatenation-support {
+          when "../protocol = 'ECPRI'";
+          type boolean;
+          default false;
+          description
+            "This leaf is used to indicate whether the O-RU supports the optional
+            eCPRI concatenation capability";
+        }
+
+        leaf protocol-version {
+          type version;
+          default "1.0";
+          description "Header protocol version.";
+        }
+      }
+    }
+
+    container operational-state {
+      config false;
+      description
+        "Operational state for the O-RAN network element";
+      leaf restart-cause {
+        type enumeration {
+          enum POWER-ON {
+            description
+              "Equipment restarted because it was powered on";
+          }
+          enum SUPERVISION-WATCHDOG {
+            description
+              "Equipment restarted because it's supervision wathcdog timer wasn't reset
+              by a NETCONF client (inferring loss of NETCONF connectivity)";
+          }
+          enum MPLANE-TRIGGERED-RESTART {
+            description
+              "Equipment restarted because of an M-plane issued  rpc";
+          }
+          enum SOFTWARE-FAILURE {
+            description
+              "Equipment restarted because of software failure";
+          }
+          enum OTHER-WATCHDOG-TIMER {
+            description
+              "Equipment restarted because of some other non NETCONF watchdog timer";
+          }
+          enum UNKNOWN {
+            description
+              "The restart reason for the Equipment is unknown";
+          }
+        }
+        description "the cause for the last restart of the O-RAN Network Element";
+      }
+      leaf restart-datetime {
+        type yang:date-and-time;
+        description
+          "The system date and time when the system last restarted.";
+      }
+    }
+
+
+// Common cross-WG container used for configuring clock and call home timers
+    container clock {
+      description
+        "System date and time properties used by all working groups.";
+
+      leaf timezone-name {
+        type timezone-name;
+        description
+          "An optional TZ database name to use for the system,
+           such as 'Europe/Stockholm'
+
+           Time zone name is an informative leaf and is NOT used in the
+           managed element to convert local time zone.
+
+           The managed element may include time zone name in measurement or
+           fault data.";
+      }
+
+      leaf timezone-utc-offset {
+        type int16 {
+          range "-720 .. 840";
+        }
+        units "minutes";
+        default 0;
+        description
+          "The number of minutes to add to UTC time to
+          identify the time zone for this system.  For example,
+          'UTC - 8:00 hours' would be represented as '-480'.";
+      }
+    }
+
+    leaf re-call-home-no-ssh-timer {
+      type uint16;
+      units seconds;
+      default 60;
+      description
+        "A common timer used by the O-RAN equipment to trigger the repeated call
+        home procedure to all identified call home servers to which the O-RAN
+        equipment has not already an established SSH connection.
+
+        A value of 0 means that the O-RAN equipment shall disable operation
+        of the timer triggered NETCONF call home procedure.";
+    }
+  }
+
+// Top level container
+
+  container operational-info{
+    description
+      "a collection of operational infor for the O-RU";
+    uses operational-group;
+
+  }
+
+// RPCs
+
+  rpc reset {
+    nacm:default-deny-all;
+    description
+      "Management plane triggered restart of the radio unit.
+       A server SHOULD send an rpc reply to the client before
+       restarting the system.";
+
+  }
+}

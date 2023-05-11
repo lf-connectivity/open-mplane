@@ -1,0 +1,3 @@
+# Set to coolumn formatted mode
+/tif:settings/showColumn true
+/tif:settings/formatVarVal true

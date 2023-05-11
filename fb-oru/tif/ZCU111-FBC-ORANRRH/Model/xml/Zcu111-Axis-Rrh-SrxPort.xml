@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+ 	<Board name="ZCU111-FBC-ORANRRH">
+		<Device name="SrxPort" path="/srx" comment="SRx Port settings">
+		<xinclude:include href="../../../helper/common/xml/CommonSettings.xml#NUM_SRX_PORTS"/>
+		<xinclude:include href="../../../helper/common/xml/CommonSettings.xml#NUM_TX_PORTS"/>
+		<xinclude:include href="../../../helper/common/xml/CommonSettings.xml#NUM_TX_PORTS_PER_SRX_PORT"/>
+		<xinclude:include href="../../../helper/common/xml/SrxPort.xml#SrxPort"/>
+		</Device>
+	</Board>
+</TestInterface>

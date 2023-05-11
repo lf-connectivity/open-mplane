@@ -1,0 +1,125 @@
+/**
+\mainpage Common Radio Hardware Delays Manager
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section hardware_common_delaysmgr_scope Scope
+<hr>
+
+This document describes the delays manager class which stores the CPRI interface delays.
+
+<hr>
+\section hardware_common_delaysmgr_overview	Overview
+<hr>
+
+There are a number of CPRI interface delays which need to be stored, updated, and read back both by the application and the hardware. The
+IDelaysMgr object provides central storage for all of these delays as show below:
+
+\image html IDelaysMgr.png IDelaysMgr Interface
+
+<hr>
+\section hardware_common_delaysmgr_sec_2 Details of Design
+<hr>
+
+As shown in the diagram above, the IDelaysMgr object provides 2 interfaces: one for the application (or TIF) so that customer code (or customers)
+can read/write the delays; and one for the low-level hardware code in order to update delays on events.
+
+The CPRI interface delays are updated by the hardware as events occur. For example when the fibre negotiates a line rate (or a new rate),
+when carriers are added, and so on. The IDelaysMgr object is used to allow the hardware to update the delays as and when they change.
+
+Also, the user may change customer-specific delays (like the EXTDELAYs etc). Again, the IDelaysMgr object provides access for changing these delays.
+
+Either side may also register callbacks to notify them of a delay change by the other side.
+
+\image html IDelaysMgr-callbacks.png IDelaysMgr Callbacks
+
+In the example shown above, the hardware has registered a callback so that when the application changes the single delay, the hardware code is notified. Similarly,
+the application has registered a callback on a per-antenna delay. When the hardware changes that delay (on any antenna) then the application is notified.
+
+\note I've used a simple single callback registry here rather than using the full blown Subject/Observer class for simplicity. It may be in
+future that we need to revisit this choice.
+
+\subsection hardware_common_delaysmgr_sec_2_1 Delay Sections
+<hr>
+
+As shown in the diagrams, the delays are split into 3 sections:
+
+\li Single delays - These are single instance delays. An example of this type is THRUDELAY_UP
+
+\li Per-Antenna delays - These delays have an instance for each antenna (either RX or TX depending on the delay). Examples of these are EXTDELAY_DOWN (for TX antennas)
+and EXTDELAY_UP (for RX antennas). So, if there are 1 TX and 2 RX antennas, then there will be only 1 instance and EXTDELAY_DOWN and 2 instances of EXTDELAY_UP
+
+\li Per carrier/antenna delays - For these delays, there is an instance for every carrier. And for that carrier there is an instance for every antenna. An example of this
+is ANTDELAY_DOWN (for TX antenna).
+
+All of the delays are accessible via an enumeration that enumerates all possible delays supported. To read or write a specific delay, the interface method
+must be passed the correct delay enumeration. Also, to access a delay in one of the three sections, there are a corresponding set of three access methods
+
+The full list of all supported delays are shown in the table below:
+
+Delay Enumeration | Units | Delay Type | Access Method
+----------------- | ----- | ---------- | --------------
+OFFSET_DELAY      | ns    | Single     | xxSetDelay(DelayAttr attr, unsigned delay)
+FRAMEDIFF         | BF    | Single     | xxSetDelay(DelayAttr attr, unsigned delay)
+THRUDELAY_UP      | ns    | Single     | xxSetDelay(DelayAttr attr, unsigned delay)
+THRUDELAY_DOWN    | ns    | Single     | xxSetDelay(DelayAttr attr, unsigned delay)
+EXTDELAY_UP       | ns    | Antenna    | xxSetPathDelay(DelayAttr attr, unsigned antenna, unsigned delay)
+EXTDELAY_DOWN     | ns    | Antenna    | xxSetPathDelay(DelayAttr attr, unsigned antenna, unsigned delay)
+ANTDELAY_UP       | ns    | Carrier    | xxSetCarrierDelay(DelayAttr attr, unsigned carrierIndex, unsigned antenna, unsigned delay)
+ANTDELAY_DOWN     | ns    | Carrier    | xxSetCarrierDelay(DelayAttr attr, unsigned carrierIndex, unsigned antenna, unsigned delay)
+ADJDELAY_UP       | ns    | Carrier    | xxSetCarrierDelay(DelayAttr attr, unsigned carrierIndex, unsigned antenna, unsigned delay)
+ADJDELAY_DOWN     | ns    | Carrier    | xxSetCarrierDelay(DelayAttr attr, unsigned carrierIndex, unsigned antenna, unsigned delay)
+FRAMEOFF_UP       | BF    | Carrier    | xxSetCarrierDelay(DelayAttr attr, unsigned carrierIndex, unsigned antenna, unsigned delay)
+FRAMEOFF_DOWN     | BF    | Carrier    | xxSetCarrierDelay(DelayAttr attr, unsigned carrierIndex, unsigned antenna, unsigned delay)
+T12               | ns    | Carrier    | xxSetCarrierDelay(DelayAttr attr, unsigned carrierIndex, unsigned antenna, unsigned delay)
+
+
+\note In the table above, the xx in the access method is either 'hw' for the hardware side access, or 'app' for the application side access
+
+
+\subsection hardware_common_delaysmgr_sec_2_2 Interface
+<hr>
+
+You set the delay value using a method that depends on which side you are writing from (hardware or application) and which of the three sections
+the delay belongs in. Obviously, if the delay is a carrier delay then you also need to specify the antenna number and carrier index to uniquely
+identify the delay to be set.
+
+Both sides use the same get methods, again there being a method for each of the three delay types.
+
+The example below shows the hardware side writing a carrier delay and reading an antenna delay:
+
+@code
+	std::shared_ptr<IDelaysMgr> delayInterface = IDelaysMgr::getInterface() ;
+
+	delayInterface->hwSetCarrierDelay(IDelaysMgr::ANTDELAY_DOWN, carrierIndex, antenna,
+		static_cast<unsigned>(T2a.getInt(EtnaDelay::NS))) ;
+
+	unsigned delay = delayInterface->getPathDelay(IDelaysMgr::EXTDELAY_UP, antenna) ;
+@endcode
+
+\note The delays values are stored as unsigned ints in the units shown in the table
+
+
+\subsection hardware_common_delaysmgr_sec_2_3 Midband Delays
+<hr>
+
+\image html IDelaysMgr-midband.png Midband Delays Behaviour
+
+Midband delays are a means of providing sensible, representative delays before any carriers have been configured. This means that customers can read
+delay settings prior to setting anything up and get sensible ("middle of the band") results back.
+
+The mechanism for doing this is that the IDelaysMgr provides a separate set of midband delays for the carrier/antenna delay set. However, there is only
+one midband delay per antenna provided.
+
+When either the hardware or application reads a carrier delay, if that carrier delay is currently not set, then the corresponding midband delay for that antenna
+is returned instead. This means that for any unset carriers on a particular antenna, all these carriers will return the same (per antenna) midband delay value.
+
+The hardware initialises all the midband delays based on the current hardware configuration. These midband values are then updated as other delays are changed or
+carriers are initialised (making the midband values more representative).
+
+Once a carrier delay has been set, any read of that carrier delay will always return the carrier delay and the midband value will then be ignored.
+
+*/

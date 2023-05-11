@@ -1,0 +1,18 @@
+diff --git a/ntsimulator/deploy/o-ran-ru-fh/config.json b/ntsimulator/deploy/o-ran-ru-fh/config.json
+index 1934a03..3fdf7eb 100644
+--- a/ntsimulator/deploy/o-ran-ru-fh/config.json
++++ b/ntsimulator/deploy/o-ran-ru-fh/config.json
+@@ -25,6 +25,14 @@
+             "path": "/opt/dev/ntsim-ng/ntsim-ng",
+             "args": ["-w/opt/dev/ntsim-ng", "-f"],
+             "nomanual": true
++        },
++
++        "mplane-client": {
++            "path": "/mplane_client/build/wrapper.sh",
++            "args": ["/mplane_client/build/mpc_client", "--privateKeyPath", "/mplane_client/build/server.key", "--certPath", "/mplane_client/build/server.crt"],
++            "autorestart": true,
++            "stdout": "log/mplane-client-stdout.log",
++            "stderr": "log/mplane-client-stderr.log"
+         }
+     },

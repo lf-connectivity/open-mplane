@@ -1,0 +1,69 @@
+/**
+\mainpage Radio Hardware MII Implementation
+<BR>
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section hardware_common_mii_scope Scope
+<hr>
+
+This document describes the class that has been created in order to
+interface to the Ethernet MDIO (Management Data Input/Output ).
+
+<hr>
+\section hardware_common_mii_overview	Overview
+<hr>
+
+The Ethernet MDIO is the interface to the PHY silicon device. In the main there is
+very little need to adjust register values on these devices. However, the LED
+behaviour is one such register that does need to be set.
+
+<hr>
+\section hardware_common_mii_sec_2 Details of Design
+<hr>
+
+Note: This implementation has been inherited from the legacy ETNA RRH product.
+
+The MDIO device is created with all the other devices that make up the product and,
+as a result, it's doInit() method is called to initialise the device.
+
+The initialisation uses sockets to create a control interface that allows the LED
+behaviour to be set.
+
+The socket creation is dependent on supplying the correct physical "id", which
+differs depending on which board is being used.
+
+
+See the MDIO class design details for further information.
+
+
+<hr>
+\section hardware_common_mii_sec_3_1 Dependencies
+<hr>
+
+The MDIO and is corresponding IMdio (interface) are dependent on the Linux OS,
+the PHY device drivers its socket support.
+
+
+<hr>
+\section hardware_common_mii_sec_4 Host Based Unit Tests
+<hr>
+
+This is the test record section
+
+<hr>
+\subsection hardware_common_mii_ssec_1_1 Code Coverage Summary
+<hr>
+
+\include ../build-local/common/mii/gtest/coverage.txt
+
+<hr>
+\subsection hardware_common_mii_ssec_1_2 Unit Test Results
+<hr>
+
+\include ../build-local/common/mii/gtest/gtest.txt
+
+*/

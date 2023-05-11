@@ -1,0 +1,2646 @@
+  <rule-list>
+    <name>sudo-rules</name>
+    <group>sudo</group>
+    <rule>
+      <name>sudo-iana-hardware</name>
+      <module-name>iana-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo iana-hardware R--</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-hardware</name>
+      <module-name>ietf-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo ietf-hardware RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-interfaces-permit-write</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo ietf-interfaces RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-interfaces-deny-exec</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo ietf-interfaces RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-ip-permit-write</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo ietf-ip RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-ip-deny-exec</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo ietf-ip RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-netconf-acm-permit-write</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo ietf-netconf-acm RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-netconf-acm-deny-exec</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo ietf-netconf-acm RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-netconf-notifications</name>
+      <module-name>ietf-netconf-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>sudo ietf-netconf-notifications --X</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-subscribed-notifications</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>sudo ietf-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-ietf-subscribed-notifications-deny-exec</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo ietf-subscribed-notifications --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-ald</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-ald --X</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-ald-port</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-ald-port RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-antenna-calibration</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-antenna-calibration RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-delay-management-permit-write</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-delay-management RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-delay-management-deny-exec</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-delay-management RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-dhcp</name>
+      <module-name>o-ran-dhcp</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-dhcp R--</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-ecpri-delay-permit-write</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-ecpri-delay RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-ecpri-delay-deny-exec</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-ecpri-delay RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-ethernet-forwarding-permit-write</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-ethernet-forwarding RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-ethernet-forwarding-deny-exec</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-ethernet-forwarding RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-externalio</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-externalio RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-fan</name>
+      <module-name>o-ran-fan</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-fan R--</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-file-management</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-file-management --X</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-hardware</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-hardware RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-interfaces</name>
+      <module-name>o-ran-interfaces</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-interfaces RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-laa-permit-write</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-laa RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-laa-deny-exec</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-laa RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-laa-operations</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-laa-operations --X</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-lbm-permit-write</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-lbm RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-lbm-deny-exec</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-lbm RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-module-cap-permit-write</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-module-cap RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-module-cap-deny-exec</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-module-cap RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-mplane-int-permit-write</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-mplane-int RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-mplane-int-deny-exec</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-mplane-int RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-operations</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-operations RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-performance-management</name>
+      <module-name>o-ran-performance-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-performance-management RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-processing-element-permit-write</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-processing-element RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-processing-element-deny-exec</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-processing-element RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-shared-cell-permit-write</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-shared-cell RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-shared-cell-deny-exec</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-shared-cell RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-supervision</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-supervision RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-sync</name>
+      <module-name>o-ran-sync</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-sync RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-trace</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-trace --X</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-transceiver-permit-write</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-transceiver RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-transceiver-deny-exec</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-transceiver RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-troubleshooting</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-troubleshooting --X</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-udp-echo-permit-write</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-udp-echo RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-udp-echo-deny-exec</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-udp-echo RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-uplane-conf</name>
+      <module-name>o-ran-uplane-conf</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-uplane-conf RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-usermgmt</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>sudo o-ran-usermgmt RWX</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-ves-subscribed-notifications</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-ves-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>sudo-o-ran-ves-subscribed-notifications-deny-exec</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>sudo o-ran-ves-subscribed-notifications --- (2/2)</comment>
+    </rule>
+  </rule-list>
+  <rule-list>
+    <name>nms-rules</name>
+    <group>nms</group>
+    <rule>
+      <name>nms-iana-hardware</name>
+      <module-name>iana-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms iana-hardware R--</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-hardware</name>
+      <module-name>ietf-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms ietf-hardware RWX</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-interfaces-permit-write</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms ietf-interfaces RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-interfaces-deny-exec</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms ietf-interfaces RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-ip-permit-write</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms ietf-ip RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-ip-deny-exec</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms ietf-ip RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-netconf-acm</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms ietf-netconf-acm R--</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-netconf-notifications</name>
+      <module-name>ietf-netconf-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms ietf-netconf-notifications --X</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-subscribed-notifications</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms ietf-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-ietf-subscribed-notifications-deny-exec</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms ietf-subscribed-notifications --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-ald</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-ald --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-ald-deny-exec</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-ald --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-ald-port</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-ald-port RWX</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-antenna-calibration</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-antenna-calibration R--</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-delay-management</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-delay-management R--</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-dhcp</name>
+      <module-name>o-ran-dhcp</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-dhcp R--</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-ecpri-delay</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-ecpri-delay R--</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-ethernet-forwarding-permit-write</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-ethernet-forwarding RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-ethernet-forwarding-deny-exec</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-ethernet-forwarding RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-externalio</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-externalio RWX</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-fan</name>
+      <module-name>o-ran-fan</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-fan R--</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-file-management</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-file-management --X</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-hardware-permit-write</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-hardware RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-hardware-deny-exec</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-hardware RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-interfaces</name>
+      <module-name>o-ran-interfaces</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-interfaces RWX</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-laa-permit-write</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-laa RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-laa-deny-exec</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-laa RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-laa-operations</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-laa-operations --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-laa-operations-deny-exec</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-laa-operations --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-lbm-permit-write</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-lbm RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-lbm-deny-exec</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-lbm RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-module-cap</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-module-cap R--</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-mplane-int-permit-write</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-mplane-int RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-mplane-int-deny-exec</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-mplane-int RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-operations-permit-write</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-operations RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-operations-deny-exec</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-operations RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-performance-management</name>
+      <module-name>o-ran-performance-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-performance-management RWX</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-processing-element-permit-write</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-processing-element RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-processing-element-deny-exec</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-processing-element RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-shared-cell-permit-write</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-shared-cell RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-shared-cell-deny-exec</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-shared-cell RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-supervision</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-supervision --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-supervision-deny-exec</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-supervision --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-sync</name>
+      <module-name>o-ran-sync</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-sync RWX</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-trace</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-trace --X</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-transceiver-permit-write</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-transceiver RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-transceiver-deny-exec</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-transceiver RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-troubleshooting</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-troubleshooting --X</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-udp-echo</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-udp-echo R--</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-uplane-conf</name>
+      <module-name>o-ran-uplane-conf</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>nms o-ran-uplane-conf RWX</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-usermgmt</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-usermgmt --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-usermgmt-deny-exec</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-usermgmt --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-ves-subscribed-notifications</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-ves-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>nms-o-ran-ves-subscribed-notifications-deny-exec</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>nms o-ran-ves-subscribed-notifications --- (2/2)</comment>
+    </rule>
+  </rule-list>
+  <rule-list>
+    <name>fm-pm-rules</name>
+    <group>fm-pm</group>
+    <rule>
+      <name>fm-pm-ietf-interfaces</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm ietf-interfaces R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-ietf-ip</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm ietf-ip R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-ietf-netconf-acm</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm ietf-netconf-acm R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-ietf-netconf-notifications</name>
+      <module-name>ietf-netconf-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm ietf-netconf-notifications --X</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-ietf-subscribed-notifications</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm ietf-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-ietf-subscribed-notifications-deny-exec</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm ietf-subscribed-notifications --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ald</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ald --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ald-deny-exec</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ald --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ald-port</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ald-port --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ald-port-deny-exec</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ald-port --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-antenna-calibration</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-antenna-calibration --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-antenna-calibration-deny-exec</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-antenna-calibration --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-beamforming</name>
+      <module-name>o-ran-beamforming</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-beamforming R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-delay-management</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-delay-management R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-dhcp</name>
+      <module-name>o-ran-dhcp</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-dhcp R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ecpri-delay</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ecpri-delay R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ethernet-forwarding</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ethernet-forwarding --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ethernet-forwarding-deny-exec</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ethernet-forwarding --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-externalio</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-externalio --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-externalio-deny-exec</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-externalio --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-fan</name>
+      <module-name>o-ran-fan</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-fan R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-file-management</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-file-management --X</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-hardware</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-hardware --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-hardware-deny-exec</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-hardware --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-interfaces</name>
+      <module-name>o-ran-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-interfaces R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-laa</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-laa --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-laa-deny-exec</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-laa --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-laa-operations</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-laa-operations --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-laa-operations-deny-exec</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-laa-operations --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-lbm</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-lbm R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-module-cap</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-module-cap R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-mplane-int</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-mplane-int R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-operations</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-operations R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-performance-management</name>
+      <module-name>o-ran-performance-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>fm-pm o-ran-performance-management RWX</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-processing-element</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-processing-element R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-shared-cell</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-shared-cell --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-shared-cell-deny-exec</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-shared-cell --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-software-management</name>
+      <module-name>o-ran-software-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-software-management R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-supervision</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-supervision --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-supervision-deny-exec</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-supervision --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-sync</name>
+      <module-name>o-ran-sync</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-sync R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-trace</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-trace --X</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-transceiver</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-transceiver R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-troubleshooting</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-troubleshooting --X</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-udp-echo</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-udp-echo --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-udp-echo-deny-exec</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-udp-echo --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-uplane-conf</name>
+      <module-name>o-ran-uplane-conf</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-uplane-conf R--</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-usermgmt</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-usermgmt --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-usermgmt-deny-exec</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-usermgmt --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ves-subscribed-notifications</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ves-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>fm-pm-o-ran-ves-subscribed-notifications-deny-exec</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>fm-pm o-ran-ves-subscribed-notifications --- (2/2)</comment>
+    </rule>
+  </rule-list>
+  <rule-list>
+    <name>swm-rules</name>
+    <group>swm</group>
+    <rule>
+      <name>swm-iana-hardware</name>
+      <module-name>iana-hardware</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm iana-hardware --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-iana-hardware-deny-exec</name>
+      <module-name>iana-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm iana-hardware --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-hardware</name>
+      <module-name>ietf-hardware</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-hardware --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-hardware-deny-exec</name>
+      <module-name>ietf-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-hardware --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-interfaces</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-interfaces --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-interfaces-deny-exec</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-interfaces --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-ip</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-ip --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-ip-deny-exec</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-ip --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-netconf-acm</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-netconf-acm R--</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-netconf-notifications</name>
+      <module-name>ietf-netconf-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-netconf-notifications --X</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-subscribed-notifications</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-ietf-subscribed-notifications-deny-exec</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm ietf-subscribed-notifications --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ald</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ald --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ald-deny-exec</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ald --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ald-port</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ald-port --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ald-port-deny-exec</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ald-port --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-antenna-calibration</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-antenna-calibration --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-antenna-calibration-deny-exec</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-antenna-calibration --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-beamforming</name>
+      <module-name>o-ran-beamforming</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-beamforming --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-beamforming-deny-exec</name>
+      <module-name>o-ran-beamforming</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-beamforming --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-delay-management</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-delay-management --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-delay-management-deny-exec</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-delay-management --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-dhcp</name>
+      <module-name>o-ran-dhcp</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-dhcp --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-dhcp-deny-exec</name>
+      <module-name>o-ran-dhcp</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-dhcp --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ecpri-delay</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ecpri-delay --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ecpri-delay-deny-exec</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ecpri-delay --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ethernet-forwarding</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ethernet-forwarding --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ethernet-forwarding-deny-exec</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ethernet-forwarding --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-externalio</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-externalio --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-externalio-deny-exec</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-externalio --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-fan</name>
+      <module-name>o-ran-fan</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-fan --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-fan-deny-exec</name>
+      <module-name>o-ran-fan</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-fan --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-file-management</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-file-management --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-file-management-deny-exec</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-file-management --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-fm</name>
+      <module-name>o-ran-fm</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-fm --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-fm-deny-exec</name>
+      <module-name>o-ran-fm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-fm --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-hardware</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-hardware --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-hardware-deny-exec</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-hardware --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-interfaces</name>
+      <module-name>o-ran-interfaces</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-interfaces --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-interfaces-deny-exec</name>
+      <module-name>o-ran-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-interfaces --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-laa</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-laa --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-laa-deny-exec</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-laa --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-laa-operations</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-laa-operations --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-laa-operations-deny-exec</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-laa-operations --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-lbm</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-lbm --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-lbm-deny-exec</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-lbm --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-module-cap</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-module-cap --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-module-cap-deny-exec</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-module-cap --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-mplane-int</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-mplane-int --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-mplane-int-deny-exec</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-mplane-int --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-operations</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-operations --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-operations-deny-exec</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-operations --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-performance-management</name>
+      <module-name>o-ran-performance-management</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-performance-management --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-performance-management-deny-exec</name>
+      <module-name>o-ran-performance-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-performance-management --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-processing-element</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-processing-element --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-processing-element-deny-exec</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-processing-element --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-shared-cell</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-shared-cell --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-shared-cell-deny-exec</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-shared-cell --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-supervision</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-supervision --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-supervision-deny-exec</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-supervision --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-sync</name>
+      <module-name>o-ran-sync</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-sync --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-sync-deny-exec</name>
+      <module-name>o-ran-sync</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-sync --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-trace</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-trace --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-trace-deny-exec</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-trace --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-transceiver</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-transceiver --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-transceiver-deny-exec</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-transceiver --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-troubleshooting</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-troubleshooting --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-troubleshooting-deny-exec</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-troubleshooting --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-udp-echo</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-udp-echo --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-udp-echo-deny-exec</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-udp-echo --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-uplane-conf</name>
+      <module-name>o-ran-uplane-conf</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-uplane-conf --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-uplane-conf-deny-exec</name>
+      <module-name>o-ran-uplane-conf</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-uplane-conf --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-usermgmt</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-usermgmt --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-usermgmt-deny-exec</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-usermgmt --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ves-subscribed-notifications</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ves-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>swm-o-ran-ves-subscribed-notifications-deny-exec</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>swm o-ran-ves-subscribed-notifications --- (2/2)</comment>
+    </rule>
+  </rule-list>
+  <rule-list>
+    <name>smo-rules</name>
+    <group>smo</group>
+    <rule>
+      <name>smo-iana-hardware</name>
+      <module-name>iana-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo iana-hardware R--</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-hardware</name>
+      <module-name>ietf-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo ietf-hardware RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-interfaces-permit-write</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo ietf-interfaces RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-interfaces-deny-exec</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo ietf-interfaces RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-ip-permit-write</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo ietf-ip RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-ip-deny-exec</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo ietf-ip RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-netconf-acm-permit-write</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo ietf-netconf-acm RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-netconf-acm-deny-exec</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo ietf-netconf-acm RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-netconf-notifications</name>
+      <module-name>ietf-netconf-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>smo ietf-netconf-notifications --X</comment>
+    </rule>
+    <rule>
+      <name>smo-ietf-subscribed-notifications</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo ietf-subscribed-notifications RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-ald</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-ald --X</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-ald-port</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-ald-port RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-antenna-calibration</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-antenna-calibration R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-beamforming</name>
+      <module-name>o-ran-beamforming</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-beamforming R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-delay-management</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-delay-management R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-dhcp</name>
+      <module-name>o-ran-dhcp</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-dhcp R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-ecpri-delay</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-ecpri-delay R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-ethernet-forwarding-permit-write</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-ethernet-forwarding RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-ethernet-forwarding-deny-exec</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-ethernet-forwarding RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-externalio</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-externalio RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-fan</name>
+      <module-name>o-ran-fan</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-fan R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-file-management</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-file-management --X</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-hardware-permit-write</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-hardware RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-hardware-deny-exec</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-hardware RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-interfaces</name>
+      <module-name>o-ran-interfaces</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-interfaces RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-laa</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-laa R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-laa-operations</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-laa-operations --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-laa-operations-deny-exec</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-laa-operations --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-lbm-permit-write</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-lbm RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-lbm-deny-exec</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-lbm RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-module-cap</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-module-cap R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-mplane-int-permit-write</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-mplane-int RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-mplane-int-deny-exec</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-mplane-int RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-operations</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-operations RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-performance-management</name>
+      <module-name>o-ran-performance-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-performance-management RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-processing-element-permit-write</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-processing-element RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-processing-element-deny-exec</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-processing-element RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-shared-cell</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-shared-cell R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-supervision-permit-write</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-supervision RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-supervision-deny-exec</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-supervision RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-sync</name>
+      <module-name>o-ran-sync</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-sync RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-trace</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-trace --X</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-transceiver-permit-write</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-transceiver RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-transceiver-deny-exec</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-transceiver RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-troubleshooting</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-troubleshooting --X</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-udp-echo-permit-write</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-udp-echo RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-udp-echo-deny-exec</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-udp-echo RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-uplane-conf</name>
+      <module-name>o-ran-uplane-conf</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-uplane-conf R--</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-usermgmt</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-usermgmt RWX</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-ves-subscribed-notifications-permit-write</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>smo o-ran-ves-subscribed-notifications RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>smo-o-ran-ves-subscribed-notifications-deny-exec</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>smo o-ran-ves-subscribed-notifications RW- (2/2)</comment>
+    </rule>
+  </rule-list>
+  <rule-list>
+    <name>hybrid-odu-rules</name>
+    <group>hybrid-odu</group>
+    <rule>
+      <name>hybrid-odu-iana-hardware</name>
+      <module-name>iana-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu iana-hardware R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-ietf-interfaces</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu ietf-interfaces R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-ietf-ip</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu ietf-ip R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-ietf-netconf-acm-permit-write</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu ietf-netconf-acm RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-ietf-netconf-acm-deny-exec</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu ietf-netconf-acm RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-ietf-netconf-notifications</name>
+      <module-name>ietf-netconf-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu ietf-netconf-notifications --X</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-ietf-subscribed-notifications</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu ietf-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-ietf-subscribed-notifications-deny-exec</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu ietf-subscribed-notifications --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-ald</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-ald --X</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-ald-port</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-ald-port RWX</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-antenna-calibration</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-antenna-calibration RWX</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-delay-management-permit-write</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-delay-management RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-delay-management-deny-exec</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-delay-management RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-dhcp</name>
+      <module-name>o-ran-dhcp</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-dhcp R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-ecpri-delay-permit-write</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-ecpri-delay RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-ecpri-delay-deny-exec</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-ecpri-delay RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-ethernet-forwarding</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-ethernet-forwarding R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-externalio</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-externalio R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-fan</name>
+      <module-name>o-ran-fan</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-fan R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-file-management</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-file-management --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-file-management-deny-exec</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-file-management --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-hardware</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-hardware R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-interfaces</name>
+      <module-name>o-ran-interfaces</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-interfaces R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-laa-permit-write</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-laa RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-laa-deny-exec</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-laa RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-laa-operations</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-laa-operations --X</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-lbm</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-lbm R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-module-cap-permit-write</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-module-cap RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-module-cap-deny-exec</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-module-cap RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-mplane-int</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-mplane-int R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-operations</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-operations RWX</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-processing-element-permit-write</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-processing-element RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-processing-element-deny-exec</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-processing-element RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-shared-cell-permit-write</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-shared-cell RW- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-shared-cell-deny-exec</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-shared-cell RW- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-software-management</name>
+      <module-name>o-ran-software-management</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-software-management R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-supervision</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-supervision RWX</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-trace</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-trace --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-trace-deny-exec</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-trace --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-transceiver</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-transceiver R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-troubleshooting</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-troubleshooting --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-troubleshooting-deny-exec</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-troubleshooting --- (2/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-udp-echo</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-udp-echo R--</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-uplane-conf</name>
+      <module-name>o-ran-uplane-conf</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-uplane-conf RWX</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-usermgmt</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>hybrid-odu o-ran-usermgmt RWX</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-ves-subscribed-notifications</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>read</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-ves-subscribed-notifications --- (1/2)</comment>
+    </rule>
+    <rule>
+      <name>hybrid-odu-o-ran-ves-subscribed-notifications-deny-exec</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>exec</access-operations>
+      <action>deny</action>
+      <comment>hybrid-odu o-ran-ves-subscribed-notifications --- (2/2)</comment>
+    </rule>
+  </rule-list>
+  <rule-list>
+    <name>root-rules</name>
+    <group>root</group>
+    <rule>
+      <name>root-iana-hardware</name>
+      <module-name>iana-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root iana-hardware RWX</comment>
+    </rule>
+    <rule>
+      <name>root-ietf-hardware</name>
+      <module-name>ietf-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root ietf-hardware RWX</comment>
+    </rule>
+    <rule>
+      <name>root-ietf-interfaces</name>
+      <module-name>ietf-interfaces</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root ietf-interfaces RWX</comment>
+    </rule>
+    <rule>
+      <name>root-ietf-ip</name>
+      <module-name>ietf-ip</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root ietf-ip RWX</comment>
+    </rule>
+    <rule>
+      <name>root-ietf-netconf-acm</name>
+      <module-name>ietf-netconf-acm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root ietf-netconf-acm RWX</comment>
+    </rule>
+    <rule>
+      <name>root-ietf-netconf-monitoring</name>
+      <module-name>ietf-netconf-monitoring</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root ietf-netconf-monitoring RWX</comment>
+    </rule>
+    <rule>
+      <name>root-ietf-netconf-notifications</name>
+      <module-name>ietf-netconf-notifications</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root ietf-netconf-notifications RWX</comment>
+    </rule>
+    <rule>
+      <name>root-ietf-subscribed-notifications</name>
+      <module-name>ietf-subscribed-notifications</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root ietf-subscribed-notifications RWX</comment>
+    </rule>
+    <rule>
+      <name>root-ietf-yang-library</name>
+      <module-name>ietf-yang-library</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root ietf-yang-library RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-ald</name>
+      <module-name>o-ran-ald</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-ald RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-ald-port</name>
+      <module-name>o-ran-ald-port</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-ald-port RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-antenna-calibration</name>
+      <module-name>o-ran-antenna-calibration</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-antenna-calibration RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-beamforming</name>
+      <module-name>o-ran-beamforming</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-beamforming RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-delay-management</name>
+      <module-name>o-ran-delay-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-delay-management RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-dhcp</name>
+      <module-name>o-ran-dhcp</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-dhcp RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-ecpri-delay</name>
+      <module-name>o-ran-ecpri-delay</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-ecpri-delay RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-ethernet-forwarding</name>
+      <module-name>o-ran-ethernet-forwarding</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-ethernet-forwarding RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-externalio</name>
+      <module-name>o-ran-externalio</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-externalio RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-fan</name>
+      <module-name>o-ran-fan</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-fan RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-file-management</name>
+      <module-name>o-ran-file-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-file-management RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-fm</name>
+      <module-name>o-ran-fm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-fm RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-hardware</name>
+      <module-name>o-ran-hardware</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-hardware RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-interfaces</name>
+      <module-name>o-ran-interfaces</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-interfaces RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-laa</name>
+      <module-name>o-ran-laa</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-laa RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-laa-operations</name>
+      <module-name>o-ran-laa-operations</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-laa-operations RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-lbm</name>
+      <module-name>o-ran-lbm</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-lbm RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-module-cap</name>
+      <module-name>o-ran-module-cap</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-module-cap RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-mplane-int</name>
+      <module-name>o-ran-mplane-int</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-mplane-int RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-operations</name>
+      <module-name>o-ran-operations</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-operations RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-performance-management</name>
+      <module-name>o-ran-performance-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-performance-management RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-processing-element</name>
+      <module-name>o-ran-processing-element</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-processing-element RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-shared-cell</name>
+      <module-name>o-ran-shared-cell</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-shared-cell RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-software-management</name>
+      <module-name>o-ran-software-management</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-software-management RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-supervision</name>
+      <module-name>o-ran-supervision</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-supervision RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-sync</name>
+      <module-name>o-ran-sync</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-sync RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-trace</name>
+      <module-name>o-ran-trace</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-trace RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-transceiver</name>
+      <module-name>o-ran-transceiver</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-transceiver RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-troubleshooting</name>
+      <module-name>o-ran-troubleshooting</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-troubleshooting RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-udp-echo</name>
+      <module-name>o-ran-udp-echo</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-udp-echo RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-uplane-conf</name>
+      <module-name>o-ran-uplane-conf</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-uplane-conf RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-usermgmt</name>
+      <module-name>o-ran-usermgmt</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-usermgmt RWX</comment>
+    </rule>
+    <rule>
+      <name>root-o-ran-ves-subscribed-notifications</name>
+      <module-name>o-ran-ves-subscribed-notifications</module-name>
+      <access-operations>create update delete</access-operations>
+      <action>permit</action>
+      <comment>root o-ran-ves-subscribed-notifications RWX</comment>
+    </rule>
+  </rule-list>

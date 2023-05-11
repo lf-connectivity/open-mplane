@@ -1,0 +1,179 @@
+[INPUTS]
+"Imported Models/iana-hardware.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIanaHardware.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIanaHardware.h"
+
+"Imported Models/iana-if-type.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIanaIfType.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIanaIfType.h"
+
+"Imported Models/ietf-crypto-types.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfCryptoTypes.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfCryptoTypes.h"
+
+"Imported Models/ietf-dhcpv6-types.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfDhcpv6Types.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfDhcpv6Types.h"
+
+"Imported Models/ietf-hardware.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfHardware.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfHardware.h"
+
+"Imported Models/ietf-inet-types.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfInetTypes.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfInetTypes.h"
+
+"Imported Models/ietf-interfaces.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfInterfaces.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfInterfaces.h"
+
+"Imported Models/ietf-ip.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfIp.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfIp.h"
+
+"Imported Models/ietf-netconf-acm.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfNetconfAcm.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfNetconfAcm.h"
+
+"Imported Models/ietf-netconf-monitoring.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfNetconfMonitoring.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfNetconfMonitoring.h"
+
+"Imported Models/ietf-yang-library.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfYangLibrary.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfYangLibrary.h"
+
+"Imported Models/ietf-yang-types.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleIetfYangTypes.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleIetfYangTypes.h"
+
+"Common Models/Interfaces/o-ran-ald-port.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanAldPort.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanAldPort.h"
+
+"Common Models/Operations/o-ran-ald.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanAld.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanAld.h"
+
+"RU Specific Models/Radio/o-ran-antenna-calibration.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanAntennaCalibration.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanAntennaCalibration.h"
+
+#"RU Specific Models/Radio/o-ran-beamforming.yang" : \
+#	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanBeamforming.cpp" \
+#	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanBeamforming.h"
+
+"RU Specific Models/Radio/o-ran-compression-factors.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanCompressionFactors.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanCompressionFactors.h"
+
+"RU Specific Models/Radio/o-ran-delay-management.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanDelayManagement.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanDelayManagement.h"
+
+"Common Models/Interfaces/o-ran-dhcp.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanDhcp.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanDhcp.h"
+
+"RU Specific Models/Operations/o-ran-ecpri-delay.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanEcpriDelay.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanEcpriDelay.h"
+
+"Common Models/Interfaces/o-ran-externalio.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanExternalio.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanExternalio.h"
+
+"Common Models/System/o-ran-fan.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanFan.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanFan.h"
+
+"Common Models/Operations/o-ran-file-management.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanFileManagement.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanFileManagement.h"
+
+"Common Models/System/o-ran-fm.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanFm.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanFm.h"
+
+"Common Models/System/o-ran-hardware.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanHardware.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanHardware.h"
+
+"Common Models/Interfaces/o-ran-interfaces.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanInterfaces.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanInterfaces.h"
+
+"RU Specific Models/Radio/o-ran-laa-operations.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanLaaOperations.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanLaaOperations.h"
+
+"RU Specific Models/Radio/o-ran-laa.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanLaa.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanLaa.h"
+
+"RU Specific Models/Operations/o-ran-lbm.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanLbm.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanLbm.h"
+
+"RU Specific Models/Radio/o-ran-module-cap.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanModuleCap.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanModuleCap.h"
+
+"Common Models/Interfaces/o-ran-mplane-int.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanMplaneInt.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanMplaneInt.h"
+
+"Common Models/Operations/o-ran-operations.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanOperations.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanOperations.h"
+
+"RU Specific Models/Operations/o-ran-performance-management.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanPerformanceManagement.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanPerformanceManagement.h"
+
+"RU Specific Models/Interfaces/o-ran-processing-element.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanProcessingElement.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanProcessingElement.h"
+
+"Common Models/Operations/o-ran-software-management.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanSoftwareManagement.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanSoftwareManagement.h"
+
+"Common Models/System/o-ran-supervision.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanSupervision.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanSupervision.h"
+
+"Common Models/Sync/o-ran-sync.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanSync.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanSync.h"
+
+"Common Models/Operations/o-ran-trace.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanTrace.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanTrace.h"
+
+"Common Models/Interfaces/o-ran-transceiver.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanTransceiver.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanTransceiver.h"
+
+"Common Models/Operations/o-ran-troubleshooting.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanTroubleshooting.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanTroubleshooting.h"
+
+"RU Specific Models/Operations/o-ran-udp-echo.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanUdpEcho.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanUdpEcho.h"
+
+"RU Specific Models/Operations/o-ran-uplane-conf.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanUplaneConf.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanUplaneConf.h"
+
+"Common Models/System/o-ran-usermgmt.yang" : \
+	[YangmodCpp] "${GITDIR}/yang-manager-server/yang-models/src/YangModuleORanUsermgmt.cpp" \
+	[YangmodHpp] "${GITDIR}/yang-manager-server/yang-models/inc/YangModuleORanUsermgmt.h"
+
+
+[OUTPUTS]
+YangmodCpp : \
+	[YangmgrCpp] ${GITDIR}/yang-manager-server/yang-models/src/YangMgrServer.cpp \
+	[YangmgrHpp] ${GITDIR}/yang-manager-server/yang-models/inc/YangMgrServer.h \
+	[CMakeList] ${GITDIR}/yang-manager-server/yang-models/CMakeLists.txt

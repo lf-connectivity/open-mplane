@@ -1,0 +1,13 @@
+# Format is:
+# FILE destination user:group permissions source
+# DIR destination user:group permissions
+# DIRCOPY destination user:group source_directory
+# INCLUDE include_file
+# MODE destination user:group permissions
+#
+FILE /etc/setup.env 0:0 0644 etc/setup.env
+FILE /etc/init.d/app.d/00_start.sh 0:0 0755 etc/init.d/app.d/00_start.sh
+FILE /etc/init.d/app.d/28_fpga-eth.sh 0:0 0755 etc/init.d/app.d/28_fpga-eth.sh
+FILE /etc/init.d/app.d/30_app.sh.in 0:0 0755 etc/init.d/app.d/30_app.sh.in
+FILE /usr/local/bin/tailf 0:0 0755 ../../common-rootfs/rootfs/common/usr/local/bin/tailf
+FILE /usr/local/bin/tif 0:0 0755 ../../common-rootfs/rootfs/common/usr/local/bin/tif

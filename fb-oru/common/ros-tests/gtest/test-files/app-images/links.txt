@@ -1,0 +1,2 @@
+current > EBS-THALES-ATG-1.1-5-APP.tgz
+previous > EBS-THALES-ATG-sprice-1557-APP.tgz

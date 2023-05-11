@@ -1,0 +1,58 @@
+/**
+\mainpage Common Hardware Implementation of the System LED
+<BR>
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section hardware_common_systemled_scope Scope
+<hr>
+
+This document describes the classes that provides and interface to control the
+state and colour of the system LED, as fitted to the radio card.
+
+<hr>
+\section hardware_common_systemled_overview	Design
+<hr>
+
+The design inherits from the common LED control interface, that supplies a good
+deal of its underlying functionality. As such the interface to the board is provided
+by two classes. The Mplane::SystemLed class inherits from the Mplane::CLed class and
+implements the Mplane::CLed::verifyColour method so that it only supports,
+ILed::LED_RED, ILed::LED_GREEN and ILed::LED_YELLOW.
+
+The Mplane::SystemLedControl class inherits from the Mplane::CLedControl class and implements
+the pure virtual methods Mplane::CLedControl::setLed and Mplane::Initialise::doInit. The
+first of these methods is called by the common base class whenever any led set method is
+called, i.e. Mplane::CLed::setColour, Mplane::CLed::setState and Mplane::CLed::setRate methods.
+The Mplane::SystemLedControl::doInit method is used to perform the POST actions for the LED and
+then  set the system LED to its correct initial state ready for the application to control it.
+
+
+<hr>
+\section hardware_common_systemled_sec_3_1 Dependencies
+<hr>
+
+/hardware/common/SystemLed implementation is dependent on the vrh and hardware/common/led
+
+<hr>
+\section hardware_common_systemled_sec_4 Host Based Unit Tests
+<hr>
+
+This is the test record section
+
+<hr>
+\subsection hardware_common_systemled_ssec_1_1 Code Coverage Summary
+<hr>
+
+\include ../build-local/common/systemled/gtest/coverage.txt
+
+<hr>
+\subsection hardware_common_systemled_ssec_1_2 Unit Test Results
+<hr>
+
+\include ../build-local/common/systemled/gtest/gtest.txt
+
+*/

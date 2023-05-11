@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+ 		<Device name="Bist" path="/bist" comment="Built-in Self Test">
+			<xinclude:include href="../../../../../helper/common/xml/Bist.xml#Initialisation"/>
+			<xinclude:include href="../../../../../helper/common/xml/Bist.xml#PLL"/>
+ 		</Device>
+	</Board>
+</TestInterface>

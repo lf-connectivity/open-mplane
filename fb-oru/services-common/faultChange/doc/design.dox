@@ -1,0 +1,79 @@
+/**
+\mainpage Common Fault Change
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+
+<hr>
+\section commonService_faultChange_scope Scope
+<hr>
+This document describes the Common Fault Change used to allow a fault name to be captured.
+
+<hr>
+\section commonService_faultChange_overview	Overview
+<hr>
+
+The fault change is a convenient way to capture a fault and be able to use this information in
+another object that needs to know the information
+
+<hr>
+\section commonService_faultChange_sec_2 Details of Design
+<hr>
+
+The fault change object is intended to be called by the radio specific Alarm update method. This
+method has the information required to extract the fault name simply and easily, with out the need to
+copy fault references.
+
+The method to preserve the fault information is -
+
+@code
+
+    void FaultChange::setFaultName( const std::string& faultName )
+
+@endcode
+
+The information preserved only has a short context in which it is still valid. It is intended that
+the radio specific information with action on the Alarm that follows immediatly that the fault update
+occures.
+
+The method to retrieve the fault information is -
+
+@code
+
+    const std::string& FaultChange::getFaultName( void );
+
+@endcode
+
+In order to share the information a instance singleton is provided that ensures that only one instance
+of the object exists at any one time. The method is -
+
+@code
+
+    std::shared_ptr<IFaultChange> IFaultChange::getInstance( void );
+
+@endcode
+
+<hr>
+\section commonService_faultChange_sec_3 Dependencies
+<hr>
+
+There are no dependencies associated with this class.
+
+<hr>
+\section commonService_faultChange_sec_4 Host Based Unit Tests
+<hr>
+\subsection commonService_faultChange_ssec_4_1 Code Coverage Summary
+<hr>
+
+\include common/faultChange/gtest/coverage.txt
+
+<hr>
+\subsection commonService_faultChange_ssec_4_2 Unit Test Results
+<hr>
+
+\include common/faultChange/gtest/gtest.txt
+
+
+*/

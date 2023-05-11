@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="Dpd" path="/dpd" comment="DPD control">
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#portOpen"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#portClose"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#logOpen"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#logClose"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#apiVersion"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#set"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#get"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#reboot"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#reset"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#frd"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#fwr"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#dumpFpga"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#dumpLuts"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#runTest"/>
+			<xinclude:include href="../../../../../helper/common/xml/Dpd.xml#capture"/>
+		</Device>
+	</Board>
+</TestInterface>

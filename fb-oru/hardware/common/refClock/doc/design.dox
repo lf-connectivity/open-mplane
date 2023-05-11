@@ -1,0 +1,60 @@
+/**
+\mainpage Common Radio Hardware Generic Synthesiser
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section hardware_common_irefclockdriver_scope Scope
+<hr>
+
+This document describes the classes created to implement the generic reference clock driver (Mplane::IRefClockDriver). These classes are
+used by reference clock devices like ADC RefClock, DAC RefClock, RFPLL RefClock, etc.
+
+<hr>
+\section hardware_common_irefclockdriver_overview	Overview
+<hr>
+
+The aim for creating the IRefClockDriver interface is to make the reference clock objects independent of the PLL driver chip / library used.
+The IRefClockDriver implementations would have the board specific code to communicate with the PLL to initialise and program the required frequency.
+The individual reference clock object (ADC ref clock, DAC ref clock etc) would use one of the IRefClockDriver implementations via the virtual interface.
+As long as a reference clock object only uses the IRefClockDriver API to access the actual hardware, then the details of the actual chip/library being used
+are unimportant and the same code can be used on any board.
+
+The one place in the application that does know of the board architecture is the XxxDevices class which creates the IDevice list. This is where the
+devices are created and a device will be created for all reference clocks on the board. Here IRefClockDriver implementations will be created using concrete classes
+and passed to the individual devices.
+
+
+<hr>
+\section hardware_common_irefclockdriver_sec_2 Details of Design
+<hr>
+
+This section goes into more detail on the class design and use of the classes
+
+\subsection hardware_common_irefclockdriver_sec_2_1 IRefClockDriver Interface
+<hr>
+
+The IRefClockDriver virtual interface is essentially defined as:
+
+@code
+
+	virtual ReturnType::State initialise(Frequency freq) = 0;
+
+@endcode
+
+The reference clock driver provides method to initialise the driver to a frequency.
+
+\subsection hardware_common_irefclockdriver_sec_2_2 Example Device Creation
+<hr>
+
+As stated above, the IRefClockDriver instances are created in the XxxDevices class.
+For ZCU111 board, the LMK04208 chip is used to generate reference clocks for the FPGA and the RF PLLs. LMX2594 chips are used to generate reference clock
+for the ADCs and DACs. In this case, concrete classes, LMK04208 and LMX2594 implement the IRefClockDriver interface.
+Once created, the IRefClockDriver instance can then be passed into the constructor of the reference clock device.
+On some other board/variant, if the a different chip is used as the reference clock, then another concrete class would implement the IRefClockDriver interface.
+
+\image html RefClock-Devices-and-Drivers.png "Reference clock Device and Driver relationship"
+
+*/

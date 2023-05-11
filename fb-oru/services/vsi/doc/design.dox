@@ -1,0 +1,165 @@
+/**
+\mainpage VRH - Virtual Services Interface Definition
+<BR>
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+<hr>
+\section vsi_design_scope Scope
+<hr>
+<hr>
+
+This document describes in detail the collection of interfaces that must be
+implemented by a higher level common or application specific services. Only
+the interfaces defined by this collection can be used to communicate state or
+data between services.
+
+<hr>
+<hr>
+\section vsi_design_overview	Overview
+<hr>
+<hr>
+
+The common radio services provided by typical radio configurations include
+functionality to stabilise and control the Tx and Rx gain, adjust for temperature
+and frequency, handle faults and log data.
+
+The interfaces defined within the vrs repository allow the radio control process
+to create, monitor, suspend and reset all the radio services required for
+the complete radio to function normally.
+
+All services must inherit from the common interfaces but there are a number
+of specific interfaces that are used to expose the functionality of particular
+types of services such as faults, temperature change etc. The details of which
+can be found on the following pages.
+
+
+<hr>
+<hr>
+\section vsi_design_sec_2 Details of Design
+<hr>
+<hr>
+
+This is section describes each of the interfaces and their basic uses. The
+description will contain links to the class definition details including
+information of the expected use of each interface method.
+
+@code
+    main()
+    {
+        IRadioControl& radioControl = IRadioControl.getInterface();
+        radioControl.run();
+    }
+@endcode
+
+
+Within the implementation of the run method the radio application must first
+create and start the Mplane::IServicesMonitor service, this high priority task is used
+to ensure the application reaches a stable point and to monitor for stuck or
+dead services.
+
+Next it creates and instance of the radio hardware interface through the
+virtual radio hardware interface and call its initialise method
+(Mplane::Radio::initialise).
+
+On suucesful return the radio will create and initialise all its common radio
+services and customer application specific service, so as to abstract the
+fundamental radio control process from the details of these services, two
+factory interfaces are used, Mplane::IservicesFactory and
+Mplane::IRadioApplicationFactory. Each of these returns an Mplane::IServicesCtl
+interface that is used to start each service.
+
+When all services are succesfully started the radio process calls the
+AceAccess::IServiceMonitor::applicationStable to indicate the current
+application is running and that it should start its normal monitoring
+process.
+
+The following code is an example of how the run method might be coded:
+
+@code
+using namespace Mplane;
+
+class RadioControl: public IRadioControl
+{
+protected:
+    IServicesMonitor& monitor;
+    IServicesCtl& common;
+    IServicesCtl& application;
+    IRadio& radio;
+public:
+    RadioControl
+    {
+        monitor = IServicesMonitor::getInstance();
+    }
+
+    void run
+    {
+        monitor.start();    // styart the application stable timer
+
+        radio = IRadio::getInterface();
+        if( radio.initialise() == ReturnType::RT_OK )
+        {
+             common = IRadioServiceFactory::create();
+             common.start();
+
+             application = IRadioApplication::create();
+             application.start();
+
+             monitor.applicationStable();
+
+             monitor();
+
+        }
+        else
+        {
+            monitor.applicationFailed();
+        }
+    }
+protected:
+    void monitor()
+    {
+        while( doStuff )
+        {
+        }
+    }
+
+};
+
+@endcode
+
+
+<hr>
+<hr>
+\section vsi_design_sec_3_1 Dependencies
+<hr>
+<hr>
+
+The virtual radio services classes defined with the vrs repository are pure
+virtual, with no data content and such no implementation dependency.
+
+The only dependency of any kind are for common data types that will remain
+relatively constant throughout the lifetime of multiple radio development
+projects.
+
+Any such dependency can be seen in the class definition details.
+
+
+<hr>
+<hr>
+\section vsi_design_sec_4 Host Based Unit Tests
+<hr>
+<hr>
+
+As the vrs defines only pure abstract base classes, there are no implementations
+to test.
+
+Instead the test directory contains a library of basic test stubs that can be
+used in unit tests of real implementations that have a dependency on the interface.
+This allows the unit test environment to excersize the implmentation and verify
+its reponse to good and bad interface operation.
+
+
+*/

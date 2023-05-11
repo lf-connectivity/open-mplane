@@ -1,0 +1,64 @@
+<!-- DTD For device register map definitions -->
+
+<!ELEMENT RegisterMap (xinclude:include|Device)*>
+<!ATTLIST RegisterMap version CDATA #REQUIRED>
+<!ATTLIST RegisterMap xmlns:html CDATA "http://www.w3.org/TR/REC-html40">
+<!ATTLIST RegisterMap xmlns:xinclude CDATA "http://www.w3.org/2001/XInclude">
+
+<!ELEMENT Device (Constants|Ranges|Region|Feature|xinclude:include)*>
+<!ATTLIST Device name ID #REQUIRED>
+<!ATTLIST Device width CDATA "16">
+<!ATTLIST Device comment CDATA #IMPLIED>
+
+<!ELEMENT Constants (Const|xinclude:include)*>
+
+<!ELEMENT Const (#PCDATA)>
+<!ATTLIST Const name ID #REQUIRED>
+<!ATTLIST Const comment CDATA #REQUIRED>
+
+<!ELEMENT Ranges (Range|xinclude:include)*>
+
+<!ELEMENT Range EMPTY>
+<!ATTLIST Range name ID #REQUIRED>
+<!ATTLIST Range comment CDATA #REQUIRED>
+<!ATTLIST Range begin CDATA #REQUIRED>
+<!ATTLIST Range end CDATA #REQUIRED>
+
+<!ELEMENT Region (xinclude:include|Field|Region|Alias|Combine)*>
+<!ATTLIST Region name ID #REQUIRED>
+<!ATTLIST Region base CDATA "0">
+<!ATTLIST Region comment CDATA #IMPLIED>
+
+<!-- <!ELEMENT Feature (xinclude:include|Field|Region|FieldName|Alias|Combine)*> -->
+<!ELEMENT Feature (xinclude:include|FieldName)*>
+<!ATTLIST Feature name ID #REQUIRED>
+<!ATTLIST Feature comment CDATA #REQUIRED>
+
+<!ELEMENT Field EMPTY>
+<!ATTLIST Field name ID #REQUIRED>
+<!ATTLIST Field comment CDATA #REQUIRED>
+<!ATTLIST Field offset CDATA #REQUIRED>
+<!ATTLIST Field bitmap CDATA #IMPLIED>
+<!ATTLIST Field start CDATA #IMPLIED>
+<!ATTLIST Field numbits CDATA "1">
+<!ATTLIST Field default CDATA #IMPLIED>
+<!ATTLIST Field access (read-write|write-only|read-only) "read-write">
+
+<!ELEMENT Alias (#PCDATA)>
+<!ATTLIST Alias name ID #REQUIRED>
+<!ATTLIST Alias comment CDATA #REQUIRED>
+
+<!ELEMENT Combine (Bits)*>
+<!ATTLIST Combine name ID #REQUIRED>
+<!ATTLIST Combine comment CDATA #REQUIRED>
+<!ATTLIST Combine order (msb|lsb|copy) "lsb">
+
+<!ELEMENT Bits (#PCDATA)>
+<!ATTLIST Bits start CDATA #IMPLIED>
+
+
+<!ELEMENT FieldName EMPTY>
+<!ATTLIST FieldName name ID #REQUIRED>
+
+<!ELEMENT xinclude:include EMPTY>
+<!ATTLIST xinclude:include href CDATA #REQUIRED>

@@ -1,0 +1,38 @@
+#!/bin/sh
+# Startup RSE application
+
+. /etc/setup.env
+
+eth_rename_bb=${eth_rename_bb:-${eth_bb}}
+eth_rename_cdi=${eth_rename_cdi:-${eth_cdi}}
+
+APP=@STARTUP_APP@
+
+start()
+{
+    $APP -ethbb $eth_rename_bb -ethcdi $eth_rename_cdi &
+}
+
+stop()
+{
+    killall $APP
+}
+
+
+case $1 in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        stop
+        start
+    ;;
+    *)
+        echo >&2 "$0 - '$1' invalid action"
+        exit 2
+    ;;
+esac
+

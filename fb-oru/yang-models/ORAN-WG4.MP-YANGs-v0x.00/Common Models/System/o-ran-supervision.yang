@@ -1,0 +1,165 @@
+module o-ran-supervision {
+  yang-version 1.1;
+  namespace "urn:o-ran:supervision:1.0";
+  prefix "o-ran-supervision";
+
+  import ietf-yang-types {
+    prefix yang;
+  }
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the configuration data and supervision RPCs that are
+    used to detect loss M-Plane and CU-Plane connectivity.
+
+    Copyright 2019 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2019-07-03" {
+    description
+      "version 2.0.0
+
+      1) added leafs for CU plane monitoring
+      2) backward compatible changes to introduce groupings";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+  revision "2019-02-04" {
+    description
+      "version 1.0.0
+
+      1) imported model from xRAN
+      2) changed namespace and reference from xran to o-ran";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+  grouping watchdog-input {
+    leaf supervision-notification-interval {
+      type uint16;
+      units seconds;
+      default 60;
+      description
+        "The interval in seconds at which supervision notifications are sent.
+        If not specified the default value of 60 seconds shall apply.";
+    }
+    leaf guard-timer-overhead {
+      type uint16;
+      units seconds;
+      default 10;
+      description
+        "This is overhead added to the supervision timer used to calculate the
+         supervision wathcdog timer. i.e.,
+
+         supervision timer = notification timer + guard-timer-overhead
+
+         If not specified the default value of 10 seconds shall apply.
+
+         Failure to send this rpc again within the timeout sets the radio into
+         'loss of supervision' state.
+
+         NOTE - The supervision timer MUST not be less that the confimed
+         timeout timer (when the feature is supported).
+
+         This type of constraint (using an RPCs input) cannot be formally
+         expressed in YANG.";
+    }
+  }
+
+  grouping watchdog-output {
+    leaf next-update-at {
+      type yang:date-and-time;
+      description
+        "Indicates the time when the next supervision notification is expected.";
+    }
+  }
+
+  grouping supervision-group {
+    container cu-plane-monitoring {
+      description "container describing operation of CU plane monitoring";
+      presence
+        "Indicates O-RU supports timer based cu-plane monitoring interval. If
+        this container is NOT present, the opertaion of the O-RU is undefined.";
+
+      leaf configured-cu-monitoring-interval {
+        type uint8 {
+          range "0..160";
+        }
+        default 160;
+        units milliseconds;
+        description
+          "This value corresponds to the configured value of the timer used by
+          the O-RU to monitor the C/U plane connection.
+
+          A value of 0 means that the O-RU's shall disable its CU plane
+          monitoring.
+
+          A NETCONF client should configure the value according to the
+          configuration of the PHY layer and/or C/U plane section types
+          supported and/or any fault tolerant operation. For example,
+
+          i) when opertaing with an O-DU supporting non-LAA LTE, this value can
+          be configured to a value according to the repetition time of
+          transmitted reference symbols across the fronthaul interface
+          ii) when opertaing with an O-DU supporting C-Plane Section Type 0,
+          this value can configured to a value according to the minimum
+          repetition interval of section type 0.
+          iii) when operating with an O-DU supporting fault tolerant operation,
+          this value can be configured according to the fault tolerant heartbeat
+          interval ";
+      }
+    }
+  }
+
+  container supervision {
+    uses supervision-group;
+    // other WG specific monitoring containers follow here
+  }
+
+  rpc supervision-watchdog-reset {
+    description
+      "rpc to reset the watchdog timer";
+    input {
+      uses watchdog-input;
+    }
+
+	  output {
+      uses watchdog-output;
+	  }
+  }
+
+  notification supervision-notification {
+    description
+      "Notification to indicate that NETCONF management interface is up
+      and also indicate the values of the timers for this NETCONF session";
+
+  }
+}

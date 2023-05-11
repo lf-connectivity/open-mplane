@@ -1,0 +1,13 @@
+#alarms-scroll {
+  overflow: auto;
+  height: 1000px;
+  width: 1000px;
+}
+
+.row {
+  justify-content: center;
+}
+
+body {
+    margin-top: 50px;
+}

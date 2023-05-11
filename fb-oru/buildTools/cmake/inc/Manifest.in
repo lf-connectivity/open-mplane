@@ -1,0 +1,15 @@
+buildNumber=@BUILD_NUMBER@
+buildVersion=@BUILD_VERSION@
+buildType=@BUILD_BOARD@-@BUILD_CUSTOMER@-@BUILD_APPLICATION@
+type=@BUILD_DUPLEX@
+subType=@BUILD_FIBRE_INTERFACE@
+custVersion=@custVersion@
+fpgaPath=@fpgaPath@
+fpgaModel=@FpgaModel@
+fpgaPart=@FpgaPartName@
+fpgaBuild=@BuildNumber@
+fpgaIseVer=@IseVerName@
+GCC=@GCC_DIR@
+GLIBC=@GLIBC_DIR@
+ToolchainLinux=@TOOLCHAIN_LINUX_DIR@
+END_OF_MANIFEST

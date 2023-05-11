@@ -1,0 +1,31 @@
+# Format is:
+# FILE destination user:group permissions source
+# DIR destination user:group permissions
+# DIRCOPY destination user:group source_directory
+# INCLUDE include_file
+# MODE destination user:group permissions
+#
+# sysrepo tools use libatomic
+# NOTE % will be replaced by each filename that matches (e.g. libatomic.a, libatomic.so etc)
+FILE /usr/lib/% 0:0 0755 ${DEVTOOLS_INSTALLDIR}/sysroot/usr/lib/libatomic.*
+#
+# Copy the sysrepo tools from the install area
+FILE /usr/local/bin/% 0:0 0755 ${GITDIR}/oran-libs/build/${TARGET}-${BUILD_BOARD}-${BUILD_CUSTOMER}-${BUILD_APPLICATION}/sysroot/bin/sysrepo*
+FILE /usr/local/bin/openssl 0:0 0755 ${GITDIR}/oran-libs/build/${TARGET}-${BUILD_BOARD}-${BUILD_CUSTOMER}-${BUILD_APPLICATION}/sysroot/bin/openssl
+#
+# Copy the openssl dynamic libs from the build area (so that openssl can be run)
+FILE /lib/% 0:0 0755 ${GITDIR}/oran-libs/build/${TARGET}-${BUILD_BOARD}-${BUILD_CUSTOMER}-${BUILD_APPLICATION}/openssl-build/libssl.so*
+FILE /lib/% 0:0 0755 ${GITDIR}/oran-libs/build/${TARGET}-${BUILD_BOARD}-${BUILD_CUSTOMER}-${BUILD_APPLICATION}/openssl-build/libcrypto.so*
+#
+# Copy the netopeer2 tools from the build area (we can't install them on the host machine)
+FILE /usr/local/bin/netopeer2-server 0:0 0755 ${GITDIR}/oran-libs/build/${TARGET}-${BUILD_BOARD}-${BUILD_CUSTOMER}-${BUILD_APPLICATION}/netopeer2-*-build/netopeer2-server
+#
+# Start up script that installs netopeer YANG modules into sysrepo
+FILE /etc/init.d/app.d/20_yang-setup.sh 0:0 0755 etc/init.d/app.d/20_yang-setup.sh
+FILE /etc/init.d/app.d/21_yang-merge_hostkey.sh 0:0 0755 etc/init.d/app.d/21_yang-merge_hostkey.sh
+FILE /etc/init.d/app.d/22_yang-merge_config.sh 0:0 0755 etc/init.d/app.d/22_yang-merge_config.sh
+#
+# netopeer2 yang models to be installed
+#
+DIRCOPY /etc/yang-modules 0:0 etc/yang-modules
+

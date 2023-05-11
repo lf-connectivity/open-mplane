@@ -1,0 +1,50 @@
+#!/bin/sh
+# Startup RSE application
+
+# load config
+. /etc/setup.env
+
+APP=@STARTUP_APP@
+
+start()
+{
+
+#echo Starting network...
+#ifconfig eth0 up
+#udhcpc
+
+#echo Running app under gdbserver 10.0.1.103:1535 ...
+#/nandflash/scratch/gdbserver 10.0.1.103:1535 /bin/$APP &
+
+    $APP -ethbb $eth_bb -ethcdi $eth_cdi  &
+}
+
+stop()
+{
+    killall $APP
+    
+    # Must also ensure udhcpc is also killed. It's managed by the app, but is otherwise left running
+    # and it listens on port 49500 (for some reason) meaning that port 49500 is kept open and you can't then
+    # restart the application (it aborts with a socket exception)!
+    #
+    killall udhcpc
+}
+
+
+case $1 in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    restart)
+        stop
+        start
+    ;;
+    *)
+        echo >&2 "$0 - '$1' invalid action"
+        exit 2
+    ;;
+esac
+

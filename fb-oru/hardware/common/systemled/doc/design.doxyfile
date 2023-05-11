@@ -1,0 +1,24 @@
+# Doxyfile 1.8.1.1
+
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+
+# The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
+# by quotes) that should identify the project.
+
+PROJECT_NAME = "Common Led Device Interface Base Class Design Document"
+
+@INCLUDE_PATH = $(ROOTPATH)/buildTools/doxygen/
+
+@INCLUDE = design.doxyfile
+
+@TAGFILES += $(OUTPATH)vrh-doc.tag=../vrh-doc
+@TAGFILES += $(OUTPATH)hardware-common-led.tag=../hardware-common-led
+
+ALIASES += "req_8403{1}=\ref SRD-8403-REQ_\1 \"SRD-8403-REQ-\1\" "
+ALIASES += "satisfy{1}=\xrefitem satisfy \"Satisfies requirement(s)\" \"Requirements Implementation\" \1"
+ALIASES += "verify{1}=\xrefitem verify \"Verifies requirement(s)\" \"Requirements Verification\" \1"
+
+EXCLUDE = */doc */ros */sysroot */build */test
+EXCLUDE_PATTERNS = *.d */.git/* */build*/* */test/*

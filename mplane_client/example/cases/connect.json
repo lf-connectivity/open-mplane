@@ -1,0 +1,16 @@
+{
+  "commands": [
+    {
+      "connect": {}
+    },
+    {
+      "netconfRpc": {
+        "serializedYang": "<get-config xmlns=\"urn:ietf:params:xml:ns:netconf:base:1.0\"><source><running/></source></get-config>",
+        "timeoutSec": 3
+      }
+    },
+    {
+      "disconnect": {}
+    }
+  ]
+}

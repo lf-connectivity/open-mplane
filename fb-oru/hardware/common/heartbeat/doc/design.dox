@@ -1,0 +1,41 @@
+/**
+\mainpage Common Heartbeat Monitor Implementation
+<BR>
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section hardware_common_heartbeat_scope Scope
+<hr>
+
+This document describes the class created to provide a heartbeat monitor.
+
+
+<hr>
+\section hardware_common_heartbeat_overview	Overview
+<hr>
+
+A heartbeat is where the radio application is regularly updated by an external entity. As long as the update occurs
+repeatedly at a period less than the heartbeat timeout, then the radio application continues as normal.
+
+If, however, the updates stop then the heartbeat monitor will time out and raise an alarm.
+
+<hr>
+\section hardware_common_heartbeat_sec_2 Details of Design
+<hr>
+
+The heartbeat monitor is provided as a singleton which implements the Mplane::IHeartbeat virtual interface. When created,
+the heartbeat monitor is initially disabled. This means that for lab use the monitor can be left in this disabled state
+and will not interfere with testing.
+
+For a radio application requiring the heartbeat monitoring, the controller is expected to connect to the radio application and
+enable the heartbeat (as well as optionally changing the timeout period). Once enabled, the external controller must reset
+the heartbeat timer (provided by the resetTimer() method). This will most likely by via a TIF interface command '.heartbeat.ping'
+
+If the heartbeat timer expires, it will raise a fault which can then be handled by the appropriate alarm. Once in this state,
+the heartbeat monitor will stay in this state (i.e. not monitoring) until either a) it is disabled (and re-enabled), or b) the
+timer is reset again.
+
+*/

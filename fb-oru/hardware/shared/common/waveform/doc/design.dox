@@ -1,0 +1,247 @@
+/**
+\mainpage Etna FTU Waveform Implementation
+\anchor anchor_0
+<BR>
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section hardware_ETNA_FTU_waveform_scope Scope
+<hr>
+
+This document is a design overview document for the ETNA FTU waveform class modules that provide playback and capture
+of waveforms.
+
+<hr>
+\section hardware_ETNA_FTU_waveform_overview	Overview
+<hr>
+
+The waveform playback and capture modules are provided by the FPGA. In the final version, they will be flexibly connectable
+to DDC/DUC, CPRI IQ, and DAC/ADC.
+
+In initial versions we will be using a cutdown fpga with the interconnections fixed ("nailed down") internally. So the
+initial software will provide access for configuring and using these fixed resources.
+
+<hr>
+\section hardware_ETNA_FTU_waveform_sec_2 Details of Design
+<hr>
+
+\image html waveform.png
+
+As the diagram shows, the WaveformManager object contains multiple instances of the other waveform objects. The WaveformManager
+provides the interface to the test interface via the IWaveformManager virtual interface. The TIF gets access to this
+object using the singleton factory method.
+
+Inside the WaveformManager object is a std::map that maps user defined waveform names to WaveformControl objects; along
+with a std::vector which holds WaveformHardware objects.
+
+The WaveformControl map is dynamic as the user creates and deletes waveforms; the WaveformHardware vector is fixed and
+reperesents the available physical resources in the fpga.
+
+A WaveformControl object is used to manage user settings and control of each waveform. When it is created it also creates
+a Waveform object whose sole job is to hold the user settings for this waveform. When the user requests a capture or playback
+start, the appropriate WaveformControl object is responsible for managing the data transfer between the hardware and
+the playback or capture file.
+
+The WaveformHardware's sole responsibility is to convert the user settings into fpga register writes. Part of this fpga
+access is to also move buffers of data to and from the capture/playback waveform access control registers.
+
+The WaveformManager, seeing all requested waveforms and the available resources, is in control of allocating requests
+(WaveformControl) to resources (WaveformHardware). When allocated, the WaveformHardware gets a copy of the Waveform object
+to take a snapshot of the user settings.
+
+NOTE: For the initial phase using nailed connections, the WaveformManager maps specific waveform user names to matching
+hardware resources (see @ref hardware_ETNA_FTU_waveform_sec_3_1).
+
+
+
+<hr>
+\section hardware_ETNA_FTU_waveform_sec_3 Usage
+<hr>
+
+\subsection hardware_ETNA_FTU_waveform_sec_3_1 Nailed FPGA
+<hr>
+
+The first release of waveform playback/capture fpga has fixed (or "nailed") connections between the waveform modules. To
+support this the software allocates carrier resources such that the appropriate waveforms modules connect up correctly.
+
+Internally, the fpga waveform blocks are configured as:
+
+<CENTER>
+<TABLE BORDER=1 CELLSPACING=0>
+<TR>
+	<TH>Waveform Index</TH>
+	<TH>Name</TH>
+	<TH>Type</TH>
+	<TH>Connection</TH>
+</TR>
+
+<TR>
+	<TD>0</TD>
+	<TD>w0</TD>
+	<TD>RX IQ Capture (Ant1) </TD>
+	<TD>RX IQ at 6144MHz </TD>
+</TR>
+
+<TR>
+	<TD>1</TD>
+	<TD>w1</TD>
+	<TD>RX IQ Capture (Ant2) </TD>
+	<TD>RX IQ at 6144MHz </TD>
+</TR>
+
+<TR>
+	<TD>2</TD>
+	<TD>w2</TD>
+	<TD>CPRI IQ Playback</TD>
+	<TD>UL IQ stream 0</TD>
+</TR>
+
+<TR>
+	<TD>3</TD>
+	<TD>w3</TD>
+	<TD>CPRI IQ Playback</TD>
+	<TD>UL IQ stream 1</TD>
+</TR>
+
+<TR>
+	<TD>4</TD>
+	<TD>w4</TD>
+	<TD>CPRI IQ Capture</TD>
+	<TD>DL IQ stream 0</TD>
+</TR>
+
+<TR>
+	<TD>5</TD>
+	<TD>w5</TD>
+	<TD>CPRI IQ Capture</TD>
+	<TD>DL IQ stream 1</TD>
+</TR>
+
+<TR>
+	<TD>6</TD>
+	<TD>w6</TD>
+	<TD>RF Playback (Ant1)</TD>
+	<TD>DL IQ stream 0</TD>
+</TR>
+
+<TR>
+	<TD>7</TD>
+	<TD>w7</TD>
+	<TD>RF Playback (Ant2)</TD>
+	<TD>DL IQ stream 1</TD>
+</TR>
+
+<TR>
+	<TD>8</TD>
+	<TD>wrxcal</TD>
+	<TD>DPD ADC Capture</TD>
+	<TD>DPD ADC</TD>
+</TR>
+
+</TABLE>
+</CENTER>
+
+
+
+The waveforms and carriers must be used in the following fashion:
+
+\li Carrier 0 (UL) - Waveform "w0" and "w1" Rx IQ capture
+\li Carrier 1 (UL/DL) - Waveform "w2" and "w3" Cpri IQ playback
+\li Carrier 1 (UL/DL) - Waveform "w4" and "w5" Cpri IQ capture
+\li Carrier 1 (UL/DL) - Waveform "w6" and "w7" RF playback
+
+The carrier hardware should be set up prior to using waveforms. An example TIF session showing setting up the hardware is:
+
+@code
+# Init LO freqs
+.tx.setFreq 1 2350000
+.tx.setFreq 2 2350000
+.rx.setFreq 1 2350000
+.rx.setFreq 2 2350000
+
+# Carrier 0 - Used for RX ADC capture (waveform w0/w1)
+.carrier.set 0 LTE5 sigtype=TX TxPower=36 RxFreq=2350000 TxScaling=-12
+.carrier.set 0 GroupUp=2 GroupDown=2 TxContainer[0]=0 TxContainer[1]=0 RxContainer[0]=1 RxContainer[1]=3
+.carrier.set 0 state=ENABLE
+
+# Carrier 1 - Used for cpri iq playback (waveform w2/w3) and cpri iq capture (waveform w4/w5)
+.carrier.set 1 LTE5 sigtype=TX TxPower=36 TxFreq=2350000 RxFreq=2350000 TxScaling=-12
+.carrier.set 1 GroupUp=2 GroupDown=2 TxContainer[0]=5 TxContainer[1]=7 RxContainer[0]=5 RxContainer[1]=7
+.carrier.set 1 state=ENABLE
+
+# Display current settings
+.etna.carrier.showAll
+@endcode
+
+(Where the LO frequency, carrier frequencies, AxC settings etc can be adjusted accordingly)
+
+NOTE: The above example is provided in the /tif:scripts area as 'setup-waves'. You can execute the script using:
+
+@code
+ls /tif:scripts
+.tif:scripts.setup-waves
+@endcode
+
+An example of setting up CPRI IQ playback is:
+
+@code
+.waveform.set w2 playback test.bin enable=on depth=1024 trigger=0 carrier=1
+.waveform.start playback=on
+@endcode
+
+This uses the relative playback filename which is converted to the absolute path "/nandflash/tif/playback/test.bin" which
+you will need to create and store the playback file in.
+
+An example of setting up CPRI IQ capture is:
+
+@code
+.waveform.set w4 capture capture.bin enable=on depth=1024 trigger=0
+.waveform.start capture=on
+@endcode
+
+This uses the relative playback filename which is converted to the absolute path "/www/htdocs/capture.bin" and will be
+available via the board's web server.
+
+To start both capture and playback simultaneously:
+
+@code
+.waveform.start playback=on capture=on
+@endcode
+
+\subsection hardware_ETNA_FTU_waveform_sec_3_2 Fully Flexible FPGA
+<hr>
+
+TBD
+
+
+<hr>
+\section hardware_ETNA_FTU_waveform_sec_5 Module Debug
+<hr>
+
+This section talks about the supported log levels for each module along with examples of the module show() method. Each
+show() method example also explains, where applicable, what some of the more obscure data is showing you.
+
+
+<hr>
+\section hardware_ETNA_FTU_waveform_sec_6 Host Based Unit Tests
+<hr>
+
+This is the test section
+
+
+<hr>
+\subsection hardware_ETNA_FTU_waveform_ssec_1_1 Code Coverage Summary
+<hr>
+
+\include ../../../build-local/ETNA/waveform/gtest/coverage.txt
+
+<hr>
+\subsection hardware_ETNA_FTU_waveform_ssec_1_2 Unit Test Results
+<hr>
+
+\include ../../../build-local/ETNA/waveform/gtest/gtest.txt
+
+*/

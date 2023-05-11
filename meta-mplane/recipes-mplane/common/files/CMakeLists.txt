@@ -1,0 +1,490 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+cmake_minimum_required(VERSION 3.12)
+project(common)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
+option(CFG_DATA_PATH "CFG_DATA_PATH" /etc/configdata)
+add_compile_definitions(CFG_DATA_PATH="${CFG_DATA_PATH}")
+
+if (ASAN)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+  set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -fsanitize=address")
+endif()
+
+include(GNUInstallDirs)
+
+include_directories(Alarm/inc)
+include_directories(AnsiEsc/inc)
+include_directories(BootEnv/inc)
+include_directories(DataVariant/inc)
+include_directories(DataVariant/inc/DataVariant)
+include_directories(DataVariant/inc/DataVariantType)
+include_directories(DataVariant/inc/DvType)
+include_directories(FileConfig/inc)
+include_directories(FileLock/inc)
+include_directories(FileORanLog/inc)
+include_directories(FileStatus/inc)
+include_directories(Networking/inc)
+include_directories(SSDP/inc)
+include_directories(ServicesMonitor/inc)
+include_directories(SoftwareSlots/inc)
+include_directories(Tcp/inc)
+include_directories(WebSocket/inc)
+include_directories(calDownloadManagement/inc)
+include_directories(configData/inc)
+include_directories(configDownloadManagement/inc)
+include_directories(fault/inc)
+include_directories(imageManagement/inc)
+include_directories(inc)
+include_directories(logging/inc)
+include_directories(test-common/inc)
+include_directories(timer/inc)
+include_directories(trace/inc)
+include_directories(troubleshooting/inc)
+include_directories(vcommoni/inc)
+
+# Common configuration used by many other librarys in the fb-oru process build
+include_directories(config)
+
+add_library(common
+  Alarm/src/Alarm.cpp
+  Alarm/src/AlarmBuilder.cpp
+  Alarm/src/AlarmLatched.cpp
+  Alarm/src/AlarmMonitor.cpp
+  Alarm/src/AlarmPackage.cpp
+  Alarm/src/AlarmsList.cpp
+  AnsiEsc/src/AnsiEsc.cpp
+  AppOptions/src/AppOptions.cpp
+  AppSettings/src/AppSettings.cpp
+  AppSettings/src/AppSettingsSingleton.cpp
+  Benchmark/src/Benchmark.cpp
+  BootEnv/src/BootEnv.cpp
+  BootEnv/src/BootEnvDevice.cpp
+  BootEnv/src/SingleBootEnv.cpp
+  BootTimer/src/BootTimer.cpp
+  DataVariant/src/DataVariant.cpp
+  DataVariant/src/DataVariantBase.cpp
+  DataVariant/src/DataVariantList.cpp
+  DataVariant/src/DataVariantSettings.cpp
+  DataVariant/src/DataVariantType/DataVariantBool.cpp
+  DataVariant/src/DataVariantType/DataVariantComplex.cpp
+  DataVariant/src/DataVariantType/DataVariantDouble.cpp
+  DataVariant/src/DataVariantType/DataVariantEnum.cpp
+  DataVariant/src/DataVariantType/DataVariantFloat.cpp
+  DataVariant/src/DataVariantType/DataVariantFreq.cpp
+  DataVariant/src/DataVariantType/DataVariantInt.cpp
+  DataVariant/src/DataVariantType/DataVariantLong.cpp
+  DataVariant/src/DataVariantType/DataVariantPower.cpp
+  DataVariant/src/DataVariantType/DataVariantTypeBase.cpp
+  DataVariant/src/DataVariantType/DataVariantTypes.cpp
+  DataVariant/src/DataVariantType/DataVariantUint.cpp
+  DataVariant/src/DataVariantVector.cpp
+  DataVariant/src/DvType/DvTypeBase.cpp
+  DataVariant/src/DvType/DvTypeBool.cpp
+  DataVariant/src/DvType/DvTypeComplex.cpp
+  DataVariant/src/DvType/DvTypeDouble.cpp
+  DataVariant/src/DvType/DvTypeEnum.cpp
+  DataVariant/src/DvType/DvTypeFloat.cpp
+  DataVariant/src/DvType/DvTypeFreq.cpp
+  DataVariant/src/DvType/DvTypeInt.cpp
+  DataVariant/src/DvType/DvTypeLong.cpp
+  DataVariant/src/DvType/DvTypeNone.cpp
+  DataVariant/src/DvType/DvTypePower.cpp
+  DataVariant/src/DvType/DvTypeString.cpp
+  DataVariant/src/DvType/DvTypeUint.cpp
+  DataVariant/src/DvTypeFactory.cpp
+  Delay/src/Delay.cpp
+  Delay/src/DelayUnit/DelayUnitBF.cpp
+  Delay/src/DelayUnit/DelayUnitNS.cpp
+  Delay/src/DelayUnit/DelayUnitUI.cpp
+  FailString/src/FailString.cpp
+  FileConfig/src/FileConfig.cpp
+  FileConfig/src/FileConfigBase.cpp
+  FileConfig/src/FileConfigWriter.cpp
+  FileLock/src/FileLock.cpp
+  FileLock/src/FileLockSockets.cpp
+  FileMap/src/FileMap.cpp
+  FileMgr/src/FileMgr.cpp
+  FileORanLog/src/ORanLogFile.cpp
+  FileORanLog/src/ORanLogFileMgr.cpp
+  FileStatus/src/FileStatus.cpp
+  FileStatus/src/NullFileStatus.cpp
+  Maths/src/Maths.cpp
+  MemMap/src/MemMap-dummy.cpp
+  MovingAvg/src/MovingAvg-dummy.cpp
+  MsgQ/src/MsgQ.cpp
+  MsgQ/src/PseudoMsgQ.cpp
+  NetDevice/src/NetDevice.cpp
+  NetDevice/src/NetVlanDevice.cpp
+  NetStatus/src/NetStatus.cpp
+  Networking/src/IpPortMgr.cpp
+  Networking/src/NetAddr.cpp
+  Networking/src/NetAddrDhcp.cpp
+  Networking/src/NetAddrLinkLocal.cpp
+  Networking/src/NetAddrMac.cpp
+  Networking/src/NetAddrPolicy.cpp
+  Networking/src/NetAddrStatic.cpp
+  Path/src/Path.cpp
+  Process/src/Process.cpp
+  RemoteMsg/src/RemoteMsg.cpp
+  SSDP/src/Ssdp.cpp
+  SSDP/src/SsdpReceiver.cpp
+  SSDP/src/SsdpSender.cpp
+  ServicesMonitor/src/KickWatchdog.cpp
+  ServicesMonitor/src/ServicesMonitor.cpp
+  ServicesMonitor/src/ServicesMonitorFactory.cpp
+  Sftp/src/SftpPath.cpp
+  SoftwareSlots/src/SoftwarePackage.cpp
+  SoftwareSlots/src/SoftwareSlot.cpp
+  SoftwareSlots/src/SoftwareSlotConstants.cpp
+  SoftwareSlots/src/SoftwareSlotMgr.cpp
+  Tcp/src/TcpPortIo.cpp
+  Tcp/src/TcpPortIoHandler.cpp
+  Tcp/src/TcpPortMgr.cpp
+  TifIoctl/src/tifioctl-dummy.cpp
+  WatchdogCount/src/WatchdogCount.cpp
+  WebSocket/src/SocketProxy.cpp
+  WebSocket/src/WebSocketPacket.cpp
+  WebSocket/src/WebSocketServer.cpp
+  WebSocket/src/WebSocketServerHandler.cpp
+  calDownloadManagement/src/CalDownload.cpp
+  calDownloadManagement/src/CalDownloadManagement.cpp
+  calDownloadManagement/src/CalDownloadMgrSingleton.cpp
+  configData/src/CommonConfigBase.cpp
+  configDownloadManagement/src/ConfigCoordinator.cpp
+  configDownloadManagement/src/ConfigDownload.cpp
+  configDownloadManagement/src/ConfigDownloadManagement.cpp
+  configDownloadManagement/src/ConfigDownloadMgrSingleton.cpp
+  datatype/src/Frequency.cpp
+  datatype/src/FrequencyOffset.cpp
+  datatype/src/FrequencyStatic.cpp
+  datatype/src/Power.cpp
+  datatype/src/Temperature.cpp
+  datatype/src/Tokeniser.cpp
+  device/src/Device.cpp
+  fault/src/Fault.cpp
+  fault/src/FaultBuilder.cpp
+  fault/src/FaultOwner.cpp
+  fault/src/FaultUtils.cpp
+  fault/src/FaultsList.cpp
+  imageManagement/src/AppImage.cpp
+  imageManagement/src/FpgaImage.cpp
+  imageManagement/src/ImageBase.cpp
+  imageManagement/src/ImageFundamental.cpp
+  imageManagement/src/ImageManagement.cpp
+  imageManagement/src/ImageTask.cpp
+  imageManagement/src/ImageTypes.cpp
+  imageManagement/src/LibImage.cpp
+  imageManagement/src/Md5List.cpp
+  imageManagement/src/NullLibImage.cpp
+  imageManagement/src/OsImage.cpp
+  imageManagement/src/PkgImage.cpp
+  imageManagement/src/ZipImage.cpp
+  initialise/src/Initialise.cpp
+  logging/src/LogHistoryBuffer.cpp
+  logging/src/LogList.cpp
+  logging/src/Loggable.cpp
+  logging/src/LoggerBase.cpp
+  logging/src/LoggerHistorySyslog.cpp
+  logging/src/LoggerSyslog.cpp
+  module/src/Module.cpp
+  service/src/Service.cpp
+  socket/src/MulticastSocket.cpp
+  socket/src/Socket.cpp
+  socket/src/SocketClient.cpp
+  socket/src/SocketHandler.cpp
+  socket/src/SocketServer.cpp
+  socket/src/main.cpp
+  spline/src/Spline.cpp
+  task/src/Conditional.cpp
+  task/src/Mutex.cpp
+  task/src/RecursiveMutex.cpp
+  task/src/SystemTask.cpp
+  task/src/Task.cpp
+  task/src/TaskEvent.cpp
+  task/src/TaskList.cpp
+  task/src/TaskPeriodicEvent.cpp
+  timer/src/NullTimeoutTimer.cpp
+  timer/src/TimeoutTimer.cpp
+  trace/src/TraceFile.cpp
+  trace/src/TraceLoghistoryFile.cpp
+  trace/src/TraceMgr.cpp
+  troubleshooting/src/TroubleshootFile.cpp
+  troubleshooting/src/TroubleshootLoghistoryFile.cpp
+  troubleshooting/src/TroubleshootMgr.cpp
+)
+
+install(TARGETS common DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+install(FILES
+  Alarm/inc/Alarm.h
+  Alarm/inc/AlarmBuilder.h
+  Alarm/inc/AlarmLatched.h
+  Alarm/inc/AlarmMonitor.h
+  Alarm/inc/AlarmPackage.h
+  Alarm/inc/AlarmsList.h
+  AnsiEsc/inc/AnsiEsc.h
+  BootEnv/inc/BootEnv.h
+  BootEnv/inc/BootEnvDevice.h
+  BootEnv/inc/SingleBootEnv.h
+  DataVariant/inc/DataVariantType.h
+  DataVariant/inc/DvTypeFactory.h
+  DataVariant/inc/IDvAccess.h
+  DataVariant/inc/IDvType.h
+  FileConfig/inc/FileConfigBase.h
+  FileLock/inc/FileLock.h
+  FileLock/inc/FileLockSockets.h
+  FileORanLog/inc/ORanLogFile.h
+  FileORanLog/inc/ORanLogFileMgr.h
+  FileStatus/inc/FileStatus.h
+  FileStatus/inc/NullFileStatus.h
+  Networking/inc/INetAddr.h
+  Networking/inc/INetAddrPolicy.h
+  Networking/inc/IpPortMgr.h
+  Networking/inc/NetAddr.h
+  Networking/inc/NetAddrDhcp.h
+  Networking/inc/NetAddrLinkLocal.h
+  Networking/inc/NetAddrMac.h
+  Networking/inc/NetAddrPolicy.h
+  Networking/inc/NetAddrStatic.h
+  SSDP/inc/SsdpReceiver.h
+  SSDP/inc/SsdpSender.h
+  ServicesMonitor/inc/KickWatchdog.h
+  ServicesMonitor/inc/ServicesMonitor.h
+  SoftwareSlots/inc/SoftwarePackage.h
+  SoftwareSlots/inc/SoftwareSlot.h
+  SoftwareSlots/inc/SoftwareSlotConstants.h
+  Tcp/inc/TcpPortIo.h
+  Tcp/inc/TcpPortIoHandler.h
+  Tcp/inc/TcpPortMgr.h
+  WebSocket/inc/SocketProxy.h
+  WebSocket/inc/WebSocketPacket.h
+  WebSocket/inc/WebSocketServer.h
+  WebSocket/inc/WebSocketServerHandler.h
+  calDownloadManagement/inc/CalDownloadManagement.h
+  config/config.h
+  configData/inc/CommonConfigBase.h
+  configDownloadManagement/inc/ConfigCoordinator.h
+  configDownloadManagement/inc/ConfigDownloadManagement.h
+  fault/inc/Fault.h
+  fault/inc/FaultBuilder.h
+  fault/inc/FaultOwner.h
+  fault/inc/FaultUtils.h
+  fault/inc/FaultsList.h
+  imageManagement/inc/AppImage.h
+  imageManagement/inc/FpgaImage.h
+  imageManagement/inc/IOsImage.h
+  imageManagement/inc/ImageBase.h
+  imageManagement/inc/ImageFundamental.h
+  imageManagement/inc/ImageManagement.h
+  imageManagement/inc/LibImage.h
+  imageManagement/inc/Md5List.h
+  imageManagement/inc/NullLibImage.h
+  imageManagement/inc/OsImage.h
+  imageManagement/inc/PkgImage.h
+  imageManagement/inc/ZipImage.h
+  inc/AppOptions.h
+  inc/AppSettings.h
+  inc/AxisCppunit.h
+  inc/Benchmark.h
+  inc/BootTimer.h
+  inc/CalDownload.h
+  inc/Conditional.h
+  inc/ConfigDownload.h
+  inc/DataVariant.h
+  inc/Delay.h
+  inc/Device.h
+  inc/FailString.h
+  inc/FileConfig.h
+  inc/FileConfigWriter.h
+  inc/FileMap.h
+  inc/FileMgr.h
+  inc/Frequency.h
+  inc/FrequencyOffset.h
+  inc/GlobalTypeDefs.h
+  inc/ImageTask.h
+  inc/Initialise.h
+  inc/Loggable.h
+  inc/Maths.h
+  inc/Module.h
+  inc/MsgQ.h
+  inc/MulticastSocket.h
+  inc/Mutex.h
+  inc/NetDevice.h
+  inc/NetStatus.h
+  inc/NetVlanDevice.h
+  inc/Path.h
+  inc/Power.h
+  inc/Process.h
+  inc/PseudoMsgQ.h
+  inc/RecursiveMutex.h
+  inc/RemoteMsg.h
+  inc/Service.h
+  inc/SftpPath.h
+  inc/Socket.h
+  inc/SocketClient.h
+  inc/SocketHandler.h
+  inc/SocketServer.h
+  inc/SoftwareSlotMgr.h
+  inc/Spline.h
+  inc/Ssdp.h
+  inc/SystemTask.h
+  inc/Task.h
+  inc/TaskEvent.h
+  inc/TaskPeriodicEvent.h
+  inc/TaskSignalled.h
+  inc/Temperature.h
+  inc/TimeoutTimer.h
+  inc/Tokeniser.h
+  inc/WatchdogCount.h
+  logging/inc/LogHistoryBuffer.h
+  logging/inc/LogList.h
+  logging/inc/LoggerBase.h
+  logging/inc/LoggerHistorySyslog.h
+  logging/inc/LoggerSyslog.h
+  #test-common/inc/TestAppSettings.h
+  #test-common/inc/TestImageManagement.h
+  timer/inc/NullTimeoutTimer.h
+  trace/inc/TraceFile.h
+  trace/inc/TraceLoghistoryFile.h
+  trace/inc/TraceMgr.h
+  troubleshooting/inc/TroubleshootFile.h
+  troubleshooting/inc/TroubleshootLoghistoryFile.h
+  troubleshooting/inc/TroubleshootMgr.h
+  vcommoni/inc/IAlarm.h
+  vcommoni/inc/IAlarmBuilder.h
+  vcommoni/inc/IAlarmMonitor.h
+  vcommoni/inc/IAlarmPackage.h
+  vcommoni/inc/IAlarmsList.h
+  vcommoni/inc/IAppOptions.h
+  vcommoni/inc/IAppSettings.h
+  vcommoni/inc/IAppSettingsFactory.h
+  vcommoni/inc/IBootEnv.h
+  vcommoni/inc/IBootEnvDevice.h
+  vcommoni/inc/IBootTimer.h
+  vcommoni/inc/ICalDownload.h
+  vcommoni/inc/ICalDownloadManagement.h
+  vcommoni/inc/IConfigCoordinator.h
+  vcommoni/inc/IConfigData.h
+  vcommoni/inc/IConfigDownload.h
+  vcommoni/inc/IConfigDownloadManagement.h
+  vcommoni/inc/IDataVariantSettings.h
+  vcommoni/inc/IDevice.h
+  vcommoni/inc/IFault.h
+  vcommoni/inc/IFaultBuilder.h
+  vcommoni/inc/IFaultOwner.h
+  vcommoni/inc/IFaultPackage.h
+  vcommoni/inc/IFaultsList.h
+  vcommoni/inc/IFileMgr.h
+  vcommoni/inc/IFileStatus.h
+  vcommoni/inc/IImage.h
+  vcommoni/inc/IImageManagement.h
+  vcommoni/inc/IImageTypes.h
+  vcommoni/inc/IIpPortMgr.h
+  vcommoni/inc/ILimitsSettings.h
+  vcommoni/inc/ILogData.h
+  vcommoni/inc/ILogDebug.h
+  vcommoni/inc/ILogEvent.h
+  vcommoni/inc/ILogHistory.h
+  vcommoni/inc/ILoggable.h
+  vcommoni/inc/ILogger.h
+  vcommoni/inc/IMsgQ.h
+  vcommoni/inc/INetStatus.h
+  vcommoni/inc/IORanLogFile.h
+  vcommoni/inc/IORanLogFileMgr.h
+  vcommoni/inc/IServicesMonitor.h
+  vcommoni/inc/IServicesMonitorFactory.h
+  vcommoni/inc/ISftpMgr.h
+  vcommoni/inc/ISftpSession.h
+  vcommoni/inc/ISoftwarePackage.h
+  vcommoni/inc/ISoftwareSlot.h
+  vcommoni/inc/ISoftwareSlotMgr.h
+  vcommoni/inc/ISshSession.h
+  vcommoni/inc/ITcpPortIoTypes.h
+  vcommoni/inc/ITifIoctl.h
+  vcommoni/inc/ITraceMgr.h
+  vcommoni/inc/ITroubleshootFile.h
+  vcommoni/inc/ITroubleshootMgr.h
+  inc/AppTrace.hpp
+  inc/ChangeVal.hpp
+  inc/ComparisonOperators.hpp
+  inc/FrequencyBase.hpp
+  inc/FrequencyUtils.hpp
+  inc/MemMap.hpp
+  inc/MovingAvg.hpp
+  inc/Observer.hpp
+  inc/ObserverUtils.hpp
+  inc/QueueBuffer.hpp
+  inc/SetVal.hpp
+  inc/TifIoctl.hpp
+  inc/stringfunc.hpp
+  #test-common/inc/TestCalDownload.hpp
+
+  DataVariant/inc/DvType/DvTypeBase.h
+  DataVariant/inc/DvType/DvTypeBool.h
+  DataVariant/inc/DvType/DvTypeComplex.h
+  DataVariant/inc/DvType/DvTypeDouble.h
+  DataVariant/inc/DvType/DvTypeEnum.h
+  DataVariant/inc/DvType/DvTypeFloat.h
+  DataVariant/inc/DvType/DvTypeFreq.h
+  DataVariant/inc/DvType/DvTypeInt.h
+  DataVariant/inc/DvType/DvTypeLong.h
+  DataVariant/inc/DvType/DvTypeNone.h
+  DataVariant/inc/DvType/DvTypePower.h
+  DataVariant/inc/DvType/DvTypeString.h
+  DataVariant/inc/DvType/DvTypeUint.h
+  DataVariant/inc/DvType/IDvBool.h
+  DataVariant/inc/DvType/IDvComplex.h
+  DataVariant/inc/DvType/IDvDouble.h
+  DataVariant/inc/DvType/IDvEnum.h
+  DataVariant/inc/DvType/IDvFloat.h
+  DataVariant/inc/DvType/IDvFreq.h
+  DataVariant/inc/DvType/IDvInt.h
+  DataVariant/inc/DvType/IDvLong.h
+  DataVariant/inc/DvType/IDvNone.h
+  DataVariant/inc/DvType/IDvPower.h
+  DataVariant/inc/DvType/IDvString.h
+  DataVariant/inc/DvType/IDvUint.h
+  inc/debug/SharedPtrDebug.h
+  inc/DelayUnit/DelayUnit.h
+  inc/DelayUnit/DelayUnitBF.h
+  inc/DelayUnit/DelayUnitNS.h
+  inc/DelayUnit/DelayUnitUI.h
+  inc/DelayUnit/IDelayUnit.h
+  DataVariant/inc/DataVariantType/DataVariantBool.h
+  DataVariant/inc/DataVariantType/DataVariantComplex.h
+  DataVariant/inc/DataVariantType/DataVariantDouble.h
+  DataVariant/inc/DataVariantType/DataVariantEnum.h
+  DataVariant/inc/DataVariantType/DataVariantFloat.h
+  DataVariant/inc/DataVariantType/DataVariantFreq.h
+  DataVariant/inc/DataVariantType/DataVariantInt.h
+  DataVariant/inc/DataVariantType/DataVariantLong.h
+  DataVariant/inc/DataVariantType/DataVariantPower.h
+  DataVariant/inc/DataVariantType/DataVariantTypeBase.h
+  DataVariant/inc/DataVariantType/DataVariantTypes.h
+  DataVariant/inc/DataVariantType/DataVariantUint.h
+  DataVariant/inc/DataVariant/DataVariantBase.h
+  DataVariant/inc/DataVariant/DataVariantClass.h
+  DataVariant/inc/DataVariant/DataVariantList.h
+  DataVariant/inc/DataVariant/DataVariantSettings.h
+  DataVariant/inc/DataVariant/DataVariantVector.h
+
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+  DIRECTORY
+  DataVariant/inc/DataVariant
+  DataVariant/inc/DataVariantType
+  inc/DelayUnit
+  DataVariant/inc/DvType
+  inc/debug
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)

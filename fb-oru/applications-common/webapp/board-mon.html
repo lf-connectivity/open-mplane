@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Board Monitor</title>
+<script type="text/javascript" src="resources/jquery/jquery-ui/external/jquery/jquery.js"></script>
+<script type="text/javascript" src="resources/jquery/jquery-svg/jquery.svg.js"></script>
+<script type="text/javascript" src="resources/jquery/jquery-svg/jquery.svgplot.js"></script>
+<script type="text/javascript" src="resources/jquery/jquery-svg/jquery.svgdom.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="resources/jquery/jquery-svg/jquery.svg.css">
+
+<script type="text/javascript" src="resources/js/net/Tif.js"></script>
+
+<script type="text/javascript" src="resources/js/common/CircularBuffer.js"></script>
+
+<script type="text/javascript" src="resources/js/model/DataSrc.js"></script>
+<script type="text/javascript" src="resources/js/model/DataSrcMulti.js"></script>
+<script type="text/javascript" src="resources/js/model/DataSrcFactory.js"></script>
+<script type="text/javascript" src="resources/js/model/Data.js"></script>
+<script type="text/javascript" src="resources/js/model/DataNum.js"></script>
+
+<script type="text/javascript" src="resources/js/model/DataFactory.js"></script>
+<script type="text/javascript" src="resources/js/model/DataString.js"></script>
+<script type="text/javascript" src="resources/js/model/DataInt.js"></script>
+<script type="text/javascript" src="resources/js/model/DataFloat.js"></script>
+<script type="text/javascript" src="resources/js/model/DataEnum.js"></script>
+
+<script type="text/javascript" src="resources/js/view/ViewData.js"></script>
+<script type="text/javascript" src="resources/js/view/DataHistory.js"></script>
+<script type="text/javascript" src="resources/js/view/ViewDataString.js"></script>
+<script type="text/javascript" src="resources/js/view/ViewDataNum.js"></script>
+<script type="text/javascript" src="resources/js/view/ViewDataEnum.js"></script>
+<script type="text/javascript" src="resources/js/view/ViewDataEnumImg.js"></script>
+<script type="text/javascript" src="resources/js/view/ViewDataPlot.js"></script>
+
+<script type="text/javascript" src="resources/js/monitor/MonitorApp.js"></script>
+
+<style type="text/css" >
+
+.labelled-left label {
+	float: left ;
+	margin-right: 5px ;
+}
+
+.labelled-plot {
+	margin: 5px 0 5px 0 ;
+	padding: 5px ;
+	width: 400px ;
+	border-radius: 5px ;
+	border: 1px solid black ;
+}
+
+
+/*
+.column-container {
+	display: block; 
+	float: left; 
+	width: 450px ;
+}
+
+.column:after {
+	content: "."; 
+	visibility: hidden; 
+	display: block; 
+	height: 0; 
+	clear: both;
+}
+
+*/
+
+.column {
+	display: block; 
+	float: left; 
+	width: 450px ;
+}
+
+.columns {
+	border-top: 1px solid #888888 ;
+	padding: 5px 2px ;
+	margin: 5px 0 ;
+}
+
+.columns > label {
+	border: 1px solid #888888 ;
+	background-color: #888888 ;
+	color: white ;
+}
+
+.column-container {
+	margin-top: 10px ;
+}
+
+.error {
+	color: red ;
+}
+
+body {
+}
+
+</style>
+
+<script type="text/javascript" src="resources/js/board-monitor.js"></script>
+
+</head>
+<body>
+  <h2>Board Monitor</h2>
+
+  <div id="content"></div>
+</body>
+</html>
+

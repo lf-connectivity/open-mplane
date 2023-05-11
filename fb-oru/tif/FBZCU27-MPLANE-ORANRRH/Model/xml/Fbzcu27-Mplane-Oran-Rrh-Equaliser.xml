@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+ 	<Board name="FBZCU27-MPLANE-ORANRRH">
+		<Device name="Equaliser" path="/equaliser" comment="Equaliser settings">
+		<xinclude:include href="../../../helper/common/xml/Equaliser.xml#Equaliser"/>
+		</Device>
+	</Board>
+</TestInterface>

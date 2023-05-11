@@ -1,0 +1,53 @@
+diff --git a/ntsimulator/deploy/base/generate-ssh-keys.sh b/ntsimulator/deploy/base/generate-ssh-keys.sh
+index c4ed734..9275191 100755
+--- a/ntsimulator/deploy/base/generate-ssh-keys.sh
++++ b/ntsimulator/deploy/base/generate-ssh-keys.sh
+@@ -17,6 +17,12 @@
+ 
+ cd /home/netconf/.ssh
+ 
++# generate CA private key
++openssl genrsa -out ca.key 2048
++
++# generate CA certificate
++openssl req -x509 -sha256 -new -nodes -key ca.key -days 3650 -subj "/C=US/ST=CA/O=MeLaCon, Inc./CN=melacon.com" -out ca.pem
++
+ # generate a new private key
+ openssl genrsa -out melacon.server.key 2048 2>/dev/null
+ 
+diff --git a/ntsimulator/deploy/base/ubuntu.Dockerfile b/ntsimulator/deploy/base/ubuntu.Dockerfile
+index be86b97..7ff026a 100644
+--- a/ntsimulator/deploy/base/ubuntu.Dockerfile
++++ b/ntsimulator/deploy/base/ubuntu.Dockerfile
+@@ -141,11 +141,7 @@ RUN \
+     rm -rf source && \
+     rm -f build_ntsim-ng.sh
+ 
+-# copy SSH related scripts and keys
+-COPY ./deploy/base/ca.key /home/netconf/.ssh/ca.key
+-COPY ./deploy/base/ca.pem /home/netconf/.ssh/ca.pem
+-COPY ./deploy/base/client.crt /home/netconf/.ssh/client.crt
+-COPY ./deploy/base/client.key /home/netconf/.ssh/client.key
++# copy SSH related scripts
+ COPY ./deploy/base/generate-ssh-keys.sh /home/netconf/.ssh/generate-ssh-keys.sh
+ 
+ #############################
+diff --git a/ntsimulator/deploy/o-ran-ru-fh/config.json b/ntsimulator/deploy/o-ran-ru-fh/config.json
+index 1934a03..4068ec4 100644
+--- a/ntsimulator/deploy/o-ran-ru-fh/config.json
++++ b/ntsimulator/deploy/o-ran-ru-fh/config.json
+@@ -13,14 +13,6 @@
+             "stderr": "log/netopeer-stderr.log"
+         },
+     
+-        "sshd": {
+-            "path": "/usr/sbin/sshd",
+-            "args": ["-D"],
+-            "autorestart": true,
+-            "stdout": "log/sshd-stdout.log",
+-            "stderr": "log/sshd-stderr.log"
+-        },
+-    
+         "ntsim-network-function": {
+             "path": "/opt/dev/ntsim-ng/ntsim-ng",
+             "args": ["-w/opt/dev/ntsim-ng", "-f"],

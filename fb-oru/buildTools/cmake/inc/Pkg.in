@@ -1,0 +1,3 @@
+os		@OS_PKG_FILENAME@	@osMd5@
+app		@APP_PKG_FILENAME@	@appMd5@
+lib		@LIB_PKG_FILENAME@	@libMd5@

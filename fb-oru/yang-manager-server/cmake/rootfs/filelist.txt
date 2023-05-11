@@ -1,0 +1,22 @@
+# Format is:
+# FILE destination user:group permissions source
+# DIR destination user:group permissions
+# DIRCOPY destination user:group source_directory
+# INCLUDE include_file
+# MODE destination user:group permissions
+#
+# Copy all of the yang-models
+DIRCOPY /usr/share/yang-models 0:0 ${GITDIR}/yang-models/ORAN-WG4.MP-YANGs-v0x.00
+#
+# Copy the yang config
+DIRCOPY /usr/share/yang-config 0:0 ${GITDIR}/yang-manager-server/yang-config
+#
+# Init script
+FILE /etc/init.d/app.d/10_create_users.sh 0:0 0755 etc/init.d/app.d/10_create_users.sh
+FILE /etc/init.d/app.d/20_yang.sh 0:0 0755 etc/init.d/app.d/20_yang.sh
+FILE /etc/init.d/app.d/21_yangConfig.sh 0:0 0755 etc/init.d/app.d/21_yangConfig.sh
+FILE /etc/init.d/app.d/23_yang-user_config.sh 0:0 0755 etc/init.d/app.d/23_yang-user_config.sh
+#
+DIR /nandflash/.settings root:root 0700
+FILE /nandflash/.settings/users 0:0 0600 settings/users
+

@@ -1,0 +1,148 @@
+#!/bin/sh -x
+#
+# Mount the flash filesystem (uses eMMC bulk storage)
+#
+
+# Use uboot env var
+MMC_BLOCK=$(i2cenv MMC_BLOCK | sed 's/^MMC_BLOCK=//')
+if [ ! -n "$MMC_BLOCK" ]; then
+	# set default
+	MMC_BLOCK=mmcblk0
+fi
+MMC_PARTITION=$(i2cenv MMC_PARTITION | sed 's/^MMC_PARTITION=//')
+if [ ! -n "$MMC_PARTITION" ]; then
+	# set default
+	MMC_PARTITION=p1
+fi
+MMC_DEV=$(i2cenv MMC_DEV | sed 's/^MMC_DEV=//')
+if [ ! -n "$MMC_DEV" ]; then
+	# set default
+	MMC_DEV=$MMC_BLOCK$MMC_PARTITION
+fi
+MMC_MOUNT=/run/media/$MMC_DEV
+MMC_DEVICE=/dev/$MMC_DEV
+
+FLASH_DIR=/nandflash
+
+function partition_eMMC {
+
+	echo "unit: sectors" > /tmp/part.txt
+	echo " " >> /tmp/part.txt
+	echo "$MMC_DEVICE : start=        2048, size=     7632896, type=83" >> /tmp/part.txt
+	
+	sfdisk /dev/$MMC_BLOCK < /tmp/part.txt
+}
+
+
+function is_eMMC_mounted {
+	mount | grep -q $MMC_DEVICE
+	if [ $? -eq 0 ]; then
+	        MMC_MOUNT=$(mount | grep /dev/mmc | awk '{print $3;}')
+	fi
+	mount | grep -q $MMC_DEVICE
+	# $? = 0 if mounted
+}
+
+function mount_eMMC {
+	mkdir -p $MMC_MOUNT
+	mount -t ext4 $MMC_DEVICE $MMC_MOUNT
+}
+
+function unmount_eMMC {
+   	umount $MMC_MOUNT
+   	umount $FLASH_DIR
+}
+
+function format_eMMC {
+	echo y | mkfs.ext4 -L "nandflash" $MMC_DEVICE
+	if [ $? = 0 ] ; then
+		echo Formatted eMMC as ext4
+	else
+		echo Unable to format eMMC
+		exit 1
+	fi
+	
+	# Try to flag as formatted
+	mount_eMMC
+	touch $MMC_MOUNT/.ext4
+	unmount_eMMC
+}
+
+case "$1" in
+  start)
+    # Check that partition device is available
+    if [ ! -w "/dev/$MMC_DEV" ] ; then
+    
+    	# Is the base block driver available?
+    	if [ ! -e "/dev/$MMC_BLOCK" ] ; then
+			echo Error: Unable to access eMMC device
+			exit 1
+    	fi
+    	
+    	# For a fresh board we'll have eMMC access but no ext4 partition
+   		partition_eMMC
+    	
+    	# If there's still no partition then stop
+	    if [ ! -e "/dev/$MMC_DEV" ] ; then
+			echo Error: Unable to partition eMMC device
+			exit 1
+    	fi
+    	
+    	# Now format as ext4 ready to be mounted
+    	format_eMMC
+   		mount_eMMC
+    fi
+  
+  	# check mounted
+  	is_eMMC_mounted
+	if [ $? = 1 ] ; then
+		mount_eMMC
+	fi
+
+  	# check mounted again - if still not then try reformatting to ext4
+  	is_eMMC_mounted
+	if [ $? = 1 ] ; then
+		format_eMMC
+		mount_eMMC
+	fi
+  	
+  	
+  	# check mounted again - if still not then stop
+  	is_eMMC_mounted
+	if [ $? = 1 ] ; then
+		echo Error: Unable to access eMMC
+		exit 1
+	fi
+  	
+    # Create the mount point - if all else fails then this will be an empty dir
+    mkdir -p $FLASH_DIR
+    
+	# Try mounting partition regardless - exit status will tell if it worked
+	printf "Mounting flash file system: "
+	mkdir -p $MMC_MOUNT$FLASH_DIR
+	mount --bind $MMC_MOUNT$FLASH_DIR $FLASH_DIR
+	if [ $? = 0 ] ; then
+		printf "OK\n"
+	else
+		printf "FAIL\n"
+	fi
+	;;
+	
+  stop)
+	printf "Un-mounting flash file system: "
+	sync
+	unmount_eMMC
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+	
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+	
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

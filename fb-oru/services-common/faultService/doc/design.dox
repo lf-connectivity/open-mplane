@@ -1,0 +1,312 @@
+/**
+\mainpage Common Radio Service Fault Handling Design
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section services_common_faultService_scope Scope
+<hr>
+
+This document contains detailed design information for the faultService module,
+part of the services component.
+
+
+For system level design please refer to the Design Overview Documentation at <BR>
+<A HREF="../index.html" target="_blank"><B>Design Overview Document</B></A>
+<BR>
+
+<hr>
+\section services_common_faultService_usage_overview	Usage Overview
+<hr>
+
+\image html alarms.png "Fault / Alarm Objects"
+
+The diagram above shows the various components your need to create when adding a new fault and/or alarm to the system.
+
+The fault classes and their responsibilities are listed below:
+
+\li IFault - Simply records fault state with optional filtering on the number of active or inactive fault conditions
+which cause the fault to change state.
+\li IFaultOwner - Manages one or more IFault objects. It is this object which gathers the fault information and causes the
+IFault setStatus() method to be called with the fault state
+\li IFaultPackage - Because an IFault must be associated with an IFaultOwner, the IFaultPackage pulls together those items
+to ensure everything is created and created in the correct order. An IFaultBuilder can then create IFaulPackage objects as
+necessary.
+\li IFaultBuilder - Creates the appropriate IFaultPackage objects to instantiate all of the faults required for the application.
+
+Similarly, the alarms classes and their responsibilities are listed below:
+
+\li IAlarm - Provides an alarm which is the result of the state of one or more IFault objects.
+\li IAlarmPackage - An IAlarm is always associated with one or more IFault objects. The IALarmPackage pulls together the creation
+of an IAlarm along with the names of IFault objects
+\li IAlarmBuilder - In a similar manner to IFaultBuilder, the IAlarmBuilder creates all of the required alarms for an application
+
+An example showing these objects being created and interconnected is decribed in [@ref services_common_faultService_sec_3_3_1]
+
+<hr>
+\section services_common_faultService_overview	Overview
+<hr>
+
+The radio application design provides for system-wide fault and alarm handling.
+It makes use of the common generic Fault classes detailed in
+<A HREF="../common-doc/pages.html" target="_blank"><B>Fault Base Class Design</B></A>
+
+The following drawing illustrates the system fault and alarm handling:\n
+\image html RSE_FaultDesignOverview.png "Fault Design Overview Illustration"
+
+Notes on the illustration:\n
+The illustration shows a small system that has 3 faults, 1 fault owner that owns 2 faults, 1 application alarm for
+"Over Temperature Critical Alarm", and 2 application services for "Shutdown" and "COAM".
+
+1 - The common faults are created. The illustration shows 3 faults being created, but a typical radio will
+use many dozens of faults. When faults are created they will add themselves to the FaultsList.\n
+The faults are Subjects and therefore can be attached to by observers.
+
+2 - The alarms factory creates the application alarms. The alarms are application specific and are directly linked to
+the customer interface requirements.  When alarms are created they will add themselves to the AlarmsList.\n
+The Over Temperature Critical Alarm is an observer and attaches to 2 faults. It will be notified of a change in
+state of either fault.
+
+3 - The fault owner is a software module that takes ownership of the 2 faults that relate to 'over temperature'
+conditions.
+It will raise and clear the faults according to its own control logic.
+
+4 - The two application services Shutdown and COAM are both observers of Over Temperature Critical Alarm, and will be
+notified of a change in state of the alarm.
+
+By using this design pattern the association of faults to alarms is tightly controlled.
+
+<hr>
+\section services_common_faultService_sec_2 Design
+<hr>
+
+
+<hr>
+\subsection services_common_faultService_sec_2_1 Initialisation
+<hr>
+
+All of the application's faults must be created first. This adds them to the IFaultsList and makes them available to other
+objects via fault name lookup. The IFaultBuilder singleton (which may well be a hierarchy of fault builders) is responsible
+for creating all of the faults, along with their fault owners. The IFaultBuilder singleton is created in the fault service
+(itself being started by the application services object).
+
+The alarms are then created by the IAlarmBuilder singleton, which is instantiated in the application services object <b>after</b>
+the fault services has been created (ensuring all the faults are in place before the alarms try to associate with them).
+
+
+<hr>
+\subsection services_common_faultService_sec_2_2 Reset and Restart Procedure
+<hr>
+A reset procedure is triggered either when instructed by the REC or Test Interface, or as a response to specific
+alarm conditions.
+
+At the end of the reset procedure all faults and alarms will revert to their initial state.
+
+<hr>
+\section services_common_faultService_sec_3_3 Interface Dependencies
+<hr>
+
+<hr>
+\subsection services_common_faultService_sec_3_3_1 Example subsection
+<hr>
+As an example of setting up a fault and an alarm that uses it, I'll illustrate the clock alarm based on the system synth
+fault.
+
+<B>SynthClockFault (IFault)</B>\n
+
+The first job is to create an IFault that will record the fault state. Most of the work is done by the base Fault class,
+so you just derive from this and set the positive integration count, negative integration count, and name.
+
+\code
+class SynthClockFault : public Fault
+{
+public:
+	SynthClockFault() ;
+	virtual ~SynthClockFault() ;
+} ;
+
+
+//-------------------------------------------------------------
+SynthClockFault::SynthClockFault() :
+	Fault(1, 1, "SynthClockFault")
+{
+}
+
+SynthClockFault::~SynthClockFault()
+{
+}
+\endcode
+
+Note that the arguments to Fault shown above (positive integration count = 1, negative integration count = 1) mean that
+the fault will be immediately generated if the clock alarm bit is raised/lowered. If there is some "noise" on the alarm
+bit then we can increase these counts to filter out the noise.
+
+<B>ClockFaultOwner (IFaultOwner)</B>\n
+
+The ClockFaultOwner manages the SynthClockFault. Again, most of the work is done in the base FaultOwner class so the creation
+consists of setting owner name along with specifying the set of fault names (in this case a single name).
+
+The main work is done in the update() method, which in this case reads the clock status register and calls the fault's
+setStatus() method with the state.
+
+\code
+class ClockFaultOwner : public FaultOwner
+{
+public:
+	ClockFaultOwner() ;
+	virtual ~ClockFaultOwner() ;
+	virtual void updateFaults() override ;
+} ;
+
+//-------------------------------------------------------------
+ClockFaultOwner::ClockFaultOwner() :
+	FaultOwner("ClockFaultOwner", {"SynthClockFault"} )
+{
+}
+
+void ClockFaultOwner::updateFaults()
+{
+	<read the clock status reg...>
+	fault->setStatus( (status != 0) ) ;
+}
+\endcode
+
+
+<B>ClockFaultPackage (IFaultPackage)</B>\n
+
+The ClockFaultPackage brings together the fault and it's owner (note: in this case the own only manages a single fault,
+in other cases fault owner's may manage more that one).
+
+\code
+class ClockFaultPackage : public IFaultPackage
+{
+public:
+	ClockFaultPackage() ;
+	virtual ~ClockFaultPackage() ;
+} ;
+
+//-------------------------------------------------------------
+ClockFaultPackage::ClockFaultPackage()
+{
+	// NOTE: There is no need to store these because they automatically get added to the IFaultsList
+
+	// Create the faults
+	std::shared_ptr<IFault> fault(make_fault<SynthClockFault>()) ;
+
+	// Create the owner
+	std::shared_ptr<IFaultOwner> faultOwner(make_faultOwner<ClockFaultOwner>()) ;
+}
+\endcode
+
+
+<B>CommonFaultBuilder (IFaultBuilder)</B>\n
+
+The CommonFaultBuilder builds the common faults by creating whichever fault packages are common. The intention is that
+board-specific faults are created and pulled together in board-specific builders which are derived from this common builder.
+
+The application defined builder singleton will then select the appropriate builder to create for that application.
+
+\code
+class CommonFaultBuilder : public FaultBuilder
+{
+public:
+	CommonFaultBuilder() ;
+	virtual ~CommonFaultBuilder() ;
+
+} ;
+
+//-------------------------------------------------------------
+CommonFaultBuilder::CommonFaultBuilder()
+{
+	addFaultPackage(std::make_shared<ClockFaultPackage>()) ;
+}
+\endcode
+
+
+<B>ClockAlarm (IAlarm)</B>\n
+
+Once the fault and owner has been created and pulled into the framework, we need to do the same for the alarm. Like the fault,
+an alarm is very simply created, just requiring a name:
+
+\code
+class ClockAlarm : public Alarm
+{
+public:
+	ClockAlarm() ;
+	virtual ~ClockAlarm() ;
+} ;
+
+//-------------------------------------------------------------
+ClockAlarm::ClockAlarm() :
+	Alarm("ClockAlarm")
+{
+}
+\endcode
+
+<B>ClockAlarmPackage (IAlarmPackage)</B>\n
+
+The alarm package creates an alarm and registers it's use of specific fault(s) by specifyin the fault name(s).
+
+\code
+class ClockAlarmPackage : public AlarmPackage
+{
+public:
+	ClockAlarmPackage() ;
+	virtual ~ClockAlarmPackage() ;
+} ;
+
+//-------------------------------------------------------------
+ClockAlarmPackage::ClockAlarmPackage() :
+	AlarmPackage()
+{
+	// Create the ClockAlarm
+	std::shared_ptr<IAlarm> alarm(make_alarm<ClockAlarm>()) ;
+
+	// Register faults with it
+	addAlarm(alarm, {"SynthClockFault"}) ;
+}
+\endcode
+
+<B>EuropaAlarmBuilder (IAlarmBuilder)</B>\n
+
+The application alarm builder is intended to create all of the alarms used in the application. In this case we have only the
+single clock alarm, but others would be added by repeating the call to addAlarmPackage():
+
+\code
+class EuropaAlarmBuilder : public AlarmBuilder
+{
+public:
+	EuropaAlarmBuilder() ;
+	virtual ~EuropaAlarmBuilder() ;
+} ;
+
+//-------------------------------------------------------------
+EuropaAlarmBuilder::EuropaAlarmBuilder() :
+	AlarmBuilder()
+{
+	addAlarmPackage(std::make_shared<ClockAlarmPackage>()) ;
+}
+
+\endcode
+
+
+
+<hr>
+\section services_common_faultService_sec_4 Host Based Unit Tests
+<hr>
+
+\subsection services_common_faultService_ssec_1_1 Code Coverage Summary
+<hr>
+
+\include common/faultService/test/coverage.txt
+
+<hr>
+\subsection services_common_faultService_ssec_1_2 Unit Test Results
+<hr>
+
+\include common/faultService/test/cppunit.txt
+
+
+*/

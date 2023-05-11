@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="BncCtl" path="/ref" comment="Common 10MHz control and status">			
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setBncConfig"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getBncConfig"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setBnc1"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getBnc1"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setBnc2"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getBnc2"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setBnc3"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getBnc3"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setBnc4"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getBnc4"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setBnc5"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getBnc5"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setSyncOut"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getSyncOut"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setSyncIn"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getSyncIn"/>
+		</Device>
+	</Board>
+</TestInterface>

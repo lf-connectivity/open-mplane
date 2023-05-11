@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="Alarms" path="/alarms" comment="Alarms and faults">
+			<xinclude:include href="../../../../../helper/common/xml/Alarms.xml#status"/>
+			<xinclude:include href="../../../../../helper/common/xml/Alarms.xml#showAll"/>
+			<xinclude:include href="../../../../../helper/common/xml/Alarms.xml#portOpen"/>
+			<xinclude:include href="../../../../../helper/common/xml/Alarms.xml#portClose"/>
+		</Device>
+	</Board>
+</TestInterface>

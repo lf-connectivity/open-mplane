@@ -1,0 +1,16 @@
+# Doxyfile 1.8.1.1
+
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+
+# The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
+# by quotes) that should identify the project.
+
+PROJECT_NAME = "FELIX DPD Service Implementation Design Document"
+
+@INCLUDE_PATH = $(ROOTPATH)/buildTools/doxygen/
+
+@INCLUDE = design.doxyfile
+
+@TAGFILES += $(OUTPATH)vsi-doc.tag=../vsi-doc

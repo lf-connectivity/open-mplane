@@ -1,0 +1,166 @@
+/**
+\mainpage Common Radio Hardware Led Device Interface Base Class
+<BR>
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+\section hardware_common_led_scope Scope
+<hr>
+
+This document describes each of the two classes that have been created in order to
+provide a common LED device control interface.
+
+<hr>
+\section hardware_common_led_overview	Design
+<hr>
+
+Most hardware implementations usually include one or more LEDs, of vary colours and state
+capabilities. The virtual hardware interface describes the LED functionality through the
+Mplane::ILed class. The control of these LEDs is undertaken by some underlying device
+driver with knowledge of the actual number of LEDs and the functionality each supports, access
+to this interface is provided through the Mplane::ILedControl interface.
+
+The common LED implementation provides a base class that implements most of the code necessary
+to create and control the LEDs for a given hardware implementation. The result being that a
+higher level, final hardware implementation need only provide a handful of methods to give
+a consistent capability to the application code base. There is a pure virtual
+Mplane::CLed::VerifyColour method for the final implementation to reject colours it
+is not capable of.
+
+The common LED implementation Mplane::CLed inherits from and implements the Mplane::ILed
+interface. The constructor of the common LED takes two parameters. First an index, which acts
+as a unique identifier for the LED instance and is used to retrieve that LED instance from
+the Mplane::ILedController interface. Secondly a reference to the Mplane::CLedControl device
+to which it belongs. The controller reference is needed so that the actual hardware code
+used to change the LEDs colour or state in the Mplane::CLedControl::setLed pure virtual
+methods higher level implementation.
+
+
+Here is a hypothetical example of a final implementation that uses the Mplane::CLed and
+Mplane::CLedControl base class.
+
+@code
+
+class WidgetLed: public CLed
+{
+public:
+    WidgetLed( int index, CLedControl &controller ):
+        CLed( index, controller )
+    {
+    }
+
+	// Our widget led only supports red and green
+    virtual  ReturnType::State verifyColour( LedColour setLedColour )
+    {
+        ReturnType::State state = ReturnType::RT_OUT_OF_RANGE;
+        // for test purposes, reject WHITE
+        if( setLedColour == ILed::LED_RED || setLedColour == ILed::LED_GREEN )
+        {
+            state = ReturnType::RT_OK;
+        }
+        return state;
+    }
+};
+
+
+class WidgetLedControl: public CLedControl
+{
+public:
+	static const int MAX_LEDS = 2;
+	static const int STATUS = 0;
+	static const int COMMS_ERROR = 1;
+	shared_ptr<LedDeviceHandler> handler;
+
+    WidgetLedControl():
+        CLedControl( MAX_LEDS )
+    {
+        std::shared_ptr<ILed> statusLed( new WidgetLed( STATUS, *this ) );
+        add( statusLed );
+        std::shared_ptr<ILed> commsErrorLed( new WidgetLed( STATUS, *this ) );
+        add( commsErrorLed );
+		// get the thing that actually controls the leds
+        handler = LedDeviceHandler::getInstance();
+    }
+
+    virtual ReturnType::State setLed( ILed& led ) throw (std::out_of_range)
+    {
+        // get the device driver to set the actual LED status
+		handler->set( led.getIndex(), led.getColour(), led.getSatte() );
+        return ReturnType::RT_OK;
+    }
+
+    virtual ~WidgetLedControl()
+    {
+    }
+
+    virtual void show(void)
+    {
+    }
+
+    virtual ReturnType::State doInit()
+    {
+        ReturnType::State state = ReturnType::RT_OK;
+        for( int index = 0 ; index < MAX_LEDS ; index++ )
+        {
+            shared_ptr<ILed> led = getLed( index );
+			led->setState( ILed::LED_OFF );
+			led->setColour( ILed::LED_GREEN );
+		}
+        return state;
+    }
+};
+
+
+std::shared_ptr<ILedControl> ILedControl::getInterface()
+{
+    static std::shared_ptr<ILedControl> _ledControl( new WidgetLedControl() );
+
+    return _ledControl;
+}
+
+// example application code.
+
+shared_ptr<ILedControl> ledControl = ILedControl::getInterface();
+
+shared_ptr<Iled> statusLed = ledControl.getLed( WidgetLedControl::STATUS );
+shared_ptr<Iled> commsErrorLed = ledControl.getLed( WidgetLedControl::COMMS_ERROR );
+
+statusLed->setState( ILed::LED_ON );
+
+commsErrorLed->setColour( ILed::LED_RED );
+commsErrorLed->setState( ILed::LED_ON );
+
+
+@endcode
+
+
+
+
+<hr>
+\section hardware_common_led_sec_3_1 Dependencies
+<hr>
+
+No specific dependencies.
+
+<hr>
+\section hardware_common_led_sec_4 Host Based Unit Tests
+<hr>
+
+This is the test record section
+
+<hr>
+\subsection hardware_common_led_ssec_1_1 Code Coverage Summary
+<hr>
+
+\include ../build-local/common/led/gtest/coverage.txt
+
+<hr>
+\subsection hardware_common_led_ssec_1_2 Unit Test Results
+<hr>
+
+\include ../build-local/common/led/gtest/gtest.txt
+
+*/

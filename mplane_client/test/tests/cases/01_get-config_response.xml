@@ -1,0 +1,14 @@
+<data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+<interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+  <interface>
+    <name>interface-1</name>
+    <ipv4 xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+      <address>
+        <ip>6.122.172.49</ip>
+      </address>
+      <address>
+        <ip>206.35.59.57</ip>
+      </address>
+    </ipv4>
+  </interface>
+</interfaces></data>

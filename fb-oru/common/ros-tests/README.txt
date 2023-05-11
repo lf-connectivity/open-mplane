@@ -1,0 +1,1 @@
+This directory is simply to add Google Tests for ROS code

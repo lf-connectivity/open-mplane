@@ -1,0 +1,44 @@
+#!/bin/sh
+# Simple script that wraps up FPGA programming using the Xilinx devices
+#
+
+showHelp=0
+if [ "$1" == "" ]; then
+	echo ERROR: Must specify an fpga bitstream file
+	showHelp=1
+fi
+
+if [ "$1" == "-h" ]; then
+	showHelp=1
+fi
+if [ "$1" == "--help" ]; then
+	showHelp=1
+fi
+
+if [ "$showHelp" == "1" ]; then
+
+	echo 'prog-fpga <file>'
+	echo Program fpga using bitstream file
+	exit 1 
+fi
+
+bitfile=$(basename $1)
+
+# Set flags for full bitstream
+echo 0 > /sys/class/fpga_manager/fpga0/flags
+
+# Load bitstream - copy file to directory and get fpga manager to use the file
+mkdir -p /lib/firmware
+cp $1 /lib/firmware
+echo $bitfile > /sys/class/fpga_manager/fpga0/firmware
+
+## FPGA manager will now be loading
+
+# See if loading was a success
+status=$(cat /sys/class/fpga_manager/fpga0/state)
+
+if [ "$status" == "operating" ]; then
+	exit 0
+else
+	exit 1
+fi

@@ -1,0 +1,170 @@
+#ifndef _ACE_AXIS_IPERIPHERALBUS_H_
+#define _ACE_AXIS_IPERIPHERALBUS_H_
+
+#include <string>
+#include <memory>
+
+/*!
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * \file      IPeripheralBus.h
+ * \brief     Interface for peripheral bus manager
+ *
+ *
+ * \details   Defines an interface to a manager of the peripheral bus. Bus devices will be registered by objects that
+ * know about the specifics of the hardware on the board. Peripherals can then get access to their own type of bus device
+ * and access the hardware via that device, abstracting the actual hardware implementation away from the peripherals.
+ *
+ * Device types currently known are: adc, dac, synth, and spi
+ *
+ */
+
+namespace Mplane
+{
+/*! @brief  Peripheral bus device
+ *
+ */
+class IBusDevice
+{
+public:
+
+	/**
+	 *
+	 * List of known bus types
+	 */
+	enum BusType {
+		BUSTYPE_None	= 0,
+		BUSTYPE_Adc		= 1,
+		BUSTYPE_Dac		= 2,
+		BUSTYPE_Synth	= 3,
+		BUSTYPE_Spi		= 4,
+		BUSTYPE_I2c     = 5,
+
+		BUSTYPE_FIRST = BUSTYPE_Adc,
+		BUSTYPE_LAST = BUSTYPE_I2c,
+	};
+
+    /*! @brief  Check bus device
+     *
+     *  Checks that this bus device is of the correct type
+	 *
+	 * @param type		BusType device should match
+	 * @return true is correct
+	 */
+    virtual bool isCorrectType(const BusType type) const = 0 ;
+
+    /*! @brief  Get bus type
+     *
+     *  Returns the bus type of this device
+	 *
+	 * @resture 	BusType device should match
+	 */
+    virtual const BusType getType(void) const = 0 ;
+
+	/** @brief constructor
+	 *
+	 * Protected to force use of the singleton pattern
+	 *
+	 */
+    IBusDevice(){};
+
+    /*! @brief  Destructor
+     *
+     */
+    virtual ~IBusDevice() {} ;
+
+};
+
+/**
+ * Define the shared pointer (thread-safe) type used by the peripheral bus
+ */
+typedef std::shared_ptr<IBusDevice> IBusDevicePtr ;
+
+
+
+/*! @brief  Peripheral bus device manager interface
+ *
+ */
+class IPeripheralBus
+{
+public:
+
+    /*! @brief  Get the singleton instance
+     *
+     *  Method used to obtain a reference to the single instance of this object within the system.
+     *
+     *  @return the singleton instance
+     */
+    static std::shared_ptr<IPeripheralBus> getInstance(void);
+
+    /**
+     * Initialise the peripheral buses
+     * @return true if all initialised correctly
+     */
+    virtual bool initialise() =0 ;
+
+    /*! @brief  Register a bus device
+     *
+     *  Register a bus device of a specified type with the specified name
+	 *
+	 * @param name		Name of peripheral device that will use this bus device
+	 * @param busDevice	Pointer to the bus device to register
+	 */
+    virtual void registerBusDevice(const std::string& name, IBusDevice *busDevice) = 0 ;
+
+    /*! @brief  Register a bus device
+     *
+     *  Register a bus device of a specified type. This then becomes the default bus device for this type
+     *  and is used whenever the peripheral device name is not found in the list of registered devices.
+	 *
+	 * @param type		BusType to register this device with
+	 * @param busDevice	Pointer to the bus device to register
+	 */
+    virtual void registerBusDevice(IBusDevice *busDevice) = 0 ;
+
+    /*! @brief  Get a bus device
+     *
+     *  Retrieve a bus device of a specified type with the specified name
+	 *
+	 * @param type		BusType registered with this device
+	 * @param name		Name of peripheral device that will use this bus device
+	 *
+	 * @return busDevice	Pointer to the bus device to register
+	 */
+    virtual IBusDevicePtr getBusDevice(const IBusDevice::BusType type, const std::string& name) = 0 ;
+
+    /*! @brief  Get a bus device
+     *
+     *  Retrieve a bus device of a specified type with the specified name
+	 *
+	 * @param type		BusType registered with this device
+	 *
+	 * @return busDevice	Pointer to the bus device to register
+	 */
+    virtual IBusDevicePtr getBusDevice(const IBusDevice::BusType type) = 0 ;
+
+
+    /*! @brief  Destructor
+     *
+     */
+    virtual ~IPeripheralBus() {} ;
+
+
+protected:
+
+	/** @brief constructor
+	 *
+	 * Protected to force use of the singleton pattern
+	 *
+	 */
+    IPeripheralBus(){};
+
+};
+
+
+}
+
+#endif /* _ACE_AXIS_IPERIPHERALBUS_H_ */

@@ -1,0 +1,12 @@
+build/
+.settings/
+.directory
+*.bak
+/gmon.out
+warnings.log
+tmp*
+*.sw?
+/build-x-tools
+/build.*
+.build
+

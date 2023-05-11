@@ -1,0 +1,42 @@
+# Cmake file for test-common
+
+add_sources (SOURCES
+	src/TestArtUut.cpp
+	src/TestArtUutFactory.cpp
+    src/TestTxPclFactory.cpp
+    src/TestVswrFactory.cpp
+	src/TestFpgaComms.cpp
+	src/TestFpgaCommsMsg.cpp
+	src/TestFpgaCommsMsgFactory.cpp
+	src/TestFpgaCommsSingleton.cpp
+	src/TestFpgaMsgTokens.cpp
+	src/TestLimitsSettings.cpp
+	src/TestSystemClockInput.cpp
+	src/TestSystemClockInputSingleton.cpp
+	src/TestSystemSynth.cpp
+	src/TestSystemSynthSingleton.cpp
+	src/TifTestImageManagement.cpp
+	src/TestIFrequencyConst.cpp
+	src/TestIFrequencyConstSingleton.cpp
+#	src/TestICpriDelaysFactory.cpp
+)
+
+
+## Cppcheck
+include (cppcheck)
+addCppcheck(testcommon)
+
+if (${TARGET} STREQUAL "x86_64")
+
+	set (libs "")
+	addRepoLib (libs common)
+
+	# Add code coverage
+	include (coverage)
+
+	# Add memory leak check
+	include (valgrind)
+
+
+endif (${TARGET} STREQUAL "x86_64")
+

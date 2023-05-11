@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>TIF Test</title>
+<script type="text/javascript" src="../../jquery/jquery-ui/external/jquery/jquery.js"></script>
+<script type="text/javascript" src="../../jquery/jquery-svg/jquery.svg.js"></script>
+<script type="text/javascript" src="../../jquery/jquery-svg/jquery.svgplot.js"></script>
+<script type="text/javascript" src="../../jquery/jquery-svg/jquery.svgdom.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../jquery/jquery-svg/jquery.svg.css">
+
+<script type="text/javascript" src="mocks/Tif.js"></script>
+
+<script type="text/javascript" src="../common/CircularBuffer.js"></script>
+
+<script type="text/javascript" src="../model/DataSrc.js"></script>
+<script type="text/javascript" src="../model/Data.js"></script>
+<script type="text/javascript" src="../model/DataNum.js"></script>
+
+<script type="text/javascript" src="../model/DataFactory.js"></script>
+<script type="text/javascript" src="../model/DataString.js"></script>
+<script type="text/javascript" src="../model/DataInt.js"></script>
+<script type="text/javascript" src="../model/DataFloat.js"></script>
+<script type="text/javascript" src="../model/DataEnum.js"></script>
+
+<script type="text/javascript" src="../view/ViewData.js"></script>
+<script type="text/javascript" src="../view/DataHistory.js"></script>
+<script type="text/javascript" src="../view/ViewDataString.js"></script>
+<script type="text/javascript" src="../view/ViewDataNum.js"></script>
+<script type="text/javascript" src="../view/ViewDataEnum.js"></script>
+<script type="text/javascript" src="../view/ViewDataEnumImg.js"></script>
+<script type="text/javascript" src="../view/ViewDataPlot.js"></script>
+
+<style type="text/css" >
+
+.labelled-left label {
+	float: left ;
+	margin-right: 5px ;
+}
+
+.labelled-plot {
+	margin: 5px 0 5px 0 ;
+	padding: 5px ;
+	width: 400px ;
+	border-radius: 5px ;
+	border: 1px solid black ;
+}
+
+body {
+}
+
+</style>
+
+<script language="javascript" type="text/javascript">
+
+
+	function getState(response)
+	{
+		console.log('got state: %o', response) ;
+	}
+
+	function onError(error)
+	{
+		console.log('got error: %o', error) ;
+	}
+
+	function init()
+	{
+		var tif = Tif.getInstance() ;
+
+		// Set up some test data
+		tif.setData({
+			cmd : '.cpri.get 0',
+			vars: {
+				'state' : [
+					'RESET',
+					'ATTEMPTING_L1_SYNCH',
+					'PROTOCOL_VERSION_SETUP',
+					'CM_PARAM_SETUP',
+					'PASSIVE_MODE',
+					'OPERATIONAL',
+					'OPERATIONAL',
+					'OPERATIONAL',
+					'OPERATIONAL',
+					'OPERATIONAL'
+				],
+				'sfpLineRate' : ['9900MBPS', '9800MBPS', '9700MBPS', '9800MBPS', '9900MBPS'],
+				'fval' : ['0.1mW', '0.2mW', '0.7mW', '0.4mW', '0.5mW']
+			}
+		}) ;
+
+		///////////////
+		var dataObjs = DataFactory.create('.cpri.get 0', 1000, {
+			'state' : 'ENUM(RESET:ATTEMPTING_L1_SYNCH:PROTOCOL_VERSION_SETUP:CM_PARAM_SETUP:PASSIVE_MODE:OPERATIONAL)',
+			'sfpLineRate' : 'INT',
+			'fval' : 'FLOAT',
+		}) ;
+
+
+		console.debug('state: '+dataObjs.state) ;
+		console.debug('sfpLineRate: '+dataObjs.sfpLineRate) ;
+
+
+		var stateView = new ViewDataString('#stateText', dataObjs.state, function(state){
+			var colour = 'red' ;
+			if (state == 'OPERATIONAL')
+				colour = 'green' ;
+
+			var html = '<span style="color: '+colour+';">'+state+'</span>'
+			return html ;
+		}) ;
+		var rateView = new ViewDataString('#sfpLineRate', dataObjs.sfpLineRate) ;
+
+		var stateIntView = new ViewDataNum('#stateInt', dataObjs.state) ;
+		var rateIntView = new ViewDataNum('#sfpLineRateInt', dataObjs.sfpLineRate) ;
+
+var stateIntView = new ViewDataNum('#stateInt', dataObjs.state) ;
+
+/*
+RESET:
+ATTEMPTING_L1_SYNCH:
+PROTOCOL_VERSION_SETUP:
+CM_PARAM_SETUP:
+PASSIVE_MODE:
+OPERATIONAL
+*/
+
+
+		var stateView = new ViewDataEnum('#stateText', dataObjs.state, {
+			html : function(view, index) {
+				var html = '<span>'+view.getValueStr()+'</span>'
+				return html;
+			},
+			css : {
+				color: ['red', 'magenta', 'blue', 'cyan', 'yellow', 'green']
+			}
+		}) ;
+
+
+		var stateIntView = new ViewDataEnumImg('#stateImg', dataObjs.state, [
+			'../../images/red-ball.png',
+			'../../images/flash-red-ball.gif',
+			'../../images/yellow-ball.png',
+			'../../images/flash-yellow-ball.gif',
+			'../../images/flash-green-ball.gif',
+			'../../images/green-ball.png',
+		]) ;
+
+
+		var ratePlotView1 = new ViewDataPlot('#sfpLineRatePlot', dataObjs.sfpLineRate, {
+			//numPoints : 10
+			showAve : false,
+			showMin : false,
+			showMax : false,
+//			yShowZero : false,
+		}) ;
+
+
+		var ratePlotView = new ViewDataPlot('#floatPlot', dataObjs.fval, {
+			//yRange : [0, 1.2]
+		}) ;
+
+	}
+
+	window.addEventListener("load", init, false);
+
+  </script>
+  
+  
+  
+</head>
+<body>
+  <h2>TIF Test</h2>
+
+<div class="labelled-left"><label>State:</label>
+  <div id="stateText"></div>
+</div>
+
+<div class="labelled-left"><label>SFP Rate:</label>
+  <div id="sfpLineRate"></div>
+</div>
+
+
+<div class="labelled-left"><label>State:</label>
+  <div id="stateInt"></div>
+</div>
+
+<div class="labelled-left"><label>SFP Rate:</label>
+  <div id="sfpLineRateInt"></div>
+</div>
+
+<div class="labelled-left"><label>State:</label>
+  <div id="stateImg"></div>
+</div>
+
+<div class="labelled-plot"><label>SFP Rate:</label>
+  <div id="sfpLineRatePlot"></div>
+</div>
+
+<div class="labelled-plot"><label>Dummy:</label>
+  <div id="floatPlot"></div>
+</div>
+
+
+</body>
+</html>
+

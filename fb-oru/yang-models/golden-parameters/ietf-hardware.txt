@@ -1,0 +1,81 @@
+1. O-DU sends get
+
+<get>
+  <filter type="subtree">
+    <hw:hardware xmlns:hw="urn:ietf:params:xml:ns:yang:ietf-hardware"/>
+  </filter>
+</get>
+
+Example: Response
+<?xml version="1.0" encoding="utf-8"?>
+<data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+ <hardware xmlns="urn:ietf:params:xml:ns:yang:ietf-hardware">
+    <last-change>ietf-yang-types:date-and-time</last-change>
+    <component>
+       <name>ORRH0004</name>
+       <class>O-RAN-RADIO</class>
+       <physical-index>1</physical-index>
+       <description>Mplane Radio</description>
+       <parent-rel-pos>0</parent-rel-pos>
+       <hardware-rev>1.0</hardware-rev>
+       <firmware-rev>1.4.2</firmware-rev>
+       <software-rev>2.3.4</software-rev>
+       <serial-num>ORRH0004</serial-num>
+       <mfg-name>Mplane</mfg-name>
+       <model-name>ORAN-Radio</model-name>
+       <alias>radio1</alias>
+       <asset-id>RRH2453563</asset-id>
+       <is-fru>true</is-fru>
+       <mfg-date>2020-07-21T13:14:00Z</mfg-date>
+       <uri>URN:CLEI:CNME120ARA</uri>
+       <uuid>urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6</uuid>
+       <state>
+          <state-last-changed>2020-08-05T13:23:00Z</state-last-changed>
+          <admin-state>unlocked</admin-state>
+          <oper-state>enabled</oper-state>
+          <usage-state>active</usage-state>
+          <alarm-state>minor</alarm-state>
+          <standby-state>providing-service</standby-state>
+          <power-state>AWAKE</power-state>
+          <availability-state>NORMAL</availability-state>
+       </state>
+       <label-content>
+          <model-name>true</model-name>
+          <serial-number>true</serial-number>
+       </label-content>
+       <product-code>string</product-code>
+       <energy-saving-enabled>false</energy-saving-enabled>
+       <o-ran-name>ORRH0004</o-ran-name>
+    </component>
+ </hardware>
+</data>
+
+
+2. O-DU sends edit-config
+
+<?xml version="1.0" encoding="utf-8"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="">
+  <edit-config>
+    <target>
+      <running/>
+    </target>
+    <config>
+      <hw:hardware xmlns:hw="urn:ietf:params:xml:ns:yang:ietf-hardware">
+        <hw:component>
+           <hw:name>ORRH0004</hw:name>
+           <hw:alias operation="replace" nc:operation="merge" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">radio0004</alias>
+           <hw:state>
+              <admin-state operation="replace">locked</hw:admin-state>
+           </hw:state>
+        </hw:component>
+      </hw:hardware>
+    </config>
+  </edit-config>
+</rpc>
+
+
+Example: Response
+<?xml version="1.0" encoding="utf-8"?>
+<rpc-reply xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="17">
+  <ok/>
+</rpc-reply>

@@ -1,0 +1,102 @@
+module o-ran-trace {
+  yang-version 1.1;
+  namespace "urn:o-ran:trace:1.0";
+  prefix "o-ran-trace";
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the operations for the trace logs.
+
+    Copyright 2019 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2019-07-03" {
+    description
+      "version 1.0.0
+
+      1) Initial module definition.";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+
+  grouping trace-status-grouping {
+    description "grouping used for trace RPCs";
+    leaf status {
+      type enumeration {
+        enum SUCCESS {
+          description "rpc completed correctly";
+        }
+        enum FAILURE {
+          description "rpc failed";
+        }
+      }
+      description "result of rpc operation";
+    }
+    leaf failure-reason {
+      when "../status = 'FAILURE'";
+      type string;
+      description "free form text description why error occurred";
+    }
+  }
+
+  rpc start-trace-logs {
+    description
+      "Management plane triggered to start collecting the trace logs files of O-RU.";
+      output {
+        uses trace-status-grouping;
+      }
+  }
+
+  rpc stop-trace-logs {
+    description
+      "Management plane triggered to stop collecting the trace logs files of O-RU.";
+      output {
+        uses trace-status-grouping;
+      }
+  }
+
+  notification trace-log-generated {
+    description
+      "When new log file generated, send this notification.";
+    leaf-list log-file-name {
+      type string;
+      description
+        "The list of trace log file names on the O-RU.";
+    }
+
+    leaf is-notification-last {
+      type boolean;
+      default false;
+      description
+        "Informs if notification is last - the one after receiving stop-trace-logs rpc.";
+    }
+  }
+}

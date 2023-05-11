@@ -1,0 +1,9 @@
+<rpc-error>
+  <error-type>application</error-type>
+  <error-tag>operation-failed</error-tag>
+  <error-severity>error</error-severity>
+  <error-path>/</error-path>
+  <error-message xml:lang="en">Unknown element "configuration".</error-message>
+  <error-info>
+  </error-info>
+</rpc-error>

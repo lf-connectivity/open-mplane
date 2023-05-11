@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+ 		<Device name="ArbPlayback" path="/arb/playback" comment="Arbitrary waveform playback interface">
+			<xinclude:include href="../../../../../helper/common/xml/ArbPlayback.xml#files"/>
+			<xinclude:include href="../../../../../helper/common/xml/ArbPlayback.xml#start"/>
+			<xinclude:include href="../../../../../helper/common/xml/ArbPlayback.xml#stop"/>
+			<xinclude:include href="../../../../../helper/common/xml/ArbPlayback.xml#multicast"/>
+ 		</Device>
+	</Board>
+</TestInterface>

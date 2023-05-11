@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+ 	<Board name="ZCU111-MPLANE-ORANRRH">
+		<Device name="TxPort" path="/tx" comment="Tx Port settings">
+		<xinclude:include href="../../../helper/common/xml/CommonSettings.xml#NUM_TX_PORTS"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#Ports"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#getFreq"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#setFreq"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#showSynth"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#getTemp"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#getAtten"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#setAtten"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#getScaler"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#setScaler"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#getCWPower"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#setCWPower"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#getFwdPower"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#getRevPower"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#setMode"/>
+		<xinclude:include href="../../../helper/common/xml/TxPort.xml#setEnable"/>
+		</Device>
+	</Board>
+</TestInterface>

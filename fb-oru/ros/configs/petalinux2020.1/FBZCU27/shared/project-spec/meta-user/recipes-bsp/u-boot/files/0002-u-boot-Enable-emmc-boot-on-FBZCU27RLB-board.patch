@@ -1,0 +1,26 @@
+From a1a46958a499cb5fbf1578c4a5b494a52f90ac80 Mon Sep 17 00:00:00 2001
+From: Sreedev Sreedev <ssreedev@fb.com>
+Date: Wed, 11 Aug 2021 13:56:08 -0700
+Subject: u-boot: Enable emmc boot on FBZCU27RLB board
+
+---
+ board/xilinx/zynqmp/zynqmp.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/board/xilinx/zynqmp/zynqmp.c b/board/xilinx/zynqmp/zynqmp.c
+index 8610663711..788b1d568f 100644
+--- a/board/xilinx/zynqmp/zynqmp.c
++++ b/board/xilinx/zynqmp/zynqmp.c
+@@ -681,6 +681,9 @@ int board_late_init(void)
+ 
+ 	env_set("boot_targets", new_targets);
+ 
++	/* Until there is a way to pass partition number to boot_mmc0, setting bootcmd to mmc boot*/
++	env_set("bootcmd","ext2load mmc 0:1  0x10000000 boot/image.ub; bootm 0x10000000");
++
+ 	initrd_hi = gd->start_addr_sp - CONFIG_STACK_SIZE;
+ 	initrd_hi = round_down(initrd_hi, SZ_16M);
+ 	env_set_addr("initrd_high", (void *)initrd_hi);
+-- 
+2.30.2
+

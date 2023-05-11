@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Set version to use
+version=2.1.0
+
+echo == Create the tinyxml2 library package version $version in ros/packages to be used in ros builds ==
+
+echo Copying source files
+rm -rf libtinyxml2-$version 2>/dev/null
+mkdir -p libtinyxml2-$version/m4 libtinyxml2-$version/src libtinyxml2-$version/libtinyxml2
+cp configure.ac libtinyxml2-$version/
+cp Makefile.am libtinyxml2-$version/
+
+tar xf tinyxml2-$version.tar.gz 
+cp tinyxml2-$version/tinyxml2.cpp libtinyxml2-$version/src
+cp tinyxml2-$version/tinyxml2.h libtinyxml2-$version/libtinyxml2
+
+echo Building doc
+cd tinyxml2-$version
+doxygen dox
+cd ..
+cp -r tinyxml2-$version/docs libtinyxml2-$version/
+rm -rf tinyxml2-$version
+
+echo Autoconf
+cd libtinyxml2-$version/
+autoreconf -i
+cd ..
+
+echo Package
+rm -f ../../packages/libtinyxml2-$version.tgz 2>/dev/null
+tar zcf ../../packages/libtinyxml2-$version.tgz libtinyxml2-$version

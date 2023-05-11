@@ -1,0 +1,29 @@
+From d0c33cdb78125b78f886bf1bd9e702c61fc83c90 Mon Sep 17 00:00:00 2001
+From: MatthewWEdwards <matthewedwards@fb.com>
+Date: Mon, 27 Jun 2022 13:32:36 +0000
+Subject: [PATCH] libcrypto - Added check for cipher->aes_key being NULL in
+ aes_ctr_cleanup()
+
+The check ensures libcrypto doesn't crash when invalid ssh session
+is being tried as part of netopeer2 connection
+---
+ src/libcrypto.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/libcrypto.c b/src/libcrypto.c
+index 9ef00cb7..021ea8af 100644
+--- a/src/libcrypto.c
++++ b/src/libcrypto.c
+@@ -708,6 +708,9 @@ aes_ctr_encrypt(struct ssh_cipher_struct *cipher,
+ }
+ 
+ static void aes_ctr_cleanup(struct ssh_cipher_struct *cipher){
++    // SDP
++    if (!cipher->aes_key) return ;
++
+     explicit_bzero(cipher->aes_key, sizeof(*cipher->aes_key));
+     SAFE_FREE(cipher->aes_key);
+ }
+-- 
+2.23.1
+

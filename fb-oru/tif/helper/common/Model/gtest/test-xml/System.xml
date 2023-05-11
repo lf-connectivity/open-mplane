@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="System" path="/system" comment="System information">
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#Version"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#Build"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#Customer"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#Application"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#Board"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#Duplex"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#FibreInterface"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#CurrentFpgaBuild"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#FpgaPart"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#FpgaBuild"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#ClockIn"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#setClockIn"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#services"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#reboot"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#gitVersions"/>
+			<xinclude:include href="../../../../../helper/common/xml/System.xml#powerDown"/>
+		</Device>
+	</Board>
+</TestInterface>

@@ -1,0 +1,2 @@
+#!/bin/sh
+luajit /usr/share/lua/5.1/tests/climp_test.lua

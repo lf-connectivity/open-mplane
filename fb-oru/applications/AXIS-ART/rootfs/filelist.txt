@@ -1,0 +1,9 @@
+# Include the common ART files
+INCLUDE ../../common-rootfs/rootfs/ART/art-filelist.txt
+FILE /usr/local/bin/tailf 0:0 0755 ../../common-rootfs/rootfs/common/usr/local/bin/tailf
+FILE /usr/local/bin/tif 0:0 0755 ../../common-rootfs/rootfs/common/usr/local/bin/tif
+INCLUDE board-mon.txt
+FILE /etc/setup.env 0:0 0644 etc/setup.env
+FILE /etc/init.d/app.d/00_start.sh 0:0 0755 etc/init.d/app.d/00_start.sh
+FILE /etc/init.d/app.d/10_httpd.sh 0:0 0755 etc/init.d/app.d/10_httpd.sh
+FILE /etc/init.d/app.d/30_app-art.sh.in 0:0 0755 etc/init.d/app.d/30_app-art.sh.in

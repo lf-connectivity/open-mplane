@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="Images" path="/image" comment="Image Management settings">
+			<xinclude:include href="../../../../../helper/common/xml/Images.xml#url"/>
+			<xinclude:include href="../../../../../helper/common/xml/Images.xml#bank"/>
+			<xinclude:include href="../../../../../helper/common/xml/Images.xml#uboot"/>
+			<xinclude:include href="../../../../../helper/common/xml/Images.xml#install"/>
+			<xinclude:include href="../../../../../helper/common/xml/Images.xml#installFile"/>
+			<xinclude:include href="../../../../../helper/common/xml/Images.xml#show"/>
+			<xinclude:include href="../../../../../helper/common/xml/Images.xml#showDetail"/>
+			<xinclude:include href="../../../../../helper/common/xml/Images.xml#clean"/>
+		</Device>
+	</Board>
+</TestInterface>

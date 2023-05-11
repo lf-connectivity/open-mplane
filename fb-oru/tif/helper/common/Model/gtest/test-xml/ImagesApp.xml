@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="ImagesApp" path="/image/app" comment="Application Image Management settings">
+			<xinclude:include href="../../../../../helper/common/xml/ImagesApp.xml#show"/>
+			<xinclude:include href="../../../../../helper/common/xml/ImagesApp.xml#clean"/>
+			<xinclude:include href="../../../../../helper/common/xml/ImagesApp.xml#install"/>
+			<xinclude:include href="../../../../../helper/common/xml/ImagesApp.xml#installFile"/>
+		</Device>
+	</Board>
+</TestInterface>

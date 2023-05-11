@@ -1,0 +1,853 @@
+module o-ran-beamforming {
+  yang-version 1.1;
+  namespace "urn:o-ran:beamforming:1.0";
+  prefix "o-ran-bf";
+
+  import o-ran-uplane-conf {
+    prefix "up";
+  }
+
+  import o-ran-module-cap {
+    prefix "mcap";
+  }
+
+  import o-ran-compression-factors {
+    prefix "cf";
+  }
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the beamforming capabilitites of an O-RU.
+    Only O-RUs that support beamforming shall support this module.
+
+    Copyright 2019 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2019-07-03" {
+    description
+      "version 2.0.0
+
+      1) re-designed/switched from per band to per capabilities-group for
+      addition flexibility
+      2) added in new beam tilt feature
+      3) adding possibilities to provide more compression types for beamforming
+      4) Adding possibility to configure beamforming per capabilities group
+      5) corrected xPATH boolean check from TRUE to true";
+
+    reference "ORAN-WG4.M.0-v02.00";
+  }
+
+  revision "2019-02-04" {
+    description
+      "version 1.0.0
+
+      1) imported model from xRAN
+      2) changed namespace and reference from xran to o-ran";
+
+    reference "ORAN-WG4.M.0-v01.00";
+  }
+
+
+  feature MODIFY-BF-CONFIG {
+    description
+      "This feature indicates that the O-RU supports an optional feature to
+      modify beamforming configuration information";
+  }
+
+  feature BEAM-TILT {
+    description
+      "This feature indicates that the O-RU supports an optional feature to
+      allows to shift beam characteristic of all predefined-beams in elevation
+      and/or azimuth direction (i.e. changing the service area or sector
+      coverage) while preserving the beam adjacency among the beams within
+      the service area ";
+  }
+
+  typedef beam-reference {
+    type leafref {
+      path "/o-ran-bf:beamforming-config/o-ran-bf:per-band-config/o-ran-bf:beam-information/o-ran-bf:beamforming-properties/o-ran-bf:beam-id";
+    }
+    description
+      "This type is used by data models that need to reference a beam.";
+  }
+
+
+  grouping beamforming-parameters {
+    leaf max-number-of-beam-ids {
+      type uint16;
+      mandatory true;
+      description
+        "Maximum number of supported Beam ID assigned to domain beamforming control";
+    }
+
+    leaf initial-beam-id {
+      type uint16;
+      mandatory true;
+      description
+        "First Beam ID that can be used for addressing of domain beams";
+    }
+
+    description "Group of common beamforming parameters";
+  }
+
+  grouping granularity-parameters {
+    leaf frequency-granularity {
+      type enumeration {
+        enum CC {
+          description
+            "Frequency granularity: per carrier component";
+        }
+
+        enum BAND {
+          description
+            "Frequency granularity: per band";
+        }
+      }
+      mandatory true;
+      description "Supported time granularity of time-domain beamforming.";
+    }
+
+    leaf time-granularity {
+      type enumeration {
+        enum SLOT {
+          description
+            "Time granularity: per slot";
+        }
+
+        enum SYMBOL {
+          description
+            "Time granularity: per symbol";
+        }
+      }
+      mandatory true;
+      description "Supported time granularity of time-domain beamforming.";
+    }
+    description "";
+  }
+
+  grouping array-lists {
+    description
+      "Grouping for array lists";
+
+    leaf-list tx-array {
+      type leafref {
+        path "/up:user-plane-configuration/up:tx-arrays/up:name";
+      }
+      description "tx arrays belonging to this band number";
+    }
+    leaf-list rx-array {
+      type leafref {
+        path "/up:user-plane-configuration/up:rx-arrays/up:name";
+      }
+      description "rx arrays belonging to this band number";
+    }
+  }
+
+  grouping static-properties {
+    description
+      "Grouping for static beamforming properties";
+
+    leaf rt-bf-weights-update-support {
+      type boolean;
+      description
+        "The parameter informs if O-RU supports real time beamforming weights update through C-Plane messaging";
+    }
+
+    choice beamforming-type {
+      case frequency {
+        container frequency-domain-beams {
+          when "../rt-bf-weights-update-support = 'true'";
+          uses beamforming-parameters;
+          uses cf:compression-details;
+
+          list additional-compression-method-supported {
+            uses cf:compression-details;
+
+            description
+              "List of additional supported compression methods by O-RU";
+          }
+
+          description "";
+        }
+        description "Set of parameters valid for O-RU, that supports beamforming in frequency domain.";
+      }
+
+      case time {
+        container time-domain-beams {
+          when "../rt-bf-weights-update-support = 'true'";
+          uses beamforming-parameters;
+          uses granularity-parameters;
+          uses cf:compression-details;
+
+          list additional-compression-method-supported {
+            uses cf:compression-details;
+
+            description
+              "List of additional supported compression methods by O-RU";
+          }
+
+          description "";
+        }
+        description "Set of parameters valid for O-RU, that supports beamforming in time domain.";
+      }
+
+      case hybrid {
+        container hybrid-beams {
+          when "../rt-bf-weights-update-support = 'true'";
+          uses beamforming-parameters;
+          uses granularity-parameters;
+          uses cf:compression-details;
+
+          list additional-compression-method-supported {
+            uses cf:compression-details;
+
+            description
+              "List of additional supported compression methods by O-RU";
+          }
+
+          description "";
+        }
+        description "Set of parameters valid for O-RU, that supports hybrid beamforming - in both time and frequency domain.";
+      }
+      description
+        "This value indicates beamforming type supported by O-RU";
+    }
+
+    leaf number-of-beams {
+      type uint16;
+      description
+        "This value indicates the max number of beam patterns O-RU can generate
+        and apply to the signal of each O-RU port (both DL and UL).
+        This value is equivalent to the maximum number of used beam IDs.";
+    }
+  }
+
+  grouping beamforming-property {
+    description
+      "Grouping for beamforming property";
+
+    leaf beam-type {
+      type enumeration {
+        enum COARSE {
+          description "the beam-id corresponds to a coarse beam";
+        }
+        enum FINE {
+          description "the beam-id corresponds to a fine beam";
+        }
+      }
+      description
+        "This value indicates the beam resolution.";
+    }
+
+    leaf beam-group-id {
+      type uint16;
+      description
+        "Beams with same beamGroupsID can be transmitted simultaneously.";
+    }
+
+    leaf-list coarse-fine-beam-relation {
+      type beam-reference;
+      description
+        "List of related coarse/fine beam.";
+    }
+
+    leaf-list neighbour-beams {
+      type beam-reference;
+      description
+        "A list of neighbor beams which might restrict co-scheduling due
+        to interference.";
+    }
+  }
+
+  grouping beamforming-properties-element {
+    description
+      "Grouping for beamforming-properties element";
+
+    leaf beam-id {
+      type uint16;
+      description
+        "This value indicates the beam ID whose beamforming properties are
+        described in the container.";
+    }
+
+    container beamforming-property {
+      description
+        "Structure containing single set of beamforming properties.";
+
+      uses beamforming-property;
+    }
+  }
+
+  grouping band-num {
+    description
+      "Band information for the beamforming
+       related to the band number from module capabilities";
+
+    leaf band-number {
+      type leafref {
+        path "/mcap:module-capability/mcap:band-capabilities/mcap:band-number";
+      }
+      description
+        "band information for the beamforming information
+         related to the band number of module capabilities";
+    }
+  }
+
+  grouping cap-group {
+    description
+      "Capabilities group grouping";
+
+    leaf capabilities-group {
+      type leafref {
+        path "/o-ran-bf:beamforming-config/o-ran-bf:capabilities-groups/o-ran-bf:capabilities-group";
+      }
+      mandatory true;
+      description
+        "Capabilities group identification number to which it refers.";
+    }
+
+  }
+
+  grouping per-band-config-element {
+    description
+      "Grouping for per band config element";
+
+    uses band-num;
+    uses array-lists;
+
+    container static-properties {
+      description
+        "the static beamforming related information";
+
+      uses static-properties;
+    }
+
+    container beam-information {
+      description
+        "Beam information which exposes beamforming related O-RU capabilities.";
+      leaf number-of-beamforming-properties {
+        type uint16;
+        description
+          "This parameter indicates the number of beamFormingProperties entries.";
+      }
+
+      list beamforming-properties {
+        key beam-id;
+        description
+          "Array for the beamforming properties at O-RU.
+          These parameters can be used by the beamforming control by the NETCONF client.
+          'numberOfBeamformingProperties' indicaets the size of the array.";
+
+        uses beamforming-properties-element;
+      }
+    }
+  }
+
+  grouping operational-properties {
+    description
+      "Grouping for operational properties";
+
+    leaf number-of-writeable-beamforming-files {
+      type uint8  {
+        range "1 .. max";
+      }
+      mandatory true;
+      description
+        "This leaf indicates the maximum number of writeable beamforming files
+        containing beamweights and/or attributes that the O-RU can store, taking
+        into account the maximum number of beam-IDs as defined by 3GPP
+        TS38.214 v15.x.x";
+    }
+
+    leaf update-bf-non-delete {
+      type boolean;
+      default false;
+      description
+        "When set to TRUE, indicates that an O-RU supports the capability
+        to apply the modified beamforming weight information by using rpc
+        activate-beamforming-weight without deletion of tx-array-carriers and
+        rx-array-carriers in advance, i.e., to a deactivated carrier";
+    }
+
+    leaf persistent-bf-files {
+      type boolean;
+      default false;
+      description
+        "When set to TRUE, indicates that the O-RU supports the capability
+         to store the modified beamforming weight information file in the
+         reset persistent memory";
+    }
+  }
+
+  grouping beamforming-supported-type {
+    description
+      "Grouping for type of beamforming supported";
+
+    leaf beamforming-trough-attributes-supported {
+      type boolean;
+      config false;
+      description
+        "Informs if beamforming can be controlled providing attributes to O-RU
+          (like angles, beamwidth).";
+    }
+
+    leaf beamforming-trough-ue-channel-info-supported {
+      type boolean;
+      config false;
+      description
+        "Informs if beamforming can be controlled by UE information.";
+    }
+  }
+
+  grouping beamforming-config {
+    description
+      "Grouping for beamforming configuration";
+
+    list per-band-config {
+      key band-number;
+      config false;
+      status deprecated;
+      description "beamforming information per band";
+      uses per-band-config-element;
+    }
+
+    list capabilities-groups {
+      key capabilities-group;
+      description
+        "Capabilities groups identification number assigned to be referenced by operations
+         and notifications.
+         This also help to group particular beamforming capabilities and bind it with arrays";
+
+      leaf capabilities-group {
+        type uint16;
+        description
+          "Capabilities group identification number. Number which is used just for reference in RPC
+           and notification";
+      }
+      uses per-band-config-element;
+    }
+
+    container ue-specific-beamforming {
+      presence
+        "Indicates that the O-RU supports optional Section Type '6' Fields
+        (used for sending channel information for a specific UE)";
+      config false;
+      description
+        "Information related to supput by the O-RU of Section Type 6 for
+        signalling UE-specific channel information to the O-RU";
+      leaf max-number-of-ues {
+        type uint8;
+        description
+          "Indicates tha maximum number of UE -specific channel information
+          data sets supported by the O-RU";
+      }
+    }
+    container operational-properties {
+      if-feature MODIFY-BF-CONFIG;
+      config false;
+      description "properties for dynamic beam weight/attribute support";
+
+      uses operational-properties;
+    }
+  }
+
+  grouping beam-tilt-configuration {
+    description "grouping for beam-tilt feature";
+    list predefined-beam-tilt-offset {
+      if-feature BEAM-TILT;
+      key capabilities-group;
+      description "Configuration of the predefined-beam-tilt-offset per capabilities-group";
+      leaf capabilities-group {
+        type leafref {
+          path "/o-ran-bf:beamforming-config/o-ran-bf:capabilities-groups/o-ran-bf:capabilities-group";
+          require-instance false;
+        }
+        mandatory true;
+        description
+          "Capabilities group identification number for which
+          the predefined-beam-tilt-offset relates to";
+      }
+      leaf elevation-tilt-offset-angle {
+        type int16 {
+          range "-90..90";
+        }
+        units degrees;
+        default 0;
+        description
+          "Value 0 represents the default service area of the predefined-beams
+          in elevation domain, i.e. no tilt offset.
+
+          Values smaller than 0 represents an up-shift of the default service area
+          towards the zenith (i.e., corresponding to a decrease in zenith angle) and
+          values larger than 0 represent a down-shift of the default service area
+          away from the zenith (i.e., corresponding to an increase in zenith angle).
+
+          If the value is greater than the maximum supported angle, then the maximum
+          angle is used for configuration.
+          If the value is less than the minimum supported angle, then the minimum
+          angle is used for configuration.
+          The actual angle used is (angle DIV granularity) * granularity.
+
+          Any O-RU which is reset using the o-ran-operations:reset RPC shall reset
+          its offset angle to its default value.";
+      }
+      leaf azimuth-tilt-offset-angle {
+        type int16 {
+          range "-90..90";
+        }
+        units degrees;
+        default 0;
+        description
+          "Value 0 represents the default service area of the predefined-beams
+          in azimuth domain, i.e., no tile offset.
+
+          Azimuth tilt offset angle, represents counter-clockwise rotation around
+          z-axis. I.e., assuming view from the UE (observation of the O-RU
+          from the front), value larger than 0 and smaller than 0
+          respectively represent right-shifted and left-shifted of the default
+          service area in azimuth domain.
+
+          If the value is greater than the maximum supported angle, then the maximum
+          angle is used for configuration.
+          If the value is less than the minimum supported angle, then the minimum
+          angle is used for configuration.
+          The actual angle used is (angle DIV granularity) * granularity.
+
+          Any O-RU which is reset using the o-ran-operations:reset RPC shall reset
+          its offset angle to its default value.";
+      }
+    }
+  }
+
+  grouping beam-tilt-state {
+    description
+      "Grouping for beam tilt state";
+
+    list predefined-beam-tilt-offset-information {
+      key capabilities-group;
+      config false;
+      description
+        "Information which exposes predefined-beam-tilt-offset related O-RU capabilities.";
+      leaf capabilities-group {
+        type leafref {
+          path "/o-ran-bf:beamforming-config/o-ran-bf:capabilities-groups/o-ran-bf:capabilities-group";
+        }
+        mandatory true;
+        description
+          "Capabilities group identification number for which
+          the predefined-beam-tilt-offset-information relates to";
+      }
+      leaf elevation-tilt-offset-granularity {
+        type uint8 {
+          range "0..30";
+        }
+        units Degrees;
+        mandatory true;
+        description
+          "Indication of the supported granularity for the
+          predefined-beam-tilt-offset in elevation domain.
+
+          Value 0 represents that the O-RU doesn't support
+          the predefined-beam-tilt-offset in elevation domain.";
+      }
+      leaf azimuth-tilt-offset-granularity {
+        type uint8 {
+          range "0..30";
+        }
+        units Degrees;
+        mandatory true;
+        description
+          "Indication of the supported granularity for the
+          predefined-beam-tilt-offset in azimuth domain.
+
+          Value '0' represents that the O-RU doesn't support
+          the predefined-beam-tilt-offset in azimuth domain.";
+      }
+      leaf minimum-supported-elevation-tilt-offset {
+        type int16 {
+          range "-90..0";
+        }
+        units Degrees;
+        mandatory true;
+        description
+          "The minimum value which can be configured for
+          'elevation-tilt-offset-angle'.";
+      }
+      leaf maximum-supported-elevation-tilt-offset {
+        type int16 {
+          range "0..90";
+        }
+        units Degrees;
+        mandatory true;
+        description
+          "The maximum value which can be configured for
+          'elevation-tilt-offset-angle'.";
+      }
+      leaf minimum-supported-azimuth-tilt-offset {
+        type int16 {
+          range "-90..0";
+        }
+        units Degrees;
+        mandatory true;
+        description
+          "The minimum value which can be configured for
+          'azimuth-tilt-offset-angle'.";
+      }
+      leaf maximum-supported-azimuth-tilt-offset {
+        type int16 {
+          range "0..90";
+        }
+        units Degrees;
+        mandatory true;
+        description
+          "The maximum value which can be configured for
+          'azimuth-tilt-offset-angle'.";
+      }
+      leaf run-time-tilt-offset-supported {
+        type boolean;
+        mandatory true;
+        description
+          "If 'run-time-tilt-offset-supported' is FALSE, changing the values in
+          'predefined-beam-tilt-offset' for a specific band shall be allowed only
+          if all 'tx-array-carriers' and 'rx-array-carriers' corresponding
+          to the band are INACTIVE.";
+      }
+    }
+
+  }
+
+  grouping beam-tilt-report {
+    description
+      "Grouping for beam tilt report";
+
+    list predefined-beam-tilt-state {
+      key capabilities-group;
+      config false;
+      description
+        "Information which exposes state of predefined-beam-tilt-offset.";
+      leaf capabilities-group {
+        type leafref {
+          path "/o-ran-bf:beamforming-config/o-ran-bf:capabilities-groups/o-ran-bf:capabilities-group";
+        }
+        mandatory true;
+        description
+          "Capabilities group identification number for which
+          the predefined-beam-tilt-state relates to";
+      }
+      leaf elevation-tilt-offset-angle {
+        type int16 {
+          range "-90..90";
+        }
+        units Degrees;
+        mandatory true;
+        description
+          "Value 'zero' represents the default service area of the
+          predefined-beams in elevation domain.
+
+          Values smaller than 0 represents an up-shift of the default service area
+          towards the zenith (i.e., corresponding to a decrease in zenith angle) and
+          values larger than 0 represent a down-shift of the default service area
+          away from the zenith (i.e., corresponding to an increase in zenith angle).";
+      }
+      leaf azimuth-tilt-offset-angle {
+        type int16 {
+          range "-90..90";
+        }
+        units Degrees;
+        mandatory true;
+        description
+          "Value 'zero' represents the default service area of the
+          predefined-beams in azimuth domain.
+
+          Azimuth tilt offset angle, represents counter-clockwise rotation around
+          z-axis. I.e., assuming view from the UE (observation of the O-RU from
+          the front), value larger than 'zero' and smaller than 'zero'
+          respectively represent right-shifted and left-shifted of the default
+          service area in azimuth domain.";
+      }
+    }
+
+  }
+
+  container beamforming-config {
+    config false;
+    description
+      "A set of configuration data for the O-RU's beam forming functionality";
+
+    uses beamforming-config;
+    uses beamforming-supported-type;
+    container beam-tilt {
+      if-feature BEAM-TILT;
+      description "container for pre-defined beam tilt feature";
+      uses beam-tilt-state;
+      uses beam-tilt-report;
+    }
+  }
+
+
+  rpc activate-beamforming-config {
+    if-feature MODIFY-BF-CONFIG;
+    description
+      "rpc to activate beamforming config information by indicating the file
+      stored in the folder O-RAN/beam-weights in advance";
+    input {
+      leaf beamforming-config-file {
+        type string;
+        mandatory true;
+        description
+          "file name stored in O-RAN/beamforming/ folder is indicated";
+      }
+
+      uses band-num;
+    }
+    output {
+      leaf status {
+        type enumeration {
+          enum ACCEPTED {
+            description "O-RU has accepted the beamforming weight/attribute file";
+          }
+          enum REJECTED {
+            description
+              "O-RU has rejected the beamforming weight/attribute file. The O-RU
+              should then use the default beamforming file.";
+          }
+        }
+        mandatory true;
+        description "Status of activation of beamforming config information";
+      }
+      leaf error-message {
+        when "../status='REJECTED'";
+        type string;
+        description
+          "Detailed error Message when the status is rejected, e.g.,
+           because new beam forming file is attempted to be applied to a
+           carrier which is still active, or the beam-id does not exist.";
+      }
+    }
+  }
+
+  rpc activate-beamforming-config-by-capability-group {
+    if-feature MODIFY-BF-CONFIG;
+    description
+      "rpc to activate beamforming config information by indicating the file
+      stored in the folder O-RAN/beam-weights in advance";
+    input {
+      leaf beamforming-config-file {
+        type string;
+        mandatory true;
+        description
+          "file name stored in O-RAN/beamforming/ folder is indicated";
+      }
+
+      uses cap-group;
+    }
+    output {
+      leaf status {
+        type enumeration {
+          enum ACCEPTED {
+            description "O-RU has accepted the beamforming weight/attribute file";
+          }
+          enum REJECTED {
+            description
+              "O-RU has rejected the beamforming weight/attribute file. The O-RU
+              should then use the default beamforming file.";
+          }
+        }
+        mandatory true;
+        description "Status of activation of beamforming config information";
+      }
+      leaf error-message {
+        when "../status='REJECTED'";
+        type string;
+        description
+          "Detailed error Message when the status is rejected, e.g.,
+           because new beam forming file is attempted to be applied to a
+           carrier which is still active, or the beam-id does not exist.";
+      }
+    }
+  }
+
+
+  rpc modify-predefined-beam-tilt-offset {
+    if-feature BEAM-TILT;
+    description
+      "rpc to trigger the modification of the predefined beam tilt offset";
+    input {
+      uses beam-tilt-configuration;
+    }
+    output {
+      leaf status {
+        type enumeration {
+          enum ACCEPTED {
+            description "O-RU has accepted the predefind beamtilt offset configuration";
+          }
+          enum REJECTED {
+            description
+              "O-RU has rejected the predefind beamtilt offset configuration.";
+          }
+        }
+        mandatory true;
+        description "Status of acceptance of pre-defined beamtilt offset configuration";
+      }
+      leaf error-message {
+        when "../status='REJECTED'";
+        type string;
+        description
+          "Detailed error message when the pre-defined beam tilt configuration
+          is rejected, e.g., used when 'run-time-tilt-offset-supported' is FALSE and the
+          NETCONF client is attempting to modify the beam tilt on a band where
+          one or more array-carriers are still ACTIVE.";
+      }
+    }
+  }
+
+
+  //notification statement
+  notification beamforming-information-update {
+    uses band-num;
+    description
+      "this notification indicates that the beamforming properties are updated for particular band";
+  }
+
+  notification capability-group-beamforming-information-update {
+    uses cap-group;
+    description
+      "this notification indicates that the beamforming properties are updated for particular band
+       or capability group";
+  }
+
+  notification predefined-beam-tilt-offset-complete {
+    if-feature BEAM-TILT;
+    uses beam-tilt-report;
+    description
+      "this notification indicates that the re-generation of the predefined
+      beams is completed";
+  }
+}

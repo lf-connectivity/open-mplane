@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+		<Device name="TenMHzRef" path="/ref" comment="Common 10MHz control and status">			
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getPresent"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getMode"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setMode"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#getManualMode"/>
+			<xinclude:include href="../../../../../helper/common/xml/TenMHzRef.xml#setManualMode"/>
+		</Device>
+	</Board>
+</TestInterface>

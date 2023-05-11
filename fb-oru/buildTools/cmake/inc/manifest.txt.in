@@ -1,0 +1,17 @@
+vendor=@VENDOR_CODE@ 
+code=@PRODUCT_CODE@ 
+buildName=@BUILD_BOARD@-@BUILD_CUSTOMER@-@BUILD_APPLICATION@-@BUILD_VERSION@#@BUILD_NUMBER@ 
+buildId=1
+buildVersion=@BUILD_VERSION@
+
+[os]
+fileName=@OS_PKG_FILENAME@ 
+fileVersion=@OS_PKG_VERSION@ 
+path=@OS_PKG_FILENAME@ 
+checksum=@osMd5@
+
+[app]
+fileName=@APP_PKG_FILENAME@ 
+fileVersion=@BUILD_VERSION@ 
+path=@APP_PKG_FILENAME@ 
+checksum=@appMd5@

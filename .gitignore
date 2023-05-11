@@ -1,0 +1,37 @@
+.DS_Store
+
+# Build ephemera
+**/build
+**/.settings
+fb-oru/buildTools/cmake/.build.mk
+*.tar.gz
+*.tgz
+*.tar.xz
+*.tar.bz2
+fb-oru/buildTools/sysroot
+
+# M-Plane Client ephemera
+mplane_client/deps
+mplane_client/build
+mplane_client/test/docker/sim-o1-interface
+
+# Symlinks and fbpkg
+fbpkg
+fb-oru/halmplane
+fb-oru/fpga
+fb-oru/ros/packages
+fb-oru/buildTools/local-tools
+fb-oru/ros/configs/petalinux2020.1/ATLAS/ORAN/Atlas_ORAN_RFFEM.bit
+fb-oru/ros/configs/petalinux2020.1/ATLAS/ORAN/Atlas_ORAN_RFFEM.bsp
+fb-oru/ros/configs/petalinux2020.1/FBZCU27/ORAN/FBZCU27_ORAN_RFFEM.bit
+fb-oru/ros/configs/petalinux2020.1/FBZCU27/ORAN/FBZCU27_ORAN_RFFEM.bsp
+fb-oru/ros/configs/petalinux2020.1/ZCU111/ORAN/zcu111_RFSoC_ORAN.bit
+fb-oru/ros/configs/petalinux2020.1/ZCU111/ORAN/zcu111_RFSoC_ORAN.bsp
+
+# Yocto
+meta-mplane/yocto
+meta-mplane/build-*
+meta-mplane/utils/app.tgz
+
+# Petalinux
+meta-mplane/petalinux/zcu111

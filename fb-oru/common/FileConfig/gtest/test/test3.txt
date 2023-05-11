@@ -1,0 +1,2 @@
+vendor=AXIS
+code=AXIS-12345678

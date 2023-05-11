@@ -1,0 +1,20 @@
+# Doxyfile 1.8.1.1
+
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+
+# The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
+# by quotes) that should identify the project.
+
+PROJECT_NAME = "Etna Factory Test Unit Calibration Data Implementation"
+
+@INCLUDE_PATH = $(ROOTPATH)/buildTools/doxygen/
+
+@INCLUDE = design.doxyfile
+
+@TAGFILES += $(OUTPATH)common-doc.tag=../common-doc \
+	$(OUTPATH)hardware-vhi.tag=../hardware-vhi \
+
+  
+

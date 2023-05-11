@@ -1,0 +1,21 @@
+# Format is:
+# FILE destination user:group permissions source
+# DIR destination user:group permissions
+# DIRCOPY destination user:group source_directory
+# INCLUDE include_file
+# MODE destination user:group permissions
+#
+FILE /etc/setup.env 0:0 0644 ${GITDIR}/applications/FBC-ORANRRH/rootfs/etc/setup.env
+FILE /etc/init.d/app.d/00_start.sh 0:0 0755 ${GITDIR}/applications/FBC-ORANRRH/rootfs/etc/init.d/app.d/00_start.sh
+FILE /etc/init.d/app.d/28_fpga-eth.sh 0:0 0755 ${GITDIR}/applications/FBC-ORANRRH/rootfs/etc/init.d/app.d/28_fpga-eth.sh
+FILE /etc/init.d/app.d/30_app.sh.in 0:0 0755 ${GITDIR}/applications/FBC-ORANRRH/rootfs/etc/init.d/app.d/30_app.sh.in
+FILE /usr/local/bin/tailf 0:0 0755 ../../common-rootfs/rootfs/common/usr/local/bin/tailf
+FILE /usr/local/bin/tif 0:0 0755 ../../common-rootfs/rootfs/common/usr/local/bin/tif
+FILE /etc/ethbb-udhcpc.sh 0:0 0755 ${GITDIR}/applications/FBC-ORANRRH/rootfs/etc/ethbb-udhcpc.sh
+FILE /etc/image-mgr.sh 0:0 0755 ${GITDIR}/applications/FBC-ORANRRH/rootfs/etc/image-mgr.sh
+
+#
+# Copy the IEEE 802.1ag tools from the build area
+FILE /usr/local/bin/dot1agd 0:0 0755 ${GITDIR}/applications/MPLANE-ORANRRH/build/${TARGET}-${BUILD_BOARD}-${BUILD_CUSTOMER}-${BUILD_APPLICATION}/802_1agUtils/dot1agd
+FILE /usr/local/bin/ethping 0:0 0755 ${GITDIR}/applications/MPLANE-ORANRRH/build/${TARGET}-${BUILD_BOARD}-${BUILD_CUSTOMER}-${BUILD_APPLICATION}/802_1agUtils/ethping
+FILE /usr/local/bin/ethtrace 0:0 0755 ${GITDIR}/applications/MPLANE-ORANRRH/build/${TARGET}-${BUILD_BOARD}-${BUILD_CUSTOMER}-${BUILD_APPLICATION}/802_1agUtils/ethtrace

@@ -1,0 +1,95 @@
+/**
+\mainpage VRH - Virtual Hardware Interface Definition
+<BR>
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+<hr>
+<hr>
+\section vhi_design_sec_1 Overview
+<hr>
+<hr>
+
+The <b>Virtual Hardware Interface</b> is a collection of abstract C++ classes
+that create a virtual hierachy of methods that model the functionality of a common
+hardware designs such as radios, amplifiers, synthesisers, A/D etc.. Each class provides
+a means to access other interfaces and the data to be exposed by the final implementation
+of the interface.
+
+The following sections will provide an overview of the interface design hierachy and
+where applicable how the interface might be used by higher level application code.
+
+<hr>
+<hr>
+\section vhi_design_sec_2 Details of Design
+<hr>
+<hr>
+
+At the core of the virtual radio is the Mplane::IRadio interface. From here
+the software application can initialise the entire radio hardware on start up
+and access all its major components, Tx/Rx ports, base band interface,
+synthesizers on so on.
+
+Each of the sub-modules of the radio has its own interface to allow the
+application software to get and set data associated with particular components.
+Some components support the observer pattern that allows higher level application
+software to be notified when data for a particular component changes.
+
+The following sub-sections describe the design in more detail.
+
+<hr>
+\subsection vhi_design_sec_2_1 A Typical Observer Pattern
+<hr>
+
+@par
+The observer pattern is used throughout the radio software. In each case it
+must be implemented through the pattern and should be consistent in format.
+
+@par
+The change notifier must implement a registerObservers(<notification interface>) method
+where it is passed an instance of an object that must implement its notification interface.
+When the change conditions are met the notifier object will call the registered observer
+through its registered notification interface.
+
+@par
+Here is an abstract example interface example along with a simple implementation:
+
+
+<hr>
+\subsection vhi_design_sec_2_2 A Typical Virtual Radio Class Hierarchy
+<hr>
+
+@par
+As previously stated, the Mplane::IRadio interface is at the root of all the interfaces
+that go to make up the virtual radio. From this interface it is possible to access the interfaces
+of all the other sub-componenets that go to make up the virtual radio.
+
+
+
+<hr>
+<hr>
+\section vhi_design_sec_3_1 Dependencies
+<hr>
+<hr>
+
+The virtual radio only depends on some basic data types defined in the common repository.
+Aside from this, the complete definition of all the inter-related functionality
+of the radio is contained within the module.
+
+
+<hr>
+<hr>
+\section vhi_design_sec_4 Host Based Unit Tests
+<hr>
+<hr>
+
+As the classes of the virtual radio are pure virtual they have no implementation to test.
+The 'test' directory instead provides a set of test stubs that can be used to
+test higher level software that depends on a particular interface implementation.
+
+Using this technique allows even the most complex module to be tested through
+simulation and provision of both inbounds and out of bounds data.
+
+*/

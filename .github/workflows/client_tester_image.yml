@@ -1,0 +1,61 @@
+name: Docker Image CI for M-Plane Client
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'mplane_client/CMakeLists.txt'
+      - 'mplane_client/src/**'
+      - 'mplane_client/test/**'
+      - 'mplane_client/utils/**'
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}
+  TESTER_IMAGE_NAME: mplane/mplane-client-tester:latest
+  INT_TESTER_IMAGE_NAME: mplane/mplane-client-integrated-tester:latest
+  INT_TESTER_CONTAINER_NAME: tester
+  INT_TESTER_CONTAINER_PORT: 18300:830
+
+jobs:
+  build-and-push-images:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker images
+        run: ./mplane_client/test/docker/build_docker.sh
+        shell: bash
+
+      - name: Show Docker images
+        run: docker images
+
+      - name: Run integrated Docker image
+        run: |
+             docker run --name ${{ env.INT_TESTER_CONTAINER_NAME }} --env-file ./mplane_client/test/docker/.env -p 18300:830 -d ${{ env.INT_TESTER_IMAGE_NAME }}
+             sleep 10
+
+      - name: Test integrated Docker image
+        run: |
+             docker exec ${{ env.INT_TESTER_CONTAINER_NAME }} sh -c "cat /home/netconf/.ssh/melacon.server.key.pub > /home/netconf/.ssh/authorized_keys"
+             docker exec ${{ env.INT_TESTER_CONTAINER_NAME }} sh -c "./wrapper.sh ./mpc_tester"
+
+      - name: Tag Docker images
+        run: |
+             docker tag ${{ env.TESTER_IMAGE_NAME }} ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.TESTER_IMAGE_NAME }}
+             docker tag ${{ env.INT_TESTER_IMAGE_NAME }} ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.INT_TESTER_IMAGE_NAME }}
+
+      - name: Push Docker images to GitHub Container Registry
+        run: |
+             docker push ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.TESTER_IMAGE_NAME }}
+             docker push ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.INT_TESTER_IMAGE_NAME }}

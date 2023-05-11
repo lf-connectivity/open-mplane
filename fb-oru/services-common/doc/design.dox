@@ -1,0 +1,145 @@
+/**
+@mainpage Common Radio Services Design Overview
+<CENTER>
+@
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+This document is a design overview document for the software subsystem or item described
+in the main title above.
+
+
+<hr>
+@section services_common_sec_1	Overview
+<hr>
+
+The services repository contains number of product sub-directories, among these
+is the <b>common</b> product implementation that contains a number of common radio services
+that are usually required by all radio types.
+
+These services include systems to update temperature and power data, control the transmit and
+recieve path gains, the transmit state, the digital base band interface and radio fault conditions.
+
+<hr>
+@section services_common_sec_2 Design
+<hr>
+
+This sections outlines each of the common services and provides links to their detailed designs.
+
+<hr>
+@subsection services_common_subsec_2_1 Tx Services
+<hr>
+
+Each of the transmit paths is managed by a set of services as shown in the following
+figure and described in the following sections.
+
+@image html TxServices.png
+
+<hr>
+@subsection services_common_subsec_2_1_1 Digital Power Update Service
+<hr>
+
+@par
+The DigitalPowerService is responsible for making the necessary digital power measurements
+on the transmit and receive paths (TSSI/RSSI) and making them available to the rest of the
+system, specifically to the other services, for example power reporting application.
+
+@par
+These power measurements will be made periodically according to a fixed schedule and any
+registered observers will be notified as soon as new measurement data is available.  The
+measurements themselves and the various conversions and calibrations are performed within
+the Virtual Radio Hardware implementation by reading data from the system FPGA.
+
+@par
+The detailed DigitalPowerService design document (<A HREF="../services-common-DigitalPowerService/index.html" target="_blank">Common Radio - Power Update Service</A>)
+contains details of the specific measurement data supported and the interfaces used to
+register for and receive notifications.
+
+
+<hr>
+@subsection services_common_subsec_2_1_2 Tx Gain Control Service
+<hr>
+
+@par
+The TxService is responsible for managing and maintaining the RF gain of all the radio's
+Tx paths using a closed loop algorithm.  The power measurement data from the Power Update
+Service is used determine any adjustments that are required to the Tx attenuators.
+
+@par
+The behaviour of the Tx Gain Control algorithm is controlled by a state machine which responds
+to changes in the state of several related elements within the Tx path such as the target
+power level or Tx on/off.
+
+@par
+The detailed TxService design document (<A HREF="../services-common-TxService/index.html" target="_blank">Common Radio - Tx Gain Control Service</A>)
+describes in detail the state machine implementation, control algorithm and control of the
+Tx attenuators.
+
+<hr>
+@subsection services_common_subsec_2_1_3 DPD Manager Service
+<hr>
+
+@par
+Digital Predistortion (DPD) is utilised in each of the Tx paths. The DpdService is responsible
+for configuring and monitoring the DPD operation so that is consistent with the state of the
+Tx path, specifically including the state of the Tx Gain Control.
+
+@par
+The detailed DpdService design document (<A HREF="../services-common-DpdService/index.html" target="_blank">Common Radio - DPD Manager Service</A>)
+describes the parameters of the DPD that are controlled and the interface that is used.
+
+<hr>
+@subsection services_common_subsec_2_2 Fault Service
+<hr>
+
+@par
+The common fault service provides a place for the application alarms factory to be defined and also the Alarms
+base class implementation.
+
+@par
+Any generic fault services are performed, but for application specific faults and alarm handling the details
+are defined in the target application.
+
+@par
+A link to the detailed design document can be found here:
+<A HREF="../services-common-faultService/index.html" target="_blank">Common Radio - Fault Service</A>
+
+<hr>
+@subsection services_common_subsec_2_3 Radio Control Service
+<hr>
+
+@par
+The common radio control service is responsible creating and controlling all the common radio services.
+It uses the static getInstance() method implemented by each service to create a singleton instance
+of the service. Once created it can start, stop, suspend and resume the any service.
+
+@par
+A link to the detailed design document can be found here:
+<A HREF="../services-common-RadioControl/index.html" target="_blank">Common Radio - Radio Control Service</A>
+
+<hr>
+@subsection services_common_subsec_2_4 Receive Path Service
+<hr>
+
+@par
+The common radio receive path service provides all the control functionality required
+to setup and maintain the gain of the radio's receive path.
+
+@par
+A link to the detailed design document can be found here:
+<A HREF="../services-common-rxService/index.html" target="_blank">Common Radio - Receive Path Service</A>
+
+<hr>
+@subsection services_common_subsec_2_5 Fibre Control Service
+<hr>
+
+@par
+The common radio fibre control service provides all the control functionality required
+to setup and manage the radio's fibre interface connections.
+
+@par
+A link to the detailed design document can be found here:
+<A HREF="../services-common-FibreControlService/index.html" target="_blank">Common Radio - Fibre Control Service</A>
+
+
+*/

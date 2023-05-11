@@ -1,0 +1,78 @@
+/** Configure settings - processed by cmake.  **/
+/** Makefile Version: @BUILD_MAKEFILE_VERSION@  **/
+/** Build Features: @BUILD_FEATURES_TEXT@  **/
+
+/* Application name */
+#define BUILD_APPLICATION "@BUILD_APPLICATION@"
+
+/* Application name. Combination of customer and application */
+#define BUILD_APPNAME "@BUILD_APPNAME@"
+
+/* Board name */
+#define BUILD_BOARD "@BUILD_BOARD@"
+
+/* Board/application name. Combination of board, customer, and application */
+#define BUILD_BOARDAPPNAME "@BUILD_BOARDAPPNAME@"
+
+/* Customer name */
+#define BUILD_CUSTOMER "@BUILD_CUSTOMER@"
+
+/* Duplex */
+#define BUILD_DUPLEX "@BUILD_DUPLEX@"
+
+/* FPGA Part */
+#define BUILD_FPGA_PART "@BUILD_FPGA_PART@"
+
+/* FPGA Build Number */
+#define BUILD_FPGA_BUILD	"@BUILD_FPGA_BUILD@"
+
+
+/* Enumeration for application name */
+#define BUILD_ENUM_APPLICATION APP_@BUILD_ENUM_APPLICATION@
+
+/* Enumeration for board name */
+#define BUILD_ENUM_BOARD BOARD_@BUILD_ENUM_BOARD@
+
+/* Enumeration for Customer name */
+#define BUILD_ENUM_CUSTOMER CUSTOMER_@BUILD_ENUM_CUSTOMER@
+
+/* Enumeration for duplex */
+#define BUILD_ENUM_DUPLEX DUPLEX_@BUILD_ENUM_DUPLEX@
+
+/* Enumeration for fibre interface */
+#define BUILD_ENUM_FIBRE_INTERFACE IF_@BUILD_ENUM_FIBRE_INTERFACE@
+
+/* Fibre interface e.g. CPRI, OBSAI */
+#define BUILD_FIBRE_INTERFACE "@BUILD_FIBRE_INTERFACE@"
+
+/* Incrementing build number */
+#ifndef BUILD_NUMBER
+#define BUILD_NUMBER @BUILD_NUMBER@
+#endif
+
+/* Build version string VV.RR */
+#define BUILD_VERSION "@BUILD_VERSION@"
+
+/* Name of package */
+#define PACKAGE "@PROJECT_NAME@"
+
+/* Git repository versions */
+#define GIT_REPOS "@REPOLIST@"
+
+/* TARGET */
+#define TARGET_@TARGET@
+
+
+/* #defines (intended for C source only) */
+#define BUILD_BOARD_@BUILD_BOARD@
+#define BUILD_APPLICATION_@BUILD_APPLICATION@
+#define BUILD_CUSTOMER_@BUILD_CUSTOMER@
+
+/* LAB build */
+#define LAB		@BUILD_LAB@
+
+/* Features */
+@FEATURES_DEFINES@
+
+/* Feature-based TIF settings */
+@TIF_FEATURE_DEFINES@

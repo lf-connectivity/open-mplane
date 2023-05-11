@@ -1,0 +1,336 @@
+/**
+\mainpage Common Radio Service Fibre Control Design
+<CENTER>
+\
+Copyright (c) Meta Platforms, Inc. and affiliates.
+</CENTER>
+
+
+<hr>
+\section radioService_common_FibreControlService_scope Scope
+<hr>
+This document describes the design and useage of the common services control
+implementation used by the fibre control process.
+
+It provides enough information to allow readers and developers to understand
+what services are provided for the fibre control to meet the performance requirements.
+
+Before reading this document the reader should be familiar with the architecture of the RRH hardware and
+the application software High Level Design.\n
+They should also be familiar with the basics of the CPRI link protocol and CPRI terminology.
+
+This Low Level Design (LLD) document is to be read in conjunction with the design details generated from the
+implementation of the design.
+
+For system level design please refer to the Design Overview Documentation at <BR>
+<A HREF="../index.html" target="_blank"><B>Design Overview Document</B></A>
+<BR>
+
+<hr>
+\section radioService_common_FibreControlService_overview	Overview
+<hr>
+
+This section presents the Design Overview for the RRH fibre control that is common across all Open M-Plane radios.\n
+
+This service is set at MEDIUM priority, since  its main task is to perform monitoring functions at a 1-second rate.
+
+<hr>
+\section radioService_common_FibreControlService_sec_2 Details of Design
+<hr>
+
+This service is a generic control service for fibre interfaces. As such it does not provide implementations
+of specific fibres, instead it provides the generic service paths to the specific implementation.
+In this way the design is generic and it leaves the specific implementations that depend on the underlying hardware.
+
+e.g. for the ETNA hardware the fibre interfaces use CPRI SFPs, and the fibre control is  implemented by a
+CPRI Controller software module.
+
+The singleton class should be instantiated/retrieved by calling the <B>Mplane::IFibre::getInterface()</B> method.
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_1 CPRI Controller Design
+<hr>
+
+This section covers the initialisation and operation of the CPRI Controller.
+
+Refer to application services for details of the customer requirements.\n
+
+For customer ALU the CPRI controlling software module fulfils the CPRI link procedures as defined
+in a customer-specified version of ARD-0546.\n
+
+This class provides a common implementation of the ICpriOAM and IFibreControl interfaces.
+
+The CPRI Controller is defined in class Mplane::CpriController. It inherits and extends the following classes:\n
+- Mplane::IFibreControl, the fibre control interface
+- Mplane::ICpriOAM, the OAM interface to CPRI information
+
+For daisy-chained RRHs it is a requirement to keep the FPGA CPRI interface undisturbed
+through a processor reset in order to avoid disrupting downstream RRHs.
+
+The following drawing illustrates where the CPRI Controller fits into the overall Fibre Control:\n
+\image html RSE_FibreControlService_DesignOverview.png "Fibre Control Service Design Overview Illustration"
+
+\n\n
+
+The singleton class should be instantiated/retrieved by calling the
+<B>IFibre::getInterface()</B> method, which when implemented for CPRI will call <B>Mplane::CpriController::getInterface()</B>.
+
+A key FPGA register for CPRI control is the CPRI Status Register at fibre block address offset 0x20C, whose bit
+definition is shown below.
+
+<CENTER>
+<TABLE BORDER=1 CELLSPACING=0>
+<TR><TH>Field Name </TH><TH>Bit Index</TH><TH>R/W</TH><TH>Default Value</TH><TH>Description</TH></TR>
+<TR><TD>Stat_Code</TD><TD ALIGN=CENTER>3..0</TD><TD ALIGN=CENTER>R</TD><TD ALIGN=CENTER>N/A</TD><TD>The current state of the core. Notable states are 0x0
+ (which indicates the core is in reset), 0x1 (which indicates that sync has begun and is failing
+  due to LOS or LOF conditions), and 0xF (which indicates the core is fully operational).</TD>
+<TR><TD>Stat_Alarm</TD><TD ALIGN=CENTER>7</TD><TD ALIGN=CENTER>R</TD><TD ALIGN=CENTER>N/A</TD><TD>High if the SDI or Reset bits are set, if the local LOS,
+ LOF, or RAI bits are set, or if the remote LOS, LOF, or RAI bits are set.</TD>
+<TR><TD>MGT_PLL_Lock</TD><TD ALIGN=CENTER>8</TD><TD ALIGN=CENTER>R</TD><TD ALIGN=CENTER>N/A</TD><TD>High if the MGT PLL is locked.</TD>
+<TR><TD>MGT_Tx_Clock_Lock</TD><TD ALIGN=CENTER>9</TD><TD ALIGN=CENTER>R</TD><TD ALIGN=CENTER>N/A</TD><TD>High if the MGT Tx clock generation is locked.</TD>
+<TR><TD>MGT_Rx_Clock_Lock</TD><TD ALIGN=CENTER>10</TD><TD ALIGN=CENTER>R</TD><TD ALIGN=CENTER>N/A</TD><TD>High if the MGT Rx clock generation is locked.
+ In the case where there is no Rx clock generation circuitry, the MGT_PLL_Lock will be used.</TD>
+<TR><TD>SFP_LOS</TD><TD ALIGN=CENTER>11</TD><TD ALIGN=CENTER>R</TD><TD ALIGN=CENTER>N/A</TD><TD>High if the LOS signal from the SFP is active.</TD>
+<TR><TD>LOS</TD><TD ALIGN=CENTER>12</TD><TD ALIGN=CENTER>R</TD><TD ALIGN=CENTER>N/A</TD><TD>High if the CPRI core has found a Loss Of Signal condition.
+ This occurs if there is a loss of light from the SFP or if 16 8B/10B errors occur within a hyperframe.</TD>
+<TR><TD>LOF</TD><TD ALIGN=CENTER>13</TD><TD ALIGN=CENTER>R</TD><TD ALIGN=CENTER>N/A</TD><TD>High if the CPRI core has found a Loss Of Frame condition.
+ This occurs if the CPRI core cannot achieve or loses hyperframe sync.</TD>
+</TABLE>
+</CENTER>
+
+\n\n
+A Slave port will typically go through the following main transitions for the status register bits.
+
+<CENTER>
+<TABLE BORDER=1 CELLSPACING=0>
+<TR><TH>Stat_Code</TH><TH>SFP_LOS</TH><TH>MGT_PLL_Lock</TH><TH>MGT_Tx_Clock_Lock</TH><TH>MGT_Rx_Clock_Lock</TH><TH>LOS</TH><TH>LOF</TH><TH>Stat Alarm</TH><TH>Register Value</TH><TH>Notes</TH></TR>
+<TR><TD>0</TD><TD>1</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>0x3880</TD><TD>Reset</TD>
+<TR><TD>1</TD><TD>1</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>0x3881</TD><TD>Out of reset, pll locking</TD>
+<TR><TD>1</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>0x3f81</TD><TD>Out of reset, pll locked</TD>
+<TR><TD>1</TD><TD>0</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>0</TD><TD>1</TD><TD>1</TD><TD>0x2781</TD><TD>syncing, LOF</TD>
+<TR><TD>F</TD><TD>0</TD><TD>1</TD><TD>1</TD><TD>1</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>0x070f</TD><TD>in sync and operational</TD>
+</TABLE>
+</CENTER>
+
+\n\n
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_2 Design Rationale
+<hr>
+
+The main design decisions were as follows:\n
+
+- The control and monitoring functions are all driven off a one-second tick from the system services, the period
+of one second is considered fast enough to support the requirements.\n
+
+- The DHCP-renew strategy for fibre disconnect/reconnect scenarios is split between hardware, CPRI application
+software, RRH OAM software and RRH FPGA.\n
+An application software to OAM interface allows the application to inform the OAM when the CPRI link is stable or
+unstable. This allows the OAM to initiate a DHCP renew sequence. To prevent multiple DHCP renew requests in the
+event of an unstable CPRI link a timer (e.g. 15 seconds) could be used in the event of a toggling CPRI link state.
+This timer could be implemented in the application or the OAM, but it is better to implement
+this timer functionality in the application such that a toggling link is effectively throttled by the application
+software. Therefore it is not part of the CpriController design.
+
+The CPRI controller design is divided into three major components:\n
+- the interface to the controlling REC\n
+- the active component that manages and monitors the CPRI link\n
+- the interface through which other subsystems and tools can interact with it.
+
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_3 Initialisation
+<hr>
+
+When the class Mplane::CpriController is instantiated, the constructor performs the following actions:\n
+- Initialise the member variables that hold the state of the master and slave CPRI links.\n
+- Create a Mplane::CpriPortHandler instance for each CPRI port.\n
+- The interface to OAM constructors are automatically executed.
+
+The CPRI ports remain in this initial state until the FibreControl service is started via its start() method.
+The start() method implementation will call Mplane::CpriController::startFibreControl() which triggers the CPRI cores
+to be setup.
+
+The CPRI controller must determine what type of reboot is being performed.\n
+ - For a 'FULL hardware reboot' it performs a default setup of the CPRI core in the FPGA.\n
+ - For a 'PROCESSOR only reboot' the FPGA remains untouched and the setup is bypassed to allow
+downstream CPRI links to continue operation.\n
+
+In the event of a FULL reset the default hardware initialisation of the CPRI control registers in the FPGA is
+undertaken.\n
+In the  event of a PROCESSOR reset the FPGA is polled to determine the current status of the
+CPRI hardware, but no register updates are made.\n
+CPRI controller variables are initialised to the current CPRI status.
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_3_1 Initial CPRI synchronisation sequence
+<hr>
+
+To comply with the ALU CPRI implementation the RRH must deviate from the standard CPRI spec, as detailed here.
+
+Specifically, CPRI specifies that the RRH should only turn on the transmitter when it has synchronized its receiver
+with the BBU.\n
+ALU BBU needs the RRH to "always transmit" and it only turns on its transmitter when it detects that an RRH is
+connected.
+Therefore, the RRH software must program everything in the CPRI core even if the SFP_LOS=1, and then once the BBU wakes
+up the SFP_LOS will transition to 0.
+
+When interfacing to a BBU that conforms to the CPRI spec, the RRH will delay enabling the SFP transmit until after
+synchronization with the BBU.
+
+The RRH software design and implementation will ensure that this enabling of SFP logic is a customer-application
+configuration parameter.
+
+\note <B>CPRI Line Rates Initialisation</B>\n
+The CPRI core defaults to "capable of all line rates" (0x7F) on a core reset, which means the CPRI core will try to
+synchronize to a link immediately after deasserting the reset. Software must set the line rate to 0 immediately
+after deasserting the core reset to allow for the setting of CPRI core parameters (e.g. the ethernet pointer,
+line rate, etc.) before the link comes up.
+\n\n
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_4 Normal Operation
+<hr>
+
+The CPRI Controller performs its normal operation, post initialisation, by handling the scheduled timer event
+that is invoked from the Service base class, via method Mplane::CpriController::serviceFibreControl().
+
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_4_1 Handling Scheduled Events
+<hr>
+
+This is the main focus of the CPRI controller. On each scheduled event it will poll the status of the CPRI ports.
+If any change is noted then this will be reported to observers.
+
+The actions taken are in the following order:
+- The SLAVE port handling is done first. Each slave port state-machine is invoked.
+ See \ref radioService_common_FibreControlService_ssec_2_5
+- On return, check for a SLAVE status change, as this can affect the master ports immediately.
+  - If the first slave port has gone GOOD then check to see if we need to enable the master port.
+If a Master port is already running after a processor reset then do not disturb, otherwise enable the master port.
+  - If any slave port has gone BAD then reset all master ports.
+  - On any slave port tell the OAM if the link status has changed since it was last reported.
+- Do the MASTER port handling. See \ref radioService_common_FibreControlService_ssec_2_6
+- Distribute the SLAVE and MASTER status as required when either slave or master port has changed.
+  - Update end of chain status
+  - Populate CPRI attribute values that may have changed as a consequence of the state changes
+  - Notify observers of the change in slave or master port status.
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_4_2 Handling Asynchronous Events
+<hr>
+
+Handling Asynchronous Events...............
+
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_5 SLAVE Port Handling
+<hr>
+
+The following drawing illustrates the SLAVE Port state-machine:\n
+\image html RSE_Cpri_SlavePort_StateMachine.png "CPRI Slave Port State Machine Illustration"
+
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_6 MASTER Port Handling
+<hr>
+
+The following drawing illustrates the SLAVE Port state-machine:\n
+\image html RSE_Cpri_MasterPort_StateMachine.png "CPRI Master Port State Machine Illustration"
+
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_7 CPRI Protocol Handling
+<hr>
+
+This class interfaces to a higher layer software module in the application domain to update
+the following CPRI interface attributes:\n
+
+- CPRISTAT
+- CPRIDESC
+- SFPDATA
+
+\todo:  Details of ARD-0546 attribute updates to be inserted when application design is available.
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_2_8 Debug Levels
+<hr>
+
+This section details the debug levels used within Mplane::CpriController, and which are accessed via the inherited
+GeneralLog access methods.\n
+e.g. Mplane::GeneralLog::setGenLogSevDebugOn(), Mplane::GeneralLog::setGenLoggingLevelOn(),
+Mplane::GeneralLog::setGenLogDebugLevelOn()\n
+
+Here is a code example:
+\code
+
+    // instantiate a fibre control service
+    fibreControlService = new FibreControlService();
+
+    // Set the global logXXX() settings for logging to console on
+    GlobalLogLevelControl::getGlobalLogToConsole();
+    GlobalLogLevelControl::setGlobalLoggingOn();
+
+    // Setup the debug and logging levels for this service class
+    fibreControlService->setGenLogSevDebugOn();
+    fibreControlService->setGenLoggingLevelOn(GlobalLogInfo::LOG_DEBUG);
+    fibreControlService->setGenLogDebugLevelOn(GlobalLogInfo::LOG_DEBUG_LEVEL_ALL);
+
+\endcode
+
+\subsection radioService_common_FibreControlService_ssec_2_8_1 CpriController Debug Levels
+
+- LOG_DEBUG_LEVEL_1:  Master link reset request being initiated\n
+- LOG_DEBUG_LEVEL_2:  Resetting master port\n
+- LOG_DEBUG_LEVEL_3:  - unused -\n
+- LOG_DEBUG_LEVEL_4:  - unused -\n
+- LOG_DEBUG_LEVEL_5:  - unused -\n
+- LOG_DEBUG_LEVEL_6:  - unused -\n
+- LOG_DEBUG_LEVEL_7:  - unused -\n
+- LOG_DEBUG_LEVEL_8:  - unused -\n
+- LOG_DEBUG_LEVEL_9:  - unused -\n
+- LOG_DEBUG_LEVEL_10: - unused -\n
+
+\subsection radioService_common_FibreControlService_ssec_2_8_2 CpriPortHandling Debug Levels
+
+- LOG_DEBUG_LEVEL_1:  Port status has changed\n
+- LOG_DEBUG_LEVEL_2:  Port reset. Slave core reset or Master core put into reset\n
+- LOG_DEBUG_LEVEL_3:  Setting slave port line rate capability\n
+- LOG_DEBUG_LEVEL_4:  Port being initialised\n
+- LOG_DEBUG_LEVEL_5:  Master port enable or disable\n
+- LOG_DEBUG_LEVEL_6:  - unused -\n
+- LOG_DEBUG_LEVEL_7:  - unused -\n
+- LOG_DEBUG_LEVEL_8:  - unused -\n
+- LOG_DEBUG_LEVEL_9:  - unused -\n
+- LOG_DEBUG_LEVEL_10: - unused -\n
+
+
+<hr>
+\section radioService_common_FibreControlService_sec_3 Dependencies
+<hr>
+
+<hr>
+\section radioService_common_FibreControlService_sec_3_1 Interface Dependencies
+<hr>
+
+<hr>
+\subsection radioService_common_FibreControlService_sec_3_1_1 Example subsection
+<hr>
+
+
+
+<hr>
+\section radioService_common_FibreControlService_sec_4 Host Based Unit Tests
+<hr>
+\subsection radioService_common_FibreControlService_ssec_4_1 Code Coverage Summary
+<hr>
+
+\include common/FibreControlService/test/coverage.txt
+
+<hr>
+\subsection radioService_common_FibreControlService_ssec_4_2 Unit Test Results
+<hr>
+
+\include common/FibreControlService/test/cppunit.txt
+
+*/

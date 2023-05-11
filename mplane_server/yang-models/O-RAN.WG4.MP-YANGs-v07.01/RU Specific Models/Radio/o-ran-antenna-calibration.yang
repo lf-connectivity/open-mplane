@@ -1,0 +1,686 @@
+module o-ran-antenna-calibration {
+  yang-version 1.1;
+  namespace "urn:o-ran:antcal:1.0";
+  prefix "o-ran-antcal";
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines the configuration required for supporting the optional
+    antenna calibration functionality.
+
+     Copyright 2021 the O-RAN Alliance.
+
+     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+     AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+     IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+     ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+     LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+     CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+     SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+     INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+     POSSIBILITY OF SUCH DAMAGE.
+
+     Redistribution and use in source and binary forms, with or without
+     modification, are permitted provided that the following conditions are met:
+
+     * Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the above disclaimer.
+     * Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the above disclaimer in the documentation
+     and/or other materials provided with the distribution.
+     * Neither the Members of the O-RAN Alliance nor the names of its
+     contributors may be used to endorse or promote products derived from
+     this software without specific prior written permission.";
+
+  revision 2021-07-26 {
+    description
+      "version 7.0.0
+
+        1) O-RU-COORDINATED-ANT-CAL-MULTIPLE-TIME-RESOURCE is added as optional feature
+        to provide support for multiple antenna calibration time resources configurations.
+        2) Flag for O-DU to control if O-RU is allowed to support this feature
+        'coordinated-calibration-multiple-time-resources-allowed'
+        3) defined grouping 'antenna-calibration-multiple-time-resource' from which list
+        for supporting multiple antenna calibration time resource configuration is supported.
+        4) created new container 'antenna-calibration-multiple-time-resource' with list
+        'antenna-calibration-multiple-time-resource-list' and key to index the list
+        'antenna-calibration-time-resource-index'.
+        5) added new notification 'antenna-calibration-multiple-time-resource-params' with
+        'antenna-calibration-time-resource-index' as a leaf to indicate index of time resource
+        6) Added support for configured preparedness timer for co-ordinated calibration";
+
+    reference "ORAN-WG4.MP-v07.00";
+  }
+
+   revision 2021-03-22 {
+     description
+       "version 5.1.0
+
+        1) removing non-ASCII characters in model.";
+
+     reference "ORAN-WG4.MP-v05.00";
+   }
+
+
+  revision 2020-12-10 {
+    description
+      "version 5.0.0
+
+       1) O-RU-COORDINATED-ANT-CAL is added as optional feature
+       to provide the antenna calibration without RPC
+       on the condition that coordinated-calibration-support is true
+       and coordinated-calibration-allowed is true.";
+
+    reference "ORAN-WG4.MP-v05.00";
+  }
+
+  revision 2019-07-03 {
+    description
+      "version 1.0.0
+
+       1) Newly introduced model for supporting optional
+       antenna calibration functionality";
+
+    reference "ORAN-WG4.MP-v02.00";
+  }
+
+  feature O-RU-COORDINATED-ANT-CAL {
+    description
+      "Indicates that the O-RU needs user traffic to be coordinated from O-DU for antenna calibration.";
+  }
+
+  feature O-RU-COORDINATED-ANT-CAL-MULTIPLE-TIME-RESOURCE {
+    description
+      "Indicates O-RU support for antenna calibraton with multiple timing resource sets. Refer Section
+      'Calibration with multiple timing resource sets' of M-Plane specification v7";
+  }
+
+  grouping antenna-calibration-capabilities {
+    description "container for collection of leafs for antenna calibration";
+
+    leaf self-calibration-support {
+      type boolean;
+      default false;
+      description
+        "Indicates whether O-RU supports self-calibration or not.
+
+        When true, indicates O-RU can initiate calibration without receiving an
+        rpc and/or impacting simultaneous CU-plane operation";
+    }
+    leaf coordinated-calibration-support {
+      if-feature O-RU-COORDINATED-ANT-CAL;
+      type boolean;
+      default false;
+      description
+        "True means the O-RU is able to determine priori the time-frequency
+         resources required for self-calibration and indicate those to the O-DU
+         in the antenna-calibration-coordination notification.";
+    }
+    leaf number-of-calibration-symbols-per-block-dl {
+      type uint8 {
+        range "1..max";
+      }
+      units symbols;
+      mandatory true;
+      description
+        "Indicates how many consecutive symbols are required for DL antenna
+        calibration operation";
+    }
+    leaf number-of-calibration-symbols-per-block-ul {
+      type uint8 {
+        range "1..max";
+      }
+      units symbols;
+      mandatory true;
+      description
+        "Indicates how many consecutive symbols are required for UL antenna
+        calibration operation";
+    }
+    leaf interval-between-calibration-blocks {
+      type uint8;
+      units symbols;
+      description
+        "if time interval is required between consecutive antenna calibration
+        operation, defines this time value as unit of symbols.
+
+        A common value is used here for the intervals
+        between DL-DL blocks, UL-UL blocks, DL-UL blocks and UL-DL blocks,
+        which is the largest minimum interval required between any two adjacent
+        calibration blocks.";
+    }
+    leaf number-of-calibration-blocks-per-step-dl {
+      type uint8 {
+        range "1..max";
+      }
+      mandatory true;
+      description
+        "Indicates how many blocks are required for one step of DL antenna
+        calibration operation";
+    }
+    leaf number-of-calibration-blocks-per-step-ul {
+      type uint8 {
+        range "1..max";
+      }
+      mandatory true;
+      description
+        "Indicates how many blocks are required for one step of UL antenna
+        calibration operation";
+    }
+    leaf interval-between-calibration-steps {
+      type uint8;
+      units radio-frames;
+      description
+        "If time interval is required between consecutive step of antenna
+        calibration operation, defines this time value as unit of radio frames";
+    }
+    leaf number-of-calibration-steps {
+      type uint8 {
+        range "1..max";
+      }
+      mandatory true;
+      description
+        "Indicates how many steps are required for whole DL/UL antenna
+        calibration operation";
+    }
+    leaf calibration-period {
+       if-feature O-RU-COORDINATED-ANT-CAL;
+       type uint16;
+       units minutes;
+       description "peiodical interval between antenna calibrations in the case of support of feature O-RU-COORDINATED-ANT-CAL";
+    }
+    leaf configured-preparation-timer-supported {
+      if-feature O-RU-COORDINATED-ANT-CAL;
+      type boolean;
+      default false;
+      description
+        "indicates if the O-RU supports configuration of the preparedness timer
+        that controls how far in advance of the co-ordinated self calibration
+        procedure the O-RU is required to send the notification of impacted
+        resources.";
+    }
+  }
+
+  grouping antenna-calibration-multiple-time-resource {
+    description
+      "Grouping for collection of leafs for antenna calibration capability of O-RU supporting
+      multiple time resource when feature O-RU-COORDINATED-ANT-CAL-MULTIPLE-TIME-RESOURCE
+      is supported in the O-RU";
+
+    leaf number-of-calibration-symbols-per-block-dl {
+      type uint8 {
+        range "1..max";
+      }
+      units symbols;
+      mandatory true;
+      description
+        "Indicates how many consecutive symbols are required for DL antenna
+        calibration operation";
+    }
+    leaf number-of-calibration-symbols-per-block-ul {
+      type uint8 {
+        range "1..max";
+      }
+      units symbols;
+      mandatory true;
+      description
+        "Indicates how many consecutive symbols are required for UL antenna
+        calibration operation";
+    }
+    leaf interval-between-calibration-blocks {
+      type uint8;
+      units symbols;
+      description
+        "if time interval is required between consecutive antenna calibration
+        operation, defines this time value as unit of symbols.
+
+        A common value is used here for the intervals
+        between DL-DL blocks, UL-UL blocks, DL-UL blocks and UL-DL blocks,
+        which is the largest minimum interval required between any two adjacent
+        calibration blocks.";
+    }
+    leaf number-of-calibration-blocks-per-step-dl {
+      type uint8 {
+        range "1..max";
+      }
+      mandatory true;
+      description
+        "Indicates how many blocks are required for one step of DL antenna
+        calibration operation";
+    }
+    leaf number-of-calibration-blocks-per-step-ul {
+      type uint8 {
+        range "1..max";
+      }
+      mandatory true;
+      description
+        "Indicates how many blocks are required for one step of UL antenna
+        calibration operation";
+    }
+    leaf interval-between-calibration-steps {
+      type uint8;
+      units radio-frames;
+      description
+        "If time interval is required between consecutive step of antenna
+        calibration operation, defines this time value as unit of radio frames";
+    }
+    leaf number-of-calibration-steps {
+      type uint8 {
+        range "1..max";
+      }
+      mandatory true;
+      description
+        "Indicates how many steps are required for whole DL/UL antenna
+        calibration operation";
+    }
+    leaf calibration-period {
+       if-feature O-RU-COORDINATED-ANT-CAL;
+       type uint16;
+       units minutes;
+       description "peiodical interval between antenna calibrations in the case of support of feature O-RU-COORDINATED-ANT-CAL";
+    }
+  }
+
+  grouping antenna-calibration {
+    container antenna-calibration-capabilities {
+      config false;
+      description
+        "Describes the antenna calibration capabilities";
+        uses antenna-calibration-capabilities;
+    }
+    container self-calibration-policy {
+      leaf self-calibration-allowed {
+        type boolean;
+        default false;
+        description
+          "whether the self-calibration is allowed by operator.
+          Note, self-calibration-allowed and coordinated-calibration-allowed cannot both be set to true";
+      }
+      leaf coordinated-calibration-allowed {
+        if-feature O-RU-COORDINATED-ANT-CAL;
+        type boolean;
+        must "../self-calibration-allowed = 'false'";
+        default false;
+        description
+          "whether the coordinated-calibration is allowed by operator.
+
+          True means that O-DU may beneficially use the indicated time-frequency resources
+          to adapt its operation during the antenna calibration operation,
+          e.g., consider the time-frequency resources as reserved for calibration.
+          Both calibrations (self-calibration-allowed and coordinated-calibration-support) disallowed
+          or one of them allowed only";
+      }
+      leaf coordinated-ant-calib-prep-timer {
+        if-feature O-RU-COORDINATED-ANT-CAL;
+        type uint8 {
+          range "2..10|60";
+        }
+        units seconds;
+        must "../coordinated-calibration-allowed = 'true'";
+        default 60;
+        description
+          "minimum time between O-RU sending notification of time-frequeny resources
+          for co-ordinated calibration to O-DU and O-RU starting co-ordinated
+          self-calibration procedure.
+
+          Note, the default value of 60 seconds is to accommodate earlier versions
+          which hard coded that value in the O-RAN.WG4.MP.0 specification.
+
+          An O-RU that has set configured-preparation-timer-supported=false shall
+          always use the default value of 60 seconds";
+      }
+      leaf coordinated-calibration-multiple-time-resources-allowed {
+        if-feature "O-RU-COORDINATED-ANT-CAL and O-RU-COORDINATED-ANT-CAL-MULTIPLE-TIME-RESOURCE";
+        type boolean;
+        default false;
+        description
+          "TRUE: O-RU is allowed to request for this calibration, FALSE: O-RU is prohibited to use this calibration";
+      }
+      description
+        "Describes the self calibration policies and configuration of the operator";
+    }
+
+    container antenna-calibration-multiple-time-resource {
+      if-feature "O-RU-COORDINATED-ANT-CAL and O-RU-COORDINATED-ANT-CAL-MULTIPLE-TIME-RESOURCE";
+      config false;
+      list antenna-calibration-multiple-time-resource-list {
+        key "antenna-calibration-time-resource-index";
+        uses antenna-calibration-multiple-time-resource;
+
+        leaf antenna-calibration-time-resource-index {
+          type uint8;
+          description
+            "Key for indexing 'antenna-calibration-multiple-time-resource-list'";
+        }
+        description
+          "List of antenna calibration time resource configuration indexed by
+          antenna calibration time resource index";
+      }
+      description
+        "Container to support multiple antenna calibration resource sets by defining
+        multiple calibration resources sets for different calibration types.";
+    }
+
+    description
+      "Describe the grouping set of antenna calibration";
+  }
+
+  grouping antenna-calibration-data {
+     description "information set for the operation of antenna calibration";
+
+     leaf symbol-bitmask-dl {
+        type string {
+          length "14";
+          pattern "[01]*";
+        }
+        mandatory true;
+        description
+          "Bitmask indicating DL calibration symbol within a calibration slot.
+           First character in the string indicate first symbol,
+           next character in the string indicate second symbol and so on.
+           Value 1 indicates that the symbol may be used for calibration
+           and 0 means the symbol shall not be used for calibration.";
+      }
+      leaf symbol-bitmask-ul {
+        type string {
+          length "14";
+          pattern "[01]*";
+        }
+        mandatory true;
+        description
+          "Bitmask indicating UL calibration symbol within a calibration slot.
+           First character in the string indicate first symbol,
+           next character in the string indicate second symbol and so on.
+           Value 1 indicates that the symbol may be used for calibration
+           and 0 means the symbol shall not be used for calibration.";
+      }
+      leaf slot-bitmask-dl {
+        type string {
+          length "10..255";
+          pattern "[01]*";
+        }
+        mandatory true;
+        description
+          "Bitmask indicating DL calibration slot within a calibration frame.
+           First character in the string indicate first slot,
+           next character in the string indicate second slot and so on.
+           Value 1 indicates that the slot may be used for calibration
+           and 0 means the slot shall not be used for calibration.";
+        }
+        leaf slot-bitmask-ul {
+          type string {
+            length "10..255";
+            pattern "[01]*";
+          }
+          mandatory true;
+          description
+            "Bitmask indicating UL calibration slot within a calibration frame.
+             First character in the string indicate first slot,
+             next character in the string indicate second slot and so on.
+             Value 1 indicates that the slot may be used for calibration
+             and 0 means the slot shall not be used for calibration.";
+        }
+        leaf frame-bitmask-dl {
+          type string {
+            length "1..255";
+            pattern "[01]*";
+          }
+          mandatory true;
+          description
+            "Bitmask indicating DL calibration frame within a calibration step.
+             First character in the string indicate first radio frame equal to
+             the start-SFN, next character in the string indicate the next frame
+             and so on.
+
+             Value 1 indicates that the frame may be used for calibration
+             and 0 means the frame shall not be used for calibration.";
+        }
+        leaf frame-bitmask-ul {
+          type string {
+            length "1..255";
+            pattern "[01]*";
+          }
+          mandatory true;
+          description
+            "Bitmask indicating UL calibration frame within a calibration step.
+             First character in the string indicate first radio frame equal to
+             the start-SFN, next character in the string indicate the next frame
+             and so on.
+
+             Value 1 indicates that the frame is may be used for calibration
+             and 0 means the frame shall not be used for calibration.";
+        }
+        leaf calibration-step-size {
+          type uint8;
+          mandatory true;
+          description " Number of frames within a calibration step";
+        }
+        leaf calibration-step-number {
+          type uint8;
+          mandatory true;
+          description "Number of calibration steps";
+        }
+        leaf start-sfn {
+          type uint16 {
+            range "0..1023";
+          }
+          mandatory true;
+          description "start SFN number of the first calibration step";
+        }
+  }
+
+  container antenna-calibration {
+    uses antenna-calibration;
+    description
+      "Describes the antenna calibration top node";
+  }
+
+  rpc start-antenna-calibration {
+    description
+      "The antenna calibration operation can start when NETCONF client sends a
+      calibration start command with resource allocation parameters.
+      These parameters indicate how the O-RU can perform the antenna
+      calibration operation; at which Symbol, Slot, and Frame.
+      This scheduling information can be generated by O-RU itself.
+      However, in a dynamic TDD environment, the DL and UL configuration
+      is only determined and known by O-DU. Consequently, only O-DU (NETCONF
+      client ) can determine and configure the scheduling and resource
+      allocation permitted for use by the antenna calibration operation";
+    input  {
+       uses antenna-calibration-data;
+    }
+    output  {
+      leaf status {
+        type enumeration {
+          enum ACCEPTED {
+            description
+              "Status information to indicate that O-RU accepted RPC
+              antenna calibration start request";
+          }
+          enum REJECTED {
+            description
+              "Status information to indicate that O-RU rejected RPC antenna
+              calibration start request";
+          }
+        }
+        mandatory true;
+        description
+          "Status of whether antenna calibration trigger by RPC is accepted
+          by the O-RU";
+      }
+      leaf error-message {
+        when "../status='REJECTED'";
+          type string;
+          description
+            "Detailed error Message when the status is rejected, e.g.,
+             because O-RU can not start antenna calibration
+             such as already running antenna calibration,
+             resource mask mismatch with O-RU antenna calibration capability,
+             overlapped DL and UL masks, insufficient memory, O-RU internal reason";
+      }
+    }
+  }
+
+  notification antenna-calibration-required {
+    list dl-calibration-frequency-chunk {
+      leaf start-calibration-frequency-dl {
+        type uint64;
+        description
+          "lowest frequency value in Hz of the frequency range is required for
+           DL antenna calibration operation.";
+      }
+      leaf end-calibration-frequency-dl {
+        type uint64;
+        description
+          "highest frequency value in Hz of the frequency range is required for
+           DL antenna calibration operation.";
+      }
+      description
+         "min/max frequency of dl spectrum chunk affected by calibration process";
+    }
+    list ul-calibration-frequency-chunk {
+      leaf start-calibration-frequency-ul {
+        type uint64;
+        description
+          "lowest frequency value in Hz of the frequency range is required for
+           UL antenna calibration operation.";
+      }
+      leaf end-calibration-frequency-ul {
+        type uint64;
+        description
+          "highest frequency value in Hz of the frequency range is required for
+           UL antenna calibration operation.";
+      }
+      description
+        "min/max frequency of ul spectrum chunk affected by calibration process";
+    }
+
+    description
+      "this notification indicates that the antenna calibration is required in O-RU";
+  }
+
+  notification antenna-calibration-coordinated {
+    if-feature O-RU-COORDINATED-ANT-CAL;
+    list dl-calibration-frequency-chunk {
+      leaf start-calibration-frequency-dl {
+        type uint64;
+        description
+          "lowest frequency value in Hz of the frequency range is required for
+           DL antenna calibration operation.";
+      }
+      leaf end-calibration-frequency-dl {
+        type uint64;
+        description
+          "highest frequency value in Hz of the frequency range is required for
+           DL antenna calibration operation.";
+      }
+      description
+         "min/max frequency of dl spectrum chunk affected by calibration process";
+    }
+    list ul-calibration-frequency-chunk {
+      leaf start-calibration-frequency-ul {
+        type uint64;
+        description
+          "lowest frequency value in Hz of the frequency range is required for
+           UL antenna calibration operation.";
+      }
+      leaf end-calibration-frequency-ul {
+        type uint64;
+        description
+          "highest frequency value in Hz of the frequency range is required for
+           UL antenna calibration operation.";
+      }
+      description
+        "min/max frequency of ul spectrum chunk affected by calibration process";
+    }
+    uses antenna-calibration-data {
+      description
+        "In the case of support of feature O-RU-COORDINATED-ANT-CAL,
+         time-frequency resource determined by O-RU will be included";
+    }
+
+    description
+      "this notification indicates that coordinated antenna calibration is provided in O-RU.
+       It indicate the time-frequency resources will be sent to a subscribed O-DU at least 60 seconds
+       before the operation of the coordinated antenna calibration procedure.";
+  }
+
+  notification antenna-calibration-result {
+    leaf status {
+      type enumeration {
+        enum SUCCESS {
+          description "O-RU has succeeded in calibrating its antenna";
+        }
+        enum FAILURE {
+          description
+            "O-RU attemted to calibrate its antenna, but the procedure failed.";
+        }
+      }
+      mandatory true;
+      description
+        "Status of the antenna calibration procedure which has been triggered
+        by accepting an start-antenna-calibration RPC.";
+    }
+    leaf detailed-reason {
+      when "../status='FAILURE'";
+      type string;
+      description
+        "Detailed reason when the status is FAILURE, e.g.,
+        O-RU cannot complete the antenna calibration
+        because of lack of memory, self-calibration failure, etc";
+    }
+    description
+    "This notification indicates the antenna calibration result";
+  }
+
+  notification antenna-calibration-multiple-time-resource-params {
+    if-feature "O-RU-COORDINATED-ANT-CAL and O-RU-COORDINATED-ANT-CAL-MULTIPLE-TIME-RESOURCE";
+    leaf antenna-calibration-time-resource-index {
+      type uint8;
+      description
+        "Index to use applicable antenna calibration time resources from the
+        list 'antenna-calibration-multiple-time-resource-list'";
+   }
+   list dl-calibration-frequency-chunk {
+      leaf start-calibration-frequency-dl {
+        type uint64;
+        description
+          "lowest frequency value in Hz of the frequency range is required for
+           DL antenna calibration operation.";
+      }
+      leaf end-calibration-frequency-dl {
+        type uint64;
+        description
+          "highest frequency value in Hz of the frequency range is required for
+           DL antenna calibration operation.";
+      }
+      description
+         "min/max frequency of dl spectrum chunk affected by calibration process";
+    }
+    list ul-calibration-frequency-chunk {
+      leaf start-calibration-frequency-ul {
+        type uint64;
+        description
+          "lowest frequency value in Hz of the frequency range is required for
+           UL antenna calibration operation.";
+      }
+      leaf end-calibration-frequency-ul {
+        type uint64;
+        description
+          "highest frequency value in Hz of the frequency range is required for
+           UL antenna calibration operation.";
+      }
+      description
+        "min/max frequency of ul spectrum chunk affected by calibration process";
+    }
+
+   description
+    "This notification indicates sending parameters related to supporting antenna calibration
+    with multiple time resource";
+  }
+}

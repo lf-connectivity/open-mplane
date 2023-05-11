@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+ 	<Board name="DISCOVERY@ENABLE">
+		<Device name="Discovery" path="/discovery" comment="Network discovery statistics">
+		<xinclude:include href="../../../../helper/common/xml/Discovery.xml#Discovery"/>
+		</Device>
+	</Board>
+</TestInterface>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+	<Board name="Helper">
+ 		<Device name="Arb" path="/arb" comment="Arbitrary waveform playback/capture interface">
+			<xinclude:include href="../../../../../helper/common/xml/Arb.xml#set"/>
+			<xinclude:include href="../../../../../helper/common/xml/Arb.xml#show"/>
+ 		</Device>
+	</Board>
+</TestInterface>

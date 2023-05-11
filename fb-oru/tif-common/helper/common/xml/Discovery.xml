@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE TestInterface SYSTEM "../../../shared/dtd/Tif.dtd">
+<TestInterface version="1.0">
+ 	<Board name="common">
+
+		<Device name="Discovery" path="/discovery" comment="Network discovery statistics">
+
+			<Variable name="ip" type="STRING" access="read-only" comment="IP Address" />
+			<Variable name="uuid" type="STRING" access="read-only" comment="SSDP uuid" />
+			<Variable name="cacheAge" type="INT" units="S" access="read-only" comment="Maximum time between notifications" />
+			<Variable name="searchCount" type="INT" access="read-only" comment="Number of search requests since connection" />
+			<Variable name="notifyCount" type="INT" access="read-only" comment="Number of notifications sent since connection" />
+
+		</Device>
+
+	</Board>
+</TestInterface>

@@ -1,0 +1,18 @@
+<edit-config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <target>
+    <running/>
+  </target>
+  <default-operation>merge</default-operation>
+  <test-option>test-then-set</test-option>
+  <error-option>stop-on-error</error-option>
+  <config>
+    <configuration>
+      <interfaces xmlns="urn:o-ran:params:">
+        <interface>
+          <name>interface-1</name>
+          <description>Foo</description>
+        </interface>
+      </interfaces>
+    </configuration>
+  </config>
+</edit-config>
