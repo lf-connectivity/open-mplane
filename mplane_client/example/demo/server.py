@@ -40,20 +40,20 @@ NETCONF_PASS = "Thunga1e"
 
 NETCONF_RPC_TIMEOUT = 3
 
-SERVER_CMD = "/mplane_client/build/wrapper.sh /mplane_client/build/mpclient-server"
+SERVER_CMD = "/mplane_client/build/wrapper.sh /mplane_client/build/mpc_client"
 
 # Alarms RPC payload
 ALARMS_YIN = open("/mplane_demo/getalarms.xml", "r").read()
 
 
 def start_server():
-    """Start the mpclient-server application"""
+    """Start the mpc_client application"""
     subprocess.Popen(SERVER_CMD.split())
     time.sleep(1)
 
 
 def fetch_thread():
-    """Periodically send an RPC to mpclient-server to fetch alarms-list"""
+    """Periodically send an RPC to mpc_client to fetch alarms-list"""
     stub = mpclient.MpclientStub(
         grpc.secure_channel(
             f"{GRPC_HOST}:{GRPC_PORT}",
