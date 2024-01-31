@@ -1,4 +1,4 @@
-FROM  mplane/mpclient-built-tests:latest
+FROM  mplane/mplane-client-integrated-tester:latest
 
 RUN apt update; \
     apt install --yes \
