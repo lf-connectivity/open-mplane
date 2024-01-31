@@ -31,7 +31,7 @@ Alarms = []
 # Constants
 GRPC_HOST = "localhost"
 GRPC_PORT = "50051"
-GRPC_CERT = "/mpclient/build/server.crt"
+GRPC_CERT = "/mplane_client/build/server.crt"
 
 NETCONF_HOST = "host.docker.internal"
 NETCONF_PORT = 9999
@@ -40,7 +40,7 @@ NETCONF_PASS = "Thunga1e"
 
 NETCONF_RPC_TIMEOUT = 3
 
-SERVER_CMD = "/mpclient/build/wrapper.sh /mpclient/build/mpclient-server"
+SERVER_CMD = "/mplane_client/build/wrapper.sh /mplane_client/build/mpclient-server"
 
 # Alarms RPC payload
 ALARMS_YIN = open("/mplane_demo/getalarms.xml", "r").read()
