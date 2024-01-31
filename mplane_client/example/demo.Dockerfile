@@ -11,4 +11,4 @@ RUN python3 -m pip install \
         protobuf \
         grpcio
 
-COPY mplane_demo /mplane_demo
+COPY demo /mplane_demo
