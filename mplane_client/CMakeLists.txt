@@ -59,7 +59,7 @@ file (GLOB_RECURSE MPC_TESTER_SRC test/*.cpp)
 add_executable (${MPC_TESTER} ${MPC_TESTER_SRC} ${MPC_IF_SRC})
 target_link_libraries (${MPC_TESTER} ${MPC_LIBS})
 
-file (GLOB MPCLIENT_DEMO_SOURCES src/demo/*.cpp)
+file (GLOB MPCLIENT_DEMO_SOURCES example/*.cpp)
 add_executable (${Target_mpclient_demo} ${MPCLIENT_DEMO_SOURCES} ${MPC_IF_SRC})
 target_link_libraries (${Target_mpclient_demo} ${Target_mpclient_client} ${MPC_LIBS})
 
