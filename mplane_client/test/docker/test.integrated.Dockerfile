@@ -18,6 +18,7 @@ RUN patch --directory /opt/dev/ntsim-ng/config/ --strip 4 config.json config.pat
 COPY src /mplane_client/src
 COPY test/rpc-client /mplane_client/test/rpc-client
 COPY test/tests /mplane_client/test/tests
+COPY example /mplane_client/example
 
 WORKDIR /mplane_client/utils
 RUN ./build_mpclient.sh --parallel 2
