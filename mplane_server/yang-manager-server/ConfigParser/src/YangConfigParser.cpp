@@ -77,7 +77,8 @@ YangConfigParser::isConfigFileLoaded(void) {
   return mConfigFileLoaded;
 }
 
-const std::string YangConfigParser::mXmlElementDelimiterStr = "-";
+const std::string _mXmlElementDelimiterStr = "-";
+const std::string YangConfigParser::mXmlElementDelimiterStr = _mXmlElementDelimiterStr;
 const std::string YangConfigParser::mXmlModuleFeatureDelimiterStr = ".";
 const std::string YangConfigParser::mXmlValueStr = "value";
 const std::string YangConfigParser::mXmlAccessStr = "access";
@@ -428,11 +429,11 @@ Mplane::YangConfigParser::getCompany(std::string& company) {
   company = mCompany;
 }
 
-// ====================================================================================================
-bool
-Mplane::YangConfigParser::getElementType(
-    std::string nodeName, std::string& elementType) {
-  std::size_t delimiterPos = nodeName.find(mXmlElementDelimiterStr);
+//=====================================================================================================
+bool 
+_getElementType(std::string nodeName, std::string& elementType)
+{
+   std::size_t delimiterPos = nodeName.find(_mXmlElementDelimiterStr);
 
   if (0 != delimiterPos) {
     std::string type = nodeName.substr(0, delimiterPos);
@@ -444,22 +445,20 @@ Mplane::YangConfigParser::getElementType(
   return false;
 }
 
-// @@ TODO Remove the duplication in these two methods.
+// ====================================================================================================
+bool
+Mplane::YangConfigParser::getElementType(
+    std::string nodeName, std::string& elementType) {
+      
+      return _getElementType(nodeName, elementType);
+}
 
 // ====================================================================================================
 bool
 Mplane::YangConfigParser::ExtractElements::getElementType(
     std::string nodeName, std::string& elementType) {
-  std::size_t delimiterPos = nodeName.find(mXmlElementDelimiterStr);
 
-  if (0 != delimiterPos) {
-    std::string type = nodeName.substr(0, delimiterPos);
-
-    elementType = type;
-    return true;
-  }
-
-  return false;
+  return _getElementType(nodeName, elementType);
 }
 
 // ====================================================================================================
