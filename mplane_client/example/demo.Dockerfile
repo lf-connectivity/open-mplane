@@ -1,4 +1,4 @@
-FROM  mplane/mpclient-built-tests:latest
+FROM  mplane/mplane-client-integrated-tester:latest
 
 RUN apt update; \
     apt install --yes \
@@ -9,6 +9,9 @@ RUN python3 -m pip install \
         flask \
         flask-socketio \
         protobuf \
-        grpcio
+        grpcio \
+	grpcio-tools
 
-COPY mplane_demo /mplane_demo
+COPY demo /mplane_demo
+
+RUN python3 -m grpc_tools.protoc --experimental_allow_proto3_optional -I/mplane_client/src/if --python_out=/mplane_demo --grpc_python_out=/mplane_demo mpclient.proto

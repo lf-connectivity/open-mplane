@@ -5,10 +5,10 @@ written as a docker container which can be run on an arbitrary host.
 
 ## Build
 
-From the directory above `mplane_demo`, i.e. `mplane-rru/mplane/mpclient`, run 
-`docker build -f demo.Dockerfile --tag mplane/mpclient-demo:latest`. Note that 
-the image `mplane/mpclient-built-tests:latest` is expected to be available in
-your local Docker images. `mplane/mpclient-built-tests:latest` is built during
+From the directory above `demo`, i.e. `open-mplane/mplane_client/example`, run 
+`docker build -f demo.Dockerfile --tag mplane/mpclient-demo:latest .`. Note that 
+the image `mplane/mplane-client-integrated-tester:latest` is expected to be available in
+your local Docker images. `mplane/mplane-client-integrated-tester:latest` is built during
 the mpclient dockerized build.
 
 ## Run
@@ -21,10 +21,18 @@ port with `ssh`, e.g.:
 ssh -L 9999:localhost:830 <M-Plane server host>
 ```
 
-Once port 9999 is setup, run `mplane_demo/run_demo.sh`. The console will contain
-a log from `mpclient-server` and the webapp running in the docker container, and
+Once port 9999 is setup, run `demo/run_demo.sh`. The console will contain
+a log from `mpc_client` and the webapp running in the docker container, and
 a webpage displaying information fetched from the M-Plane server will be
 available at `localhost:80`.
+
+For linux, `run_demo.sh` needs to be modified to add the host-gateway:
+```
+docker run  \
+    -p 127.0.0.1:10000:830 -p 80:8000/tcp \
+    -it --add-host host.docker.internal:host-gateway mplane/mpclient-demo:latest \
+    python3 /mplane_demo/server.py
+```
 
 ## Files
 
