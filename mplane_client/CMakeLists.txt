@@ -7,7 +7,7 @@ project (MPLANE_CLIENT CXX)
 
 set (MPC_CLIENT mpc_client)
 set (MPC_TESTER mpc_tester)
-# set (Target_mpclient_demo mpclient-demo)
+set (Target_mpclient_demo mpclient-demo)
 
 find_program (PROTOC protoc PATHS deps/install/bin)
 find_program (GRPC_CPP_PLUGIN grpc_cpp_plugin PATHS deps/install/bin)
@@ -59,9 +59,14 @@ file (GLOB_RECURSE MPC_TESTER_SRC test/*.cpp)
 add_executable (${MPC_TESTER} ${MPC_TESTER_SRC} ${MPC_IF_SRC})
 target_link_libraries (${MPC_TESTER} ${MPC_LIBS})
 
-# file (GLOB MPCLIENT_DEMO_SOURCES src/demo/*.cpp)
-# add_executable (${Target_mpclient_demo} ${MPCLIENT_DEMO_SOURCES} ${MPC_IF_SRC})
-# target_link_libraries (${Target_mpclient_demo} ${Target_mpclient_client} ${MPC_LIBS})
+file (GLOB MPCLIENT_DEMO_SOURCES example/*.cpp)
+add_executable (${Target_mpclient_demo} ${MPCLIENT_DEMO_SOURCES} ${MPC_IF_SRC})
+
+file (GLOB RPC_CLIENT_SOURCES test/rpc-client/*.cpp)
+target_sources (${Target_mpclient_demo} PRIVATE ${RPC_CLIENT_SOURCES})
+
+target_link_libraries (${Target_mpclient_demo} ${MPC_LIBS})
+
 
 # Copy test cases files when they are modified
 file (GLOB MPC_TESTS_CASES test/tests/cases/*)

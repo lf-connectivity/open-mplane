@@ -13,7 +13,7 @@ and executes the corresponding mpclient RPC.
 ## Usage
 ```
 ./wrapper.sh ./mpclient-demo \
-  --commands demo/cases/connect.json \
+  --commands ../example/cases/connect.json \
   --netconfHost 192.168.10.13 \
   --netconfUser oran \
   --netconfPassword Password123 \
