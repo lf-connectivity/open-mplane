@@ -25,18 +25,6 @@
 
 using namespace Mplane;
 
-//=============================================================================================================
-// LOCAL
-//=============================================================================================================
-namespace {
-std::string
-formatStr(const char* fmt, va_list& args) {
-  char buffer[1024];
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-
-  return buffer;
-}
-} // namespace
 
 //=============================================================================================================
 // STATIC DATA
@@ -172,7 +160,9 @@ void
 Loggable::eventData(const char* fmt, ...) const {
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   eventData(str);
@@ -183,7 +173,9 @@ void
 Loggable::eventInfo(const char* fmt, ...) const {
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   eventInfo(str);
@@ -194,7 +186,9 @@ void
 Loggable::eventWarning(const char* fmt, ...) const {
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   eventWarning(str);
@@ -205,7 +199,9 @@ void
 Loggable::eventError(const char* fmt, ...) const {
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   eventError(str);
@@ -216,7 +212,9 @@ void
 Loggable::eventFatal(const char* fmt, ...) const {
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   eventFatal(str);
@@ -232,7 +230,9 @@ Loggable::eventFatal(
     ...) const {
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   std::stringstream ss;
@@ -279,7 +279,9 @@ Loggable::logDebugNormal(const char* fmt, ...) const {
 
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   mLogger->logDebugNormal(str);
@@ -302,7 +304,9 @@ Loggable::logDebugVerbose(const char* fmt, ...) const {
 
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   mLogger->logDebugVerbose(str);
@@ -372,7 +376,9 @@ void
 ILoggable::logStream(std::ostream& os, char const* fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   logStream(os, str);
@@ -415,7 +421,9 @@ ILoggable::getForwarding() {
   void ILoggable::logEvent##nm(char const* fmt, ...) {                   \
     va_list args;                                                        \
     va_start(args, fmt);                                                 \
-    std::string str(formatStr(fmt, args));                               \
+    char buffer[1024];                                                   \
+    vsnprintf(buffer, sizeof(buffer), fmt, args);                        \
+    std::string str(buffer);                                             \
     va_end(args);                                                        \
                                                                          \
     std::shared_ptr<ILoggable> loggable(ILoggable::staticInstance());    \
@@ -438,7 +446,9 @@ ILoggable::logEventFatal(
     ...) {
   va_list args;
   va_start(args, fmt);
-  std::string str(formatStr(fmt, args));
+  char buffer[1024];
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::string str(buffer);
   va_end(args);
 
   std::stringstream ss;
