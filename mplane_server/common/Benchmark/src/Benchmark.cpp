@@ -30,13 +30,14 @@ using namespace Mplane;
 //-------------------------------------------------------------------------------------------------------------
 std::string
 Benchmark::datetimeStr() {
-  time_t rawtime;
-  time(&rawtime);
-
-  struct tm* timeinfo(localtime(&rawtime));
+  timespec tNow;
+  clock_gettime(CLOCK_REALTIME, &tNow);
+  
+  struct tm result;
+  struct tm *ts = localtime_r(&tNow.tv_sec, &result);
 
   char buffer[32];
-  strftime(buffer, sizeof(buffer), "%Y%m%d%H%M%S", timeinfo);
+  strftime(buffer, sizeof(buffer), "%Y%m%d%H%M%S", ts);
 
   return std::string(buffer);
 }
