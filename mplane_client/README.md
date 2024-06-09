@@ -25,20 +25,26 @@ for more details on how this process works.
 
 ### Building with Docker
 ```bash
-$ cd mplane_client/utils/
+# Install Docker engine.
+$ sudo apt install docker-compose
+# Add your user to the docker group
+$ sudo usermod -aG docker $USER && newgrp docker
+$ cd mplane_client/test/docker
 $ ./build_docker.sh
-$ docker-compose up
+$ docker network create smo_integration
 ```
 
 **Option 1** (no image rebuild needed after modifications to `src/`):
 ```bash
-$ docker exec -it mpclient_mpclient-tester_1 /bin/bash
+$ docker-compose up mplane-client-tester
+$ docker-compose exec mplane-client-tester bash
 $ ./build_mpclient.sh
 ```
 
 **Option 2** (image rebuild needed after modifications to `src/`):
 ```bash
-$ docker exec -it mpclient_mpclient-built-tests /bin/bash
+$ docker-compose up mplane-client-integrated-tester
+$ docker-compose exec mplane-client-integrated-tester bash
 ```
 
 ### Building on CentOS 8
@@ -53,6 +59,18 @@ To build on an airgapped machine, run `./get_deps.sh --dnf-deps` on a host with
 network connectivity and manually copy the entire `mplane_client` directory onto
 the build host, which can then skip the dependency fetching step.
 
+### Building on Ubuntu 20
+```bash
+$ sudo apt install cmake build-essential libssl-dev zlib1g-dev libpcre3-dev
+$ cd mplane_client/utils/
+$ ./get_deps.sh --no-fwdproxy --dir ../
+$ ./build_deps.sh --no-netopeer2 --dir ../
+
+# Check if sim-o1-interface directory exists (created during Docker build) and remove it to avoid build conflicts
+$ rm -rf ../test/docker/sim-o1-interface
+
+$ ./build_mpclient.sh --parallel 2
+```
 ## Usage
 First, start the server (`mpc_client`):
 ```bash
@@ -106,7 +124,7 @@ All unit tests except for those exercising public key authentication should work
 as-is. In order to verify public-key authentication, first set up
 `~/.ssh/authorized_keys`:
 ```
-$ cat /home/netconf/.ssh/melacon.server.key.pub > /home/netconf/.ssh/authorized_keys
+$ cat /home/netconf/.ssh/melacon.server.key.pub >> /home/netconf/.ssh/authorized_keys
 ```
 
 ### Running `mpclient-demo`

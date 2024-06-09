@@ -111,9 +111,9 @@ There are a number of scripts used to automate the mplane_client build process.
     * `--parallel <n>`: use this to specify number of parallel build threads
       (default is n=1)
 * **build_docker.sh**: this script builds the Docker testing environment image.
-  The image is called `mplane/mpclient-tester`. The testing environment can be
+  The image is called `mplane/mplane-client-tester`. The testing environment can be
   launched by running `docker-compose up`, and the container be entered by
-  running `docker exec -it mpclient_mpclient-tester_1`.
+  running `docker exec -it docker_mplane-client-tester_1`.
 
 ### CMake Guide
 `CMakeLists.txt` is the only file specifying how mplane_client builds. It has
@@ -135,11 +135,11 @@ running mplane_client with Docker.
 * `o-ran-sc/nts-ng-o-ran-ru-fh`: this is a Docker image published by O-RAN as a
   testing environment for the O1 interface. This provides a simulated RU with
   the proper YANG modules installed and populated with sample data.
-* `mplane/mpclient-tester`: this is based on `o-ran-sc/nts-ng-o-ran-ru-fh`,
+* `mplane/mplane-client-tester`: this is based on `o-ran-sc/nts-ng-o-ran-ru-fh`,
   and it adds the build dependencies for mplane_client. Since the source code
   (located in `src`) for mplane_client is not copied into this image, it needs
   to be included using a mount.
-* `mplane/mpclient-built-tests`: this is based on `mplane/mpclient-tester`,
+* `mplane/mplane-client-integrated-tester`: this is based on `mplane/mplane-client-tester`,
   and it adds pre-built binaries for mplane_client, automatically generated TLS
   keys, and an instance of mpc_client running in the background.
 
@@ -148,9 +148,9 @@ running mplane_client with Docker.
   `docker-compose build` is run.
 * `docker-compose.yaml`: this provides default file system mounting, environment
   variables, and opened ports.
-* `Dockerfile`: this is the specification for `mplane/mpclient-tester`.
+* `Dockerfile`: this is the specification for `mplane/mplane-client-tester`.
 * `tests.Dockerfile`: this is the specification for
-  `mplane/mpclient-built-tests`.
+  `mplane/mplane-client-integrated-tester`.
 
 ### libyang/libnetconf2 Versioning
 Around June 2021, libyang, libnetconf2, sysrepo, and netopeer2 upgraded from
