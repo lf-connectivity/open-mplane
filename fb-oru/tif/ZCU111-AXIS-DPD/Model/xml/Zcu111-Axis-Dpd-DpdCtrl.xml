@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE TestInterface SYSTEM "../../../shared/dtd/Tif.dtd">
-<TestInterface version="1.0">
- 	<Board name="ZCU111-AXIS-DPD">
-		<Device name="DpdCtrl" path="/dpdctrl" comment="DPD control functions">
-		<xinclude:include href="../../../helper/common/xml/DpdCtrl.xml#DpdCtrl"/>
-		</Device>
-	</Board>
-</TestInterface>
