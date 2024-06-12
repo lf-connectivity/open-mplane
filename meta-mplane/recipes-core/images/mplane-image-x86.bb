@@ -14,6 +14,8 @@ IMAGE_INSTALL += " \
     os-release \
     vim \
     virtual/halmplane \
+    netopeer2 \
+    mplane-server \
     "
 
 # Set en_US as the default locale
