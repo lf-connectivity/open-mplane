@@ -34,6 +34,13 @@ $ ./build_docker.sh
 $ docker network create smo_integration
 ```
 
+*Docker Version Constraints:*
+
+* docker version <= 25.0.5 and docker-compose version <= 1.29.2
+* For the latest docker version, use docker-compose version <= 1.25.0
+* For latest docker and docker-compose v1.29.2,
+  start the services using the docker compose v2 command `docker compose up`
+
 **Option 1** (no image rebuild needed after modifications to `src/`):
 ```bash
 $ docker-compose up mplane-client-tester

@@ -144,12 +144,10 @@ running mplane_client with Docker.
   keys, and an instance of mpc_client running in the background.
 
 **Files**:
-* `docker-images.yaml`: this is a list of Docker images to build when
-  `docker-compose build` is run.
 * `docker-compose.yaml`: this provides default file system mounting, environment
   variables, and opened ports.
-* `Dockerfile`: this is the specification for `mplane/mplane-client-tester`.
-* `tests.Dockerfile`: this is the specification for
+* `test.Dockerfile`: this is the specification for `mplane/mplane-client-tester`.
+* `test.integrated.Dockerfile`: this is the specification for
   `mplane/mplane-client-integrated-tester`.
 
 ### libyang/libnetconf2 Versioning
