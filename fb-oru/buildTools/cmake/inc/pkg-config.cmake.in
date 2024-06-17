@@ -1,8 +1,0 @@
-# Import the targets
-include("@binary_dir@/@PROJECT_NAME@-targets.cmake")
-
-# Report other info
-set (pkgName @PROJECT_NAME@)
-set (@PROJECT_NAME@_INCLUDE_DIRS "@include_dirs@")
-set (@PROJECT_NAME@_package_source "@binary_dir@/@PROJECT_NAME@-@BUILD_VERSION@-@BUILD_NUMBER@-Source.tar.gz")
-set (@PROJECT_NAME@_source @SOURCE_FILES@)

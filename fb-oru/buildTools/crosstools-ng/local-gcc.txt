@@ -1,5 +1,0 @@
-1. Build crosstools-ng for GCC 4.8.1
-2. Set PATH for bin:
-PATH=$XTOOLS/PATH=~/i686-nptl-linux-gnu/bin/:$PATH
-3. run i686-nptl-linux-gnu-g++:
-i686-nptl-linux-gnu-g++ -std=gnu++11 -static -o test test.cpp

@@ -14,6 +14,8 @@ services:
       - "../../src:/mplane_client/src"
       - "../../test/rpc-client:/mplane_client/test/rpc-client"
       - "../../test/tests:/mplane_client/test/tests"
+      - "../../example:/mplane_client/example"
+      - "/mplane_client/example/demo"
     ports:
       - ":::18300:830"
     environment:
@@ -50,8 +52,6 @@ services:
     build:
       context: ../../
       dockerfile: ./test/docker/test.integrated.Dockerfile
-    depends_on:
-      - mplane-client-tester
     cap_add:
       - SYS_ADMIN
       - NET_ADMIN

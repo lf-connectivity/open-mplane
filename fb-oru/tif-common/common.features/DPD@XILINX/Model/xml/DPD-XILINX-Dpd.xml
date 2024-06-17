@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE TestInterface SYSTEM "../../../../shared/dtd/Tif.dtd">
-<TestInterface version="1.0">
- 	<Board name="DPD@XILINX">
-		<Device name="Dpd" path="/dpd" comment="DPD functions">
-		<xinclude:include href="../../../../helper/common/xml/Dpd.xml#Dpd" />
-		</Device>
-	</Board>
-</TestInterface>

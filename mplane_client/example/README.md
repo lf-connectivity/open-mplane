@@ -23,6 +23,19 @@ and executes the corresponding mpclient RPC.
 Note that there must be a server instance running. If 0 commands are found,
 there may be a syntax or schema error in the commands file.
 
+When mplane_server is running on the same host:
+```bash
+# Start the server(mpc_client):
+./wrapper.sh ./mpc_client --insecure
+
+# Separately, run the client(mpclient-demo):
+./wrapper.sh ./mpclient-demo \
+  --commands ../example/cases/connect.json \
+  --netconfHost 127.0.0.1   --netconfPort 830 \
+  --netconfUser root \
+  --netconfPassword facebook \
+  --insecure 
+```
 ### Commands File Example
 ```json
 {

@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE TestInterface SYSTEM "../../../../../shared/dtd/Tif.dtd">
-<TestInterface version="1.0">
-	<Board name="Helper">
-		<Device name="DevicesRxadc" path="/devices/rxadc" comment="ETNA FTU RX ADC">
-			<xinclude:include href="../../../../../helper/common/xml/DevicesRxadc.xml#show"/>
-		</Device>
-	</Board>
-</TestInterface>

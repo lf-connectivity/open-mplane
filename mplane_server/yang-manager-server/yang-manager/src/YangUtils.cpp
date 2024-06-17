@@ -36,7 +36,9 @@ YangUtils::~YangUtils() {}
 //-------------------------------------------------------------------------------------------------------------
 std::string
 YangUtils::getDateTime(time_t timestamp) {
-  return getDateTime(localtime(&timestamp));
+  struct tm result;
+  struct tm* ts = localtime_r(&timestamp, &result);
+  return getDateTime(ts);
 }
 
 //-------------------------------------------------------------------------------------------------------------
