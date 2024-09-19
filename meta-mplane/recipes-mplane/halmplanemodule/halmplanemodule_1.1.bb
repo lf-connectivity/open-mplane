@@ -19,4 +19,4 @@ CONTEXT ?= "YOCTO"
 EXTRA_OECMAKE_append += " -DBUILD_BOARD=${BUILD_BOARD}"
 EXTRA_OECMAKE_append += " -DCONTEXT=${CONTEXT}"
 
-PROVIDES += "halmplane_module"
+PROVIDES += "halmplanemodule"
