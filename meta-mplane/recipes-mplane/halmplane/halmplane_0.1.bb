@@ -18,5 +18,7 @@ BUILD_BOARD ?= "example"
 EXTRA_OECMAKE_append += " -DBUILD_BOARD=${BUILD_BOARD}"
 EXTRA_OECMAKE_append += " -DCONTEXT=YOCTO"
 
+DEPENDS += "libtinyxml2"
+
 PROVIDES += "virtual/halmplane"
 RPROVIDES_${PN} += "virtual/halmplane"
