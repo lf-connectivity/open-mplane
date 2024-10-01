@@ -286,6 +286,4 @@ typedef void (*halmplane_epe_meas_cb_t)(
 int halmplane_activateEpeMeasObjects(
     struct epe_measurement_objects_t config, halmplane_epe_meas_cb_t cb);
 
-#endif
-
 #endif // __MPLANE_PERFORMANCE_MGMT_H__

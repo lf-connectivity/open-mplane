@@ -7,6 +7,7 @@
 
 #ifndef __MPLANE_TRANSCEIVER_H__
 #define __MPLANE_TRANSCEIVER_H__
+#include <stdint.h>
 
 typedef struct leafref_s {
   char* path;
