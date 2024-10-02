@@ -13,13 +13,13 @@ ModuleLoader::ModuleLoader()
 {
   libname = "uninitialized";
   dlhandle = NULL;
-  registered_functions = NULL;
+  registered_functions = new std::map<std::string, void*>();
 }
 
 void ModuleLoader::open(const char* libfilename)
 {
   libname = libfilename;
-  dlhandle = dlopen(libname, RTLD_NOW);
+  dlhandle = dlopen(libname, RTLD_NOW|RTLD_DEEPBIND);
 
   if (!dlhandle) 
     {
@@ -28,6 +28,10 @@ void ModuleLoader::open(const char* libfilename)
   void* (*rf)() = reinterpret_cast<void* (*)()>(dlsym(dlhandle, "function_map"));
   if(rf)
     {
+      if(registered_functions)
+	{
+	  delete registered_functions;
+	}
       registered_functions = (std::map<std::string, void*>*) rf();
     }
 
