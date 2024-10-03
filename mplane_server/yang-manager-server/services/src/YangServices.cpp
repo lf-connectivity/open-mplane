@@ -70,7 +70,16 @@ YangServices::YangServices()
   // Register the YANG manager server Service
   registerServiceInsert(YangMgrService::singleton());
 
-  halmplane_init();
+  std::string filePath = cfgData->getPath();
+  tinyxml2::XMLDocument doc;
+  if (doc.LoadFile(filePath.c_str()) == tinyxml2::XML_NO_ERROR)
+    {
+      halmplane_init(&doc);
+    }
+  else
+    {
+      halmplane_init(NULL);
+    }
 
   // YANG
   eventInfo("RRH get YANG manager server");

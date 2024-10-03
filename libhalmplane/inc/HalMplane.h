@@ -12,16 +12,11 @@
 /**
  * @brief HAL init function, to be called before YANG handlers initialization.
  *
- * @return 0 if successful, 1 otherwise
- */
-int halmplane_init();
-
-/**
- * @brief HAL config function, to give HAL implementations a chance to look at server config during startup
+ * doc is a pointer to an xml config object if any board needs to preset runtime parameters
  *
  * @return 0 if successful, 1 otherwise
  */
-int halmplane_config(tinyxml2::XMLDocument* doc);
+int halmplane_init(tinyxml2::XMLDocument* doc);
 
 /**
  * @brief HAL exit function, to be called when application exits.

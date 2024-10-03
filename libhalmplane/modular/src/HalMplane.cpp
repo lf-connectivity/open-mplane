@@ -57,10 +57,8 @@ typedef struct
 
 static labeled_ptr_t api_functions[] = {
   // HalMplane.h
-  {"int halmplane_init()",
-   (void*)(int (*)()) halmplane_init},
-  {"int halmplane_config(XMLDocument*)",
-   (void*)(int (*)(XMLDocument*)) halmplane_config},
+  {"int halmplane_init(XMLDocument*)",
+   (void*)(int (*)(XMLDocument*)) halmplane_init},
   {"int halmplane_exit()",
    (void*)(int (*)()) halmplane_exit},
 
@@ -251,60 +249,39 @@ static labeled_ptr_t api_functions[] = {
 #endif
 
 
-
-/*
- * any module loaded later will have its halmplane_init() run after YANG config has been loaded
- */
-int halmplane_init()
-{
-  return 0;
-}
-
-/*
- * this function will not run correctly if called before halmplane_init()
- */
-int halmplane_config(XMLDocument* doc)
+int halmplane_init(XMLDocument* doc)
 {
   void* fptr;
   int module_status = 0;
-  const char* libname;
-  
-  XMLElement* module = doc->FirstChildElement("root")->FirstChildElement("hal_module");
-  if (module) 
+  const char* libname = NULL;
+
+  if(doc)
     {
-      // Get the file element
-      libname = module->FirstChildElement("file")->Attribute("value");
-      if (!libname) 
+      XMLElement* module = doc->FirstChildElement("root")->FirstChildElement("halmplane-board-modular");
+      if (module)
 	{
-	  std::cerr << "file value not found!" << std::endl;
+	  // Get the file element
+	  libname = module->FirstChildElement("file")->Attribute("value");
+	  if (!libname)
+	    {
+	      std::cerr << "file value not found!" << std::endl;
+	      return -1;
+	    }
+	}
+      else
+	{
+	  std::cerr <<  "halmplane-board-modular element not found!" << std::endl;
 	  return -1;
 	}
-    } 
-  else 
-    {
-      std::cerr <<  "hal_module element not found!" << std::endl;
-      return -1;
     }
-
-    
   _loader()->open(libname);
-  fptr = _loader()->get("int halmplane_init()");
+  fptr = _loader()->get("int halmplane_init(XMLDocument* doc)");
   if(fptr != NULL)
     {
       module_status = ((int (*)()) fptr)();
       if(module_status != 0)
 	{
 	  std::cerr << "module init failed " << module_status << std::endl;
-	  return module_status;
-	}
-    }
-  fptr = _loader()->get("int halmplane_config(XMLDocument* doc)");
-  if(fptr != NULL)
-    {
-      module_status = ((int (*)(XMLDocument)) fptr)(doc);
-      if(module_status != 0)
-	{
-	  std::cerr << "module config failed " << module_status << std::endl;
 	  return module_status;
 	}
     }

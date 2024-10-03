@@ -14,14 +14,9 @@
 
 using namespace tinyxml2;
 
-int halmplane_init()
+int halmplane_init(tinyxml2::XMLDocument* doc)
 {
     return 0;
-}
-
-int halmplane_config(tinyxml2::XMLDocument* doc)
-{
-  return 0;
 }
 
 int halmplane_exit()
@@ -37,10 +32,8 @@ typedef struct
 
 static labeled_ptr_t api_functions[] = {
   // HalMplane.h
-  {"int halmplane_init()",
-   (void*)(int (*)()) halmplane_init},
-  {"int halmplane_config(XMLDocument*)",
-   (void*)(int (*)(XMLDocument*)) halmplane_config},
+  {"int halmplane_init(XMLDocument*)",
+   (void*)(int (*)(XMLDocument*)) halmplane_init},
   {"int halmplane_exit()",
    (void*)(int (*)()) halmplane_exit},
 
