@@ -19,7 +19,7 @@ ModuleLoader::ModuleLoader()
 void ModuleLoader::open(const char* libfilename)
 {
   libname = libfilename;
-  dlhandle = dlopen(libname, RTLD_NOW|RTLD_DEEPBIND);
+  dlhandle = dlmopen(LM_ID_NEWLM, libname, RTLD_NOW|RTLD_DEEPBIND);
 
   if (!dlhandle) 
     {
