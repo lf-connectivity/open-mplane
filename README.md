@@ -12,9 +12,15 @@ Open Fronthaul Interface specified by O-RAN Workgroup 4.
   the implementation in `fb-oru`.
 * **mplane_client** - M-Plane client implementation.
 * **climp** - A command-line interface utility for M-Plane operations.
-* **fb-oru** - Code for the operating system and applications of an O-RU. This
-  includes the legacy implementation of the M-Plane server, which has most of
-  its code contained in `fb-oru/yang-manager-server`.
+
+## Client and Server Configuration Workflow
+* Follow the [meta-mplane](https://github.com/lf-connectivity/open-mplane/tree/main/meta-mplane)
+  setup guide to build and run the mplane_server
+* Build the [mplane_client](https://github.com/lf-connectivity/open-mplane/tree/main/mplane_client)
+  on your host or using Docker
+* Use the [mpclient-demo](https://github.com/lf-connectivity/open-mplane/tree/main/mplane_client/example)
+  or the [M-Plane Demo](https://github.com/lf-connectivity/open-mplane/tree/main/mplane_client/example/demo)
+  to connect and communicate with the server
 
 ## License
 Open M-Plane is MIT licensed, as found in the LICENSE file.
