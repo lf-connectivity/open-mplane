@@ -38,8 +38,8 @@ elseif( "${CONTEXT}" STREQUAL "YOCTO")
   endif()
 
   set(LIBRARY_NAME halmplane)
-  set(version "0.1")
-  project (halmplane VERSION 0.1.0 LANGUAGES CXX)
+  set(version "1.1")
+  project (halmplane VERSION 1.1.0 LANGUAGES CXX)
   add_library(${LIBRARY_NAME} SHARED)
   set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
   set_target_properties(${LIBRARY_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
@@ -54,10 +54,8 @@ elseif( "${CONTEXT}" STREQUAL "YOCTO")
   endif()
 
   if (NOT GITDIR)
-
     get_filename_component (GITDIR ${PROJECT_SOURCE_DIR} DIRECTORY)
     list(APPEND CMAKE_MODULE_PATH ${GITDIR}/buildTools/cmake/Modules)
-
   endif()
 
   include_directories(
@@ -69,8 +67,12 @@ elseif( "${CONTEXT}" STREQUAL "YOCTO")
   include(${BOARD}/CMakeLists.txt)
   target_include_directories(halmplane PUBLIC hal-common/inc)
   target_include_directories(halmplane PUBLIC inc)
-  install(
-    FILES
+
+  if(${BUILD_BOARD_STYLE} STREQUAL "MODULE")
+    set_target_properties(${LIBRARY_NAME} PROPERTIES OUTPUT_NAME ${LIBRARY_NAME}-mod-${BOARD})
+  else()
+    install(
+      FILES
       inc/MplaneAlarms.h
       inc/MplaneAntennaCalibration.h
       inc/MplaneBeamforming.h
@@ -92,59 +94,9 @@ elseif( "${CONTEXT}" STREQUAL "YOCTO")
       inc/MplaneFan.h
       inc/MplaneSync.h
       inc/HalMplane.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  )
-
-  install(TARGETS halmplane
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  )
-elseif( "${CONTEXT}" STREQUAL "MODULE")
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
-
-  if (ASAN)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
-    set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -fsanitize=address")
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
   endif()
-
-  set(version "1.1")
-  set(LIBRARY_NAME halmplane)
-  project (halmplane VERSION 1.1.0 LANGUAGES CXX)
-  add_library(${LIBRARY_NAME} SHARED)
-  set_target_properties(${LIBRARY_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
-  set_target_properties(${LIBRARY_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
-
-  include(GNUInstallDirs)
-
-  # Build context
-  if(${BUILD_BOARD} STREQUAL "ZCU111")
-     set(BOARD "zcu111")
-     include_directories(
-       ${PROJECT_SOURCE_DIR}/../mplane_server/common/inc/
-     )
-  else()
-     set(BOARD "${BUILD_BOARD}")
-  endif()
-
-  set_target_properties(${LIBRARY_NAME} PROPERTIES OUTPUT_NAME ${LIBRARY_NAME}-mod-${BOARD})
-
-  if (NOT GITDIR)
-
-    get_filename_component (GITDIR ${PROJECT_SOURCE_DIR} DIRECTORY)
-    list(APPEND CMAKE_MODULE_PATH ${GITDIR}/buildTools/cmake/Modules)
-
-  endif()
-
-  include_directories(
-    ${PROJECT_SOURCE_DIR}/inc/
-    ${PROJECT_SOURCE_DIR}/hal-common/inc/
-  )
-
-  add_subdirectory(hal-common)
-  include(${BOARD}/CMakeLists.txt)
-  target_include_directories(halmplane PUBLIC hal-common/inc)
-  target_include_directories(halmplane PUBLIC inc)
 
   install(TARGETS halmplane
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

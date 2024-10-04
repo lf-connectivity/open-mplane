@@ -6,9 +6,5 @@ string(CONCAT SRC
 )
 include_directories(inc)
 
-if(("${CONTEXT}" STREQUAL "YOCTO") OR ("${CONTEXT}" STREQUAL "MODULE"))
-  list(TRANSFORM SRC PREPEND "example/")
-  target_sources(halmplane PRIVATE ${SRC})
-else()
-  add_sources(SOURCES ${SRC})
-endif()
+list(TRANSFORM SRC PREPEND "example/")
+target_sources(halmplane PRIVATE ${SRC})

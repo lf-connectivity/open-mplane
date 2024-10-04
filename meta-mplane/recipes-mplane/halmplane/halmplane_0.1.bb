@@ -14,8 +14,10 @@ inherit cmake
 
 # set this as appropriate
 BUILD_BOARD ?= "example"
+BUILD_BOARD_STYLE ?= "BUILTIN"
 
 EXTRA_OECMAKE_append += " -DBUILD_BOARD=${BUILD_BOARD}"
+EXTRA_OECMAKE_append += " -DBUILD_BOARD_STYLE=${BUILD_BOARD_STYLE}"
 EXTRA_OECMAKE_append += " -DCONTEXT=YOCTO"
 
 DEPENDS += "libtinyxml2"

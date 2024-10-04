@@ -27,3 +27,5 @@ shared library is generated and may be installed on a host system with the
 `make install/$TARGET` Makefile target.
 
 *libhalmplane* is also incorporated into the `yang-manager-server` build.
+
+See `modular/README.md` for a detailed explanation of using the `modular` board type.
