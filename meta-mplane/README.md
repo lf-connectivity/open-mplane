@@ -27,6 +27,7 @@ bitbake mplane-image-x86
 ```
 
 #### Prepare the mplane_server environment:
+Make sure you're in the meta-mplane directory.
 ```bash
 # Create a target directory for the root filesystem
 mkdir -p ../../mplane-server/var/volatile/log && cd ../../mplane-server/
@@ -49,11 +50,11 @@ usr/share/mplane-server/scripts/o-ran-user-config.sh
 
 #### Run the mplane_server:
 ```bash
-# Open a new terminal and run the following command to display the server logs
-tail -f var/log/console.log
-
 # Run the mplane_server commands in the chrooted terminal
 mplane-server-app --help
+
+# Open a new terminal and run the following command to display the server logs
+tail -f var/log/console.log
 ```
 
 The terminal window displaying console.log would show the following:
