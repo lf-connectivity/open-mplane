@@ -53,6 +53,6 @@ typedef struct antenna_calibration_data_s {
  * @ingroup AntennaCalibrationFunctions
  */
 halmplane_error_t halmplane_start_antenna_calibration(
-    const* antenna_calibration_data_t);
+    const antenna_calibration_data_t*);
 
 #endif // __MPLANE_ANTENNA_CALIBRATION_H__

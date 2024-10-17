@@ -7,16 +7,19 @@
 
 #ifndef __HAL_MPLANE_H__
 #define __HAL_MPLANE_H__
+#include "libtinyxml2/tinyxml2.h"
 
 /**
- * @brief HAl init function, to be called before YANG handlers initialization.
+ * @brief HAL init function, to be called before YANG handlers initialization.
+ *
+ * doc is a pointer to an xml config object if any board needs to preset runtime parameters
  *
  * @return 0 if successful, 1 otherwise
  */
-int halmplane_init();
+int halmplane_init(tinyxml2::XMLDocument* doc);
 
 /**
- * @brief HAl exit function, to be called when application exits.
+ * @brief HAL exit function, to be called when application exits.
  *
  * @return 0 if successful, 1 otherwise
  */

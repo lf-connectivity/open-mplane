@@ -14,13 +14,13 @@ inherit cmake
 
 # set this as appropriate
 BUILD_BOARD ?= "example"
-BUILD_BOARD_STYLE ?= "BUILTIN"
+BUILD_BOARD_STYLE ?= "MODULE"
+CONTEXT ?= "YOCTO"
 
 EXTRA_OECMAKE_append += " -DBUILD_BOARD=${BUILD_BOARD}"
 EXTRA_OECMAKE_append += " -DBUILD_BOARD_STYLE=${BUILD_BOARD_STYLE}"
-EXTRA_OECMAKE_append += " -DCONTEXT=YOCTO"
+EXTRA_OECMAKE_append += " -DCONTEXT=${CONTEXT}"
 
 DEPENDS += "libtinyxml2"
 
-PROVIDES += "virtual/halmplane"
-RPROVIDES_${PN} += "virtual/halmplane"
+PROVIDES += "halmplanemodule"

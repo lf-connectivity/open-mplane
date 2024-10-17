@@ -1,6 +1,6 @@
 include_directories(inc)
 
-if( "${CONTEXT}" STREQUAL "YOCTO")
+if(("${CONTEXT}" STREQUAL "YOCTO") OR ("${CONTEXT}" STREQUAL "MODULE"))
   if( "${BOARD}" STREQUAL "zcu111")
     string(CONCAT SRC
       "hal-common/fb-oru/FbOruPerformanceMgmt.cpp;"

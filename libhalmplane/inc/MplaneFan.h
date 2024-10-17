@@ -13,7 +13,7 @@
 #include <unistd.h>
 
 #include "MplaneTypes.h"
-#include "smbus.h"
+
 
 /** @struct fan_state_s
  * @brief Struct representing a fan on the O-RU.
