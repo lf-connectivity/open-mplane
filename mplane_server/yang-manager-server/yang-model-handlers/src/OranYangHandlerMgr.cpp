@@ -24,6 +24,7 @@
 #include "OranProcessingElementHandler.h"
 #include "OranUplaneConfHandler.h"
 #include "OranUserMgmtHandler.h"
+#include "OranSupervisionHandler.h"
 
 using namespace Mplane;
 
@@ -61,6 +62,7 @@ OranYangHandlerMgr::OranYangHandlerMgr(
   registerHandler(std::make_shared<OranProcessingElementHandler>(moduleMgr));
   registerHandler(std::make_shared<OranUplaneConfHandler>(moduleMgr));
   registerHandler(std::make_shared<OranUserMgmtHandler>(moduleMgr));
+  registerHandler(std::make_shared<OranSupervisionHandler>(moduleMgr));
 }
 
 //-------------------------------------------------------------------------------------------------------------

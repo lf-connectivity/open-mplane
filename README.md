@@ -12,6 +12,7 @@ Open Fronthaul Interface specified by O-RAN Workgroup 4.
   the implementation in `fb-oru`.
 * **mplane_client** - M-Plane client implementation.
 * **climp** - A command-line interface utility for M-Plane operations.
+* **HardwareDeployment.md** - Instructions for building images and running the server on supported boards.
 
 ## Client and Server Configuration Workflow
 * Follow the [meta-mplane](https://github.com/lf-connectivity/open-mplane/tree/main/meta-mplane)

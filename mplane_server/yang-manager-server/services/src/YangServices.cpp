@@ -32,6 +32,7 @@
 #include "YangConfigParser.h"
 
 #include "INetopeerMonService.h"
+#include "IMPlaneConnectivityService.h"
 #include "YangMgrService.h"
 
 #include <HalMplane.h>
@@ -81,6 +82,10 @@ YangServices::YangServices()
       halmplane_init(NULL);
     }
 
+
+  // Register the ORAN M-Plane connectivity service
+	registerServiceInsert(std::dynamic_pointer_cast<Service>(IMPlaneConnectivityService::singleton()));
+ 
   // YANG
   eventInfo("RRH get YANG manager server");
   std::shared_ptr<YangMgrService> yangService(YangMgrService::singleton());

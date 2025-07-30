@@ -165,6 +165,7 @@ list(APPEND MPLANE_SERVER_SOURCES
 
 include_directories(services/ORANRRH/AppControl/inc)
 include_directories(services/vsi/inc)
+include_directories(yang-manager-server/OranSupervision/inc)
 
 ## yang-manager-server
 list(APPEND MPLANE_SERVER_SOURCES
@@ -201,6 +202,7 @@ list(APPEND MPLANE_SERVER_SOURCES
   yang-manager-server/yang-model-handlers/src/OranProcessingElementHandler.cpp
   yang-manager-server/yang-model-handlers/src/OranUserMgmtHandler.cpp
   yang-manager-server/yang-model-handlers/src/OranUplaneConfHandler.cpp
+  yang-manager-server/yang-model-handlers/src/OranSupervisionHandler.cpp
   yang-manager-server/yang-model-handlers/src/OranYangCarrierMgr.cpp
   yang-manager-server/yang-model-handlers/src/OranYangHandlerMgr.cpp
   yang-manager-server/yang-models/src/YangMgrServer.cpp
@@ -256,6 +258,12 @@ list(APPEND MPLANE_SERVER_SOURCES
   yang-manager-server/yang-sysrepo/src/YangHandlerSysrepoUnlogged.cpp
   yang-manager-server/yang-sysrepo/src/YangParamSysrepo.cpp
   yang-manager-server/yang-sysrepo/src/YangUserAuth.cpp
+  yang-manager-server/OranSupervision/src/CUPlaneConnectService.cpp
+  yang-manager-server/OranSupervision/src/CUPlaneConnectServiceSingleton.cpp
+  yang-manager-server/OranSupervision/src/CUPlaneMonitor.cpp
+  yang-manager-server/OranSupervision/src/CUPlaneMonitorSingleton.cpp
+  yang-manager-server/OranSupervision/src/MPlaneConnectivityService.cpp
+  yang-manager-server/OranSupervision/src/MPlaneConnectivityServiceSingleton.cpp
 )
 
 include_directories(yang-manager-server/ConfigParser/inc)
@@ -270,11 +278,18 @@ include_directories(yang-manager-server/yang-manager/inc)
 include_directories(yang-manager-server/yang-model-handlers/inc)
 include_directories(yang-manager-server/yang-models/inc)
 include_directories(yang-manager-server/yang-sysrepo/inc)
+include_directories(common/WatchdogCount/inc)
+
 
 ## application
 list(APPEND MPLANE_SERVER_SOURCES
   application/Application/src/Application.cpp
 )
+
+list(APPEND MPLANE_SERVER_SOURCES
+  common/WatchdogCount/src/WatchdogCount.cpp
+)
+
 
 include_directories(application/Application/inc)
 include_directories(application/vappi/inc)
